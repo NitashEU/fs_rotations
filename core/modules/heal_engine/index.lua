@@ -14,7 +14,7 @@ FS.modules.heal_engine = {
     healers = {},
     ---@type game_object[]
     damagers = {},
-    ---@type table<game_object, HealthValue[]>
+    ---@type table<game_object, RingBuffer|HealthValue[]>  -- health snapshots per unit; plain arrays are automatically converted to RingBuffer preserving historical data
     health_values = {},
     ---@type table<game_object, HealthValue>
     current_health_values = {},
@@ -26,12 +26,17 @@ FS.modules.heal_engine = {
     damage_taken_per_second_last_10_seconds = {},
     ---@type table<game_object, number>
     damage_taken_per_second_last_15_seconds = {},
+    -- Configuration options
+    retention_window_ms = 15000,  -- dynamic snapshot retention window (15 seconds)
+    buffer_size = 30              -- maximum snapshot entries per unit
 }
 
 require("core/modules/heal_engine/get_damage_taken_per_second")
+require("core/modules/heal_engine/get_healing_received_per_second")
 require("core/modules/heal_engine/on_update")
 require("core/modules/heal_engine/reset")
 require("core/modules/heal_engine/start")
+require("core/modules/heal_engine/predicted_health")
 
 return {
     on_update = FS.modules.heal_engine.on_update,
