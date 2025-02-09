@@ -26,4 +26,7 @@ function FS.modules.heal_engine.start()
     end
 
     addUnitToTables(FS.variables.me)
+
+    core.log("started")
+    core.log(tostring(#FS.modules.heal_engine.units))
 end

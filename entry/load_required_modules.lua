@@ -8,6 +8,9 @@ function FS.entry_helper.load_required_modules()
         local success, module = pcall(require, module_path)
         if success then
             table.insert(FS.modules, module)
+        else
+            core.log("Failed to load required module: " .. module_path)
+            return false
         end
     end
     return true

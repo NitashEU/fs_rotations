@@ -1,4 +1,4 @@
-if true then
+if false then
     return {
         name = "FS Rotations",
         version = "1.0.0",

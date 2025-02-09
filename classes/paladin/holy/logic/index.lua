@@ -20,7 +20,4 @@ function FS.paladin_holy.logic.on_update()
     if FS.paladin_holy.logic.rotations.damage() then
         return
     end
-
-    core.log(tostring(spell_helper:is_spell_queueable(FS.paladin_holy.spells.blessing_of_the_seasons, FS.variables.me,
-        FS.variables.me, false, false)))
 end

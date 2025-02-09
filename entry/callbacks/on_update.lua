@@ -5,6 +5,11 @@ function FS.entry_helper.on_update()
     if not FS.settings.is_enabled() then
         return
     end
+    for _, module in pairs(FS.modules) do
+        if module.on_fast_update then
+            module.on_fast_update()
+        end
+    end
     if not FS.humanizer.can_run() then
         return
     end
