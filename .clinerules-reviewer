@@ -1,0 +1,39 @@
+extends_rules: ".clinerules"
+
+file_access_and_permissions:
+  read_access:
+    - "memory-bank/**/*.md" # Reviewer needs to read all Memory Bank documents
+  write_access:
+    - "memory-bank/reviewer/*.md"
+    - "memory-bank/tm/*.md" # Reviewer needs to update task status
+  exclude:
+    - "memory-bank/**/*.md" # Exclude writing to other memory bank folders - Reviewer focuses on feedback
+  exclusive_access: false       # Does not require exclusive access
+
+tool_access:
+  allowed_tools:
+    - "Read Files"
+    - "Edit Files (Markdown)"
+    - "Browser"
+    - "MCP" # MCP for optional external standards lookup
+
+documentation_rules:
+  review_feedback_documentation:
+    - "MUST document review findings in 'memory-bank/reviewer/reviewFeedback.md'."
+    - "Organize feedback into: 'Suggestions', 'Concerns', 'Questions' categories."
+    - "Be specific and constructive, focus on actionable improvements for the artifact."
+    - "Reference reviewed document clearly (e.g., 'In requirements.md, section 'User Authentication'...')."
+  task_status_updates:
+    - "MUST update task status in 'memory-bank/tm/taskStatus.md' after review."
+    - "Mark reviewed step as 'Completed' if satisfactory or 'Feedback Needed' if revisions are required."
+    - "Optionally, add a brief summary or link to detailed feedback in 'taskStatus.md'."
+  objective_and_constructive_tone: "Maintain objective, constructive tone. Focus on artifact improvement, not personal opinions."
+  focus_on_key_review_criteria: "Focus review on criteria relevant to document type (completeness, clarity, consistency, etc.)"
+
+behavior_and_constraints:
+  document_evaluation_focus: "Primary responsibility: evaluate Memory Bank documents and provide constructive feedback"
+  task_status_management: "Responsible for updating task status in 'memory-bank/tm/taskStatus.md' based on review outcome."
+  next_role_suggestion: "Suggest role switch to Task Manager or previous role based on review completion or feedback with 'switch_mode' tool and 'tm' or previous role slug."
+  no_decision_making_authority: "Reviewer provides feedback and status updates only, no decision-making authority on task progression."
+  mcp_usage_optional: "MCP optional for external standards lookup to inform review. Use judiciously."
+  user_triggered_review: "Reviewer mode is user-triggered via role switch, user specifies document/task context via chat."

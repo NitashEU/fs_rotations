@@ -1,0 +1,8 @@
+-- Add class/spec configuration
+---@class SpecConfig
+---@field class_id number
+---@field spec_id number
+---@field on_update on_update
+---@field on_render on_render
+---@field on_render_menu on_render_menu
+---@field on_render_control_panel on_render_control_panel

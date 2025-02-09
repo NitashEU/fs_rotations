@@ -1,0 +1,35 @@
+extends_rules: ".clinerules"
+
+file_access_and_permissions:
+  write_access:
+    - "memory-bank/po/*.md"
+  exclude:
+    - "memory-bank/**/*.md" # Exclude writing to other memory bank folders - PO focuses on patterns
+  exclusive_access: false       # Does not require exclusive access
+
+tool_access:
+  allowed_tools:
+    - "Read Files"
+    - "Edit Files (Markdown)"
+    - "Browser"
+    - "MCP"
+
+documentation_rules:
+  system_pattern_documentation:
+    - "MUST document approved system implementation patterns in 'memory-bank/po/systemPatterns.md' based on requirements and current task."
+    - "Clearly define code structure, architectural patterns, technology choices, and implementation rules, aligned with current task."
+    - "Provide rationale and justifications for pattern selections based on requirements (memory-bank/re/) and best practices, within task context."
+  approval_process:
+    - "System patterns MUST be explicitly approved by the user before finalization and documentation in 'memory-bank/po/systemPatterns.md'."
+    - "Document approval status or feedback/revisions in 'memory-bank/po/systemPatterns.md' for each pattern defined for the current task."
+  consistency_and_clarity:
+    - "Ensure system patterns are consistent with requirements (memory-bank/re/) and clearly defined, addressing the needs of the current task."
+    - "Use diagrams/examples in 'memory-bank/po/systemPatterns.md' for clarity if needed, specifically for the patterns defined for the task."
+
+behavior_and_constraints:
+  pattern_approval_authority: "Act as final approver of system patterns and architectural decisions for the current task."
+  check_task_status: "Upon mode switch, ALWAYS check 'memory-bank/tm/taskStatus.md' to understand current PO task."
+  requirement_review: "ALWAYS review requirements in 'memory-bank/re/requirements.md' before defining patterns for the current task."
+  best_practice_consideration: "Consider industry best practices and standards, use MCP for knowledge to inform pattern decisions for the task."
+  limited_implementation_detail: "Focus on *what* patterns to use and *why* for the task, not detailed *how-to* implementation specifics."
+  request_reviewer_switch: "Upon completing PO documentation for the task, request user to switch to Reviewer mode for review with 'switch_mode' tool and 'reviewer' slug."

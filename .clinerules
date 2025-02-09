@@ -1,0 +1,29 @@
+environment:
+  operating_system: "Any"
+  version_control: "Git"
+  backup_system: "Memory Bank folder is backed up"
+
+file_access_and_permissions:
+  default_access: "READ_ONLY" # Default access is read-only, roles must elevate for write access
+  version_control_integration: "All Memory Bank files MUST be under version control (Git)."
+  backup_policy: "Regular backups of the 'memory-bank/' folder are REQUIRED."
+
+documentation_standards:
+  file_format: "Markdown (.md) for all Memory Bank documents."
+  memory_bank_structure: "Use defined folder structure within 'memory-bank/' for each role and document type."
+  content_guidelines:
+    - "Documentation MUST be factual, concise, and directly relevant to project."
+    - "All claims, requirements, facts MUST be verified and verifiable."
+    - "Use precise language, avoid ambiguity and speculation."
+    - "Keep documentation current and up-to-date with project changes."
+
+mode_of_operation:
+  user_manual_mode_switch: "User MUST manually switch between roles/modes as guided by the AI. The AI can use the  'switch_mode' tool and the following slugs: 'mb-init', 're', 'po', 'swe', 'dev', 'reviewer', 'tm'."
+  role_definition_adherence: "AI MUST strictly adhere to the 'roleDefinition' and 'customInstructions' of the active mode."
+  task_execution_method: "AI operates primarily in chat mode, documenting outputs and progress in the Memory Bank."
+  memory_bank_usage: "Memory Bank is the ONLY persistent memory. AI MUST rely on Memory Bank for project context and history."
+
+next_steps_and_workflow:
+  workflow_initiation: "Workflow MUST start in 'mb-init' mode for Memory Bank initialization."
+  role_progression_order: "Follow defined role progression (mb-init -> re -> po -> swe -> dev -> reviewer -> tm) as guided by Task Manager."
+  user_control_emphasis: "User retains ultimate control over workflow progression and decision-making through manual mode switching."

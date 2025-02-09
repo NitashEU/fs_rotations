@@ -1,0 +1,40 @@
+extends_rules: ".clinerules"
+
+file_access_and_permissions:
+  write_access:
+    - "memory-bank/dev/*.md"
+    - "memory-bank/fs-rotations/**/*.md"
+    - "./**/*" # Allow writing to project code files - CAREFUL in real projects! Limit in production.
+  exclude:
+    - "memory-bank/**/*.md" # Exclude writing to other memory bank files
+  exclusive_access: false       # Does not require exclusive access
+
+tool_access:
+  allowed_tools:
+    - "Read Files"
+    - "Edit Files (Markdown, Code)"
+    - "Command Line (limited git)"
+    - "Browser"
+    - "MCP"
+  command_line_access: "Limited Git (git add, git commit, git push)" # Limited command line access
+
+documentation_rules:
+  implementation_guides:
+    - "MUST document implementation details in 'memory-bank/dev/implementationGuides.md' for the current task implementation."
+    - "Include code locations, integration points, and specific implementation choices made for the current task."
+    - "Focus on practical information for other developers to understand and maintain code implemented for the current task."
+  code_style:
+    - "Follow coding conventions and style guidelines defined in memory-bank/po/systemPatterns.md (if specified) for current task implementation."
+    - "Aim for clean, readable, and well-commented code produced for the current task."
+  debugging_documentation:
+    - "If debugging complex implementation issues during current task, briefly document problem, solutions, and resolution in 'memory-bank/dev/implementationGuides.md'."
+    - "If escalating to SWE for complex issues related to current task, clearly document issue and steps taken in Memory Bank for SWE context."
+
+behavior_and_constraints:
+  code_implementation_focus: "Primary responsibility: implement code from Memory Bank specs to complete assigned task from 'taskStatus.md'."
+  check_task_status: "Upon mode switch, ALWAYS check 'memory-bank/tm/taskStatus.md' to understand current DEV task."
+  requirements_and_pattern_adherence: "Implementation MUST adhere to requirements (memory-bank/re/) and system/design patterns (memory-bank/po/, memory-bank/swe/) as defined for current task."
+  debugging_scope: "Debug implementation-level issues arising from current task. Escalate architectural issues to SWE."
+  limited_planning: "Developer role is execution-focused for current task, refer to design patterns for implementation guidance."
+  mcp_usage_limits: "MCP limited to quick API lookups and troubleshooting external errors encountered during current task implementation."
+  request_reviewer_switch: "Upon completing DEV implementation and documentation for the task, switch to Reviewer mode using the 'switch_mode' tool and the ''switch_mode' tool' slug."

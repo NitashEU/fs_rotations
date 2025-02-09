@@ -1,0 +1,6 @@
+require("classes/paladin/holy/drawing")
+require("classes/paladin/holy/menu")
+require("classes/paladin/holy/settings")
+require("classes/paladin/holy/variables")
+require("classes/paladin/holy/ids/index")
+require("classes/paladin/holy/logic/index")
