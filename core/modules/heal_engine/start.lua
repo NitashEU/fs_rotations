@@ -2,31 +2,28 @@ function FS.modules.heal_engine.start()
     FS.modules.heal_engine.reset()
     local units = core.object_manager.get_all_objects()
 
-    for _, v in pairs(units) do
-        if
-            v:is_valid()
-            and (v:is_player() or v:get_npc_id() == 210759)
-            and v:is_visible()
-            and v:is_party_member()
-            and v ~= FS.variables.me
-        then
-            table.insert(FS.modules.heal_engine.units, v)
-            if FS.api.unit_helper:is_tank(v) then
-                table.insert(FS.modules.heal_engine.tanks, v)
-            elseif FS.api.unit_helper:is_healer(v) then
-                table.insert(FS.modules.heal_engine.healers, v)
-            else
-                table.insert(FS.modules.heal_engine.damagers, v)
-            end
+    local function addUnitToTables(unit)
+        table.insert(FS.modules.heal_engine.units, unit)
+        if FS.api.unit_helper:is_tank(unit) then
+            table.insert(FS.modules.heal_engine.tanks, unit)
+        elseif FS.api.unit_helper:is_healer(unit) then
+            table.insert(FS.modules.heal_engine.healers, unit)
+        else
+            table.insert(FS.modules.heal_engine.damagers, unit)
         end
     end
 
-    table.insert(FS.modules.heal_engine.units, FS.variables.me)
-    if FS.api.unit_helper:is_tank(FS.variables.me) then
-        table.insert(FS.modules.heal_engine.tanks, FS.variables.me)
-    elseif FS.api.unit_helper:is_healer(FS.variables.me) then
-        table.insert(FS.modules.heal_engine.healers, FS.variables.me)
-    else
-        table.insert(FS.modules.heal_engine.damagers, FS.variables.me)
+    for _, v in pairs(units) do
+        local isValid = v:is_valid()
+        local isPlayerOrPet = v:is_player() or v:get_npc_id() == 210759
+        local isVisible = v:is_visible()
+        local isPartyMember = v:is_party_member()
+        local isNotMe = v ~= FS.variables.me
+
+        if isValid and isPlayerOrPet and isVisible and isPartyMember and isNotMe then
+            addUnitToTables(v)
+        end
     end
+
+    addUnitToTables(FS.variables.me)
 end

@@ -1,0 +1,27 @@
+# Requirements Engineer Clinerules
+
+extends_rules: ".clinerules"
+
+file_access_and_permissions:
+  write_access:
+    - "memory-bank/tasks/[task-id]/taskRequirements.md"
+  exclude:
+    - "memory-bank/project/*.md"
+  exclusive_access: false
+
+tool_access:
+  allowed_tools:
+    - "Read Files"
+    - "Edit Files (Markdown)"
+    - "Browser"
+    - "MCP"
+
+documentation_rules:
+  task_requirements: "Document task-specific requirements in 'taskRequirements.md', elaborating on or refining project requirements."
+
+behavior_and_constraints:
+  read_project_requirements: "Read project-level requirements from 'memory-bank/project/requirements.md'."
+  read_task_description: "Read the task description from 'memory-bank/tasks/[task-id]/taskDescription.md'."
+  task_context: "Operate within the current task directory."
+  no_project_modification: "Do NOT modify project-level files."
+  switch_to_reviewer: "Switch to 'reviewer' mode after completing task requirements."

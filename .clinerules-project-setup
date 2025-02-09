@@ -1,0 +1,28 @@
+# Project Setup Clinerules
+
+extends_rules: ".clinerules"
+
+file_access_and_permissions:
+  write_access:
+    - "memory-bank/project/*.md"
+  exclude:
+    - "memory-bank/**/*.md"  # Prevent writing outside /project
+  exclusive_access: true
+
+tool_access:
+  allowed_tools:
+    - "Read Files"
+    - "Edit Files (Markdown)"
+    - "Browser"
+    - "MCP"
+
+documentation_rules:
+  project_scope: "Document project overview, purpose, and objectives in 'memory-bank/project/projectScope.md'."
+  existing_docs: "If existing documentation exists, summarize it in 'memory-bank/project/projectScope.md'."
+  initial_requirements: "Document initial project requirements in 'memory-bank/project/requirements.md'."
+  initial_constraints: "Document initial constraints (technical, business, etc.) in 'memory-bank/project/constraints.md'."
+
+behavior_and_constraints:
+  one_time_operation: "This mode is for initial project setup ONLY, or for a complete project reset (with user confirmation)."
+  check_existing: "Before initializing, check if project files already exist.  Warn the user and get confirmation before overwriting."
+  switch_to_tm: "After setup is complete, switch to 'tm' mode."

@@ -1,35 +1,23 @@
+# Software Engineer Clinerules
 extends_rules: ".clinerules"
 
 file_access_and_permissions:
-  write_access:
-    - "memory-bank/swe/*.md"
-  exclude:
-    - "memory-bank/**/*.md" # SWE focuses on design documentation
-  exclusive_access: false       # Does not require exclusive access
-
+    write_access:
+        - "memory-bank/tasks/[task-id]/designPatterns.md"
+    exclude:
+        - "memory-bank/project/*.md"
 tool_access:
-  allowed_tools:
-    - "Read Files"
-    - "Edit Files (Markdown)"
-    - "Browser"
-    - "MCP"
+    allowed_tools:
+        - "Read Files"
+        - "Edit Files"
+        - "Browser"
+        - "MCP"
 
 documentation_rules:
-  design_pattern_documentation:
-    - "MUST document design patterns in 'memory-bank/swe/designPatterns.md' to implement requirements and system patterns for current task."
-    - "Include implementation steps, code structure examples, integration points, technical solutions relevant to the task."
-    - "Link design patterns to requirements (memory-bank/re/) and system patterns (memory-bank/po/) and clearly show how they address current task."
-  technical_debt_tracking:
-    - "If introducing technical debt during design for the current task, MUST document in 'memory-bank/swe/designPatterns.md', explaining reason/plan within task context."
-  decision_rationale:
-    - "Document rationale for significant technical/design decisions related to current task in 'memory-bank/swe/designPatterns.md'."
-  visual_aids_optional: "Use diagrams/flowcharts in 'memory-bank/swe/designPatterns.md' for complex designs related to current task implementation."
+    design_patterns: "Document task-specific design patterns, implementation steps, and technical solutions in designPatterns.md"
 
 behavior_and_constraints:
-  design_and_planning_focus: "Primary responsibility: plan implementation, solve problems, document designs to address current task."
-  check_task_status: "Upon mode switch, ALWAYS check 'memory-bank/tm/taskStatus.md' to understand current SWE task."
-  requirements_and_pattern_adherence: "Designs MUST implement requirements (memory-bank/re/) and follow system patterns (memory-bank/po/) as applicable to the current task."
-  problem_solving_authority: "Act as primary problem solver, support Dev with debugging technical issues arising from current task implementation."
-  limited_implementation: "SWE mode for *design* and *planning* of current task, not direct code implementation."
-  mcp_for_technical_knowledge: "MCP for targeted technical lookups for documentation and problem-solving related to current task design."
-  request_reviewer_switch: "Upon completing SWE documentation for the task, request user to switch to Reviewer mode for design review with 'switch_mode' tool and 'reviewer' slug."
+    read_project_task_info: "Read relevant information from both project and task memory bank locations."
+    task_context: "Operate within current task directory."
+    no_project_modification: "Do NOT modify project files."
+    switch_to_reviewer: "Switch to reviewer mode after completing design."

@@ -1,32 +1,25 @@
+# Task Initiation Clinerules
+
 extends_rules: ".clinerules"
 
 file_access_and_permissions:
   write_access:
-    - "memory-bank/task-init/*.md"
+    - "memory-bank/tasks/[task-id]/taskDescription.md"
+    - "memory-bank/currentTask.txt"
   exclude:
-    - "memory-bank/**/*.md" # Task Initiator focuses on its own documentation folder
-  exclusive_access: true       # Requires exclusive access during task initiation
+    - "memory-bank/**/*.md" # Prevent writing outside task folder.
+  exclusive_access: false
 
 tool_access:
   allowed_tools:
     - "Read Files"
     - "Edit Files (Markdown)"
-    - "Browser" # Limited tools - primarily for documentation and user interaction
 
 documentation_rules:
-  new_task_documentation:
-    - "MUST document the new task description in 'memory-bank/task-init/newTaskDescription.md'."
-    - "Use the provided task template to guide the user in defining the task clearly."
-    - "Ensure all sections of the task template are captured: Task Title, Task Type, Affected Components/Files, Priority, Detailed Description, Context/Background."
-    - "Document the task description only after explicit confirmation from the user on task details."
-  task_template_guidelines:
-    - "Provide the task template in chat at the beginning of the Task Initiator mode session to guide user input."
-    - "Guide the user to fill in each section of the template clearly and concisely, prompting for detail where needed."
-    - "Emphasize the importance of providing sufficient detail in the 'Detailed Description' and 'Context/Background' sections for task clarity."
+  task_id_format: "Use a consistent format for task IDs (e.g., 'task-YYYYMMDD-HHMM-NNN')."
+  task_description: "Capture the task title, type, affected components, priority, description, and context in 'taskDescription.md'."
 
 behavior_and_constraints:
-  task_definition_guidance_focus: "Primary responsibility is to guide the user in defining new tasks using the provided template."
-  template_driven_interaction: "Operate in chat mode, using the task template as the basis for user interaction and task detail elicitation."
-  user_confirmation_required: "Get explicit user confirmation of all task details before documenting the new task description."
-  limited_scope: "Mode ONLY for initiating and documenting new tasks. No task assignment, planning, or execution within this mode."
-  request_task_manager_switch: "After successful task documentation, request user to switch to Task Manager mode to start task workflow with 'switch_mode' tool and 'tm' slug."
+  create_task_directory: "Create a new directory for each task: 'memory-bank/tasks/[task-id]'."
+  update_current_task: "Write the new task ID to 'memory-bank/currentTask.txt'."
+  switch_to_tm: "After task initiation, switch to 'tm' mode."
