@@ -5,7 +5,7 @@ function FS.entry_helper.on_update()
     if not FS.settings.is_enabled() then
         return
     end
-    for _, module in pairs(FS.modules) do
+    for _, module in pairs(FS.loaded_modules) do
         if module.on_fast_update then
             module.on_fast_update()
         end
@@ -15,7 +15,7 @@ function FS.entry_helper.on_update()
     end
     FS.variables.me = core.object_manager.get_local_player()
     FS.humanizer.update()
-    for _, module in pairs(FS.modules) do
+    for _, module in pairs(FS.loaded_modules) do
         if module.on_update then
             module.on_update()
         end

@@ -10,7 +10,8 @@ end
 FS = {
     ---@type SpecConfig
     spec_config = nil,
-    modules = {}
+    ---@type ModuleConfig[]
+    loaded_modules = {}
 }
 
 require("entry/index")

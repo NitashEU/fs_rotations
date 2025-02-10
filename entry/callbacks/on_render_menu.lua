@@ -15,6 +15,11 @@ function FS.entry_helper.on_render_menu()
         FS.menu.min_delay:render("Min delay", "Min delay until next run.")
         FS.menu.max_delay:render("Max delay", "Min delay until next run.")
 
+        for _, module in pairs(FS.loaded_modules) do
+            if module.on_render_menu then
+                module.on_render_menu()
+            end
+        end
         if FS.spec_config.on_render_menu then
             FS.spec_config.on_render_menu()
         end

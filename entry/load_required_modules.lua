@@ -7,7 +7,7 @@ function FS.entry_helper.load_required_modules()
     for _, module_path in ipairs(required_modules) do
         local success, module = pcall(require, module_path)
         if success then
-            table.insert(FS.modules, module)
+            table.insert(FS.loaded_modules, module)
         else
             core.log("Failed to load required module: " .. module_path)
             return false
