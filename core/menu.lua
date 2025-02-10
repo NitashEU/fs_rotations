@@ -13,6 +13,14 @@ FS.menu = {
     humanizer = core.menu.header(),
     min_delay = core.menu.slider_int(0, 1500, 125, tag .. "min_delay"),
     max_delay = core.menu.slider_int(1, 1500, 250, tag .. "max_delay"),
+
+    -- Add humanizer jitter settings
+    humanizer_jitter = {
+        enable_jitter = core.menu.checkbox(true, tag .. "enable_jitter"),
+        base_jitter = core.menu.slider_float(0.05, 0.30, 0.15, tag .. "base_jitter"),
+        latency_jitter = core.menu.slider_float(0.01, 0.20, 0.05, tag .. "latency_jitter"),
+        max_jitter = core.menu.slider_float(0.10, 0.50, 0.25, tag .. "max_jitter"),
+    }
 }
 
 --- Inserts a toggle into the control panel table.

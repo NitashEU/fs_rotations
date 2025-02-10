@@ -1,5 +1,6 @@
 FS.paladin_holy.logic.spells = {}
 
+require("classes/paladin/holy/logic/spells/avenging_crusader")
 require("classes/paladin/holy/logic/spells/crusader_strike")
 require("classes/paladin/holy/logic/spells/judgment")
 require("classes/paladin/holy/logic/spells/hammer_of_wrath")
