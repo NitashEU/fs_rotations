@@ -8,6 +8,22 @@ FS.paladin_holy.settings = {
     ---@type fun(): number
     ac_min_targets = function() return FS.paladin_holy.menu.ac_min_targets_slider:get() end,
 
+    -- Divine Toll settings
+    ---@type fun(): number
+    dt_hp_threshold = function() return FS.paladin_holy.menu.dt_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    dt_min_targets = function() return FS.paladin_holy.menu.dt_min_targets_slider:get() end,
+
+    -- Divine Toll weights
+    ---@type fun(): number
+    dt_health_weight = function() return FS.paladin_holy.menu.dt_weights.health:get() end,
+    ---@type fun(): number
+    dt_damage_weight = function() return FS.paladin_holy.menu.dt_weights.damage:get() end,
+    ---@type fun(): number
+    dt_cluster_weight = function() return FS.paladin_holy.menu.dt_weights.cluster:get() end,
+    ---@type fun(): number
+    dt_critical_weight = function() return FS.paladin_holy.menu.dt_weights.critical:get() end,
+
     -- Beacon of Virtue settings
     ---@type fun(): number
     bov_hp_threshold = function() return FS.paladin_holy.menu.bov_hp_threshold_slider:get() / 100 end,
