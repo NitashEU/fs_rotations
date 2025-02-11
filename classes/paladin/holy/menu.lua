@@ -23,7 +23,12 @@ FS.paladin_holy.menu = {
         cluster = FS.menu.slider_float(0.1, 1.0, 0.2, tag .. "bov_weight_cluster"),
         use_distance = FS.menu.checkbox(true, tag .. "bov_use_distance_weight"),
         distance = FS.menu.slider_float(0.1, 1.0, 0.1, tag .. "bov_weight_distance"),
-    }
+    },
+
+    -- Holy Prism settings
+    hp_header = FS.menu.header(),
+    hp_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "hp_hp_threshold_slider"),
+    hp_min_targets_slider = FS.menu.slider_int(1, 5, 3, tag .. "hp_min_targets_slider"),
 }
 
 ---@type on_render_menu
@@ -57,6 +62,14 @@ function FS.paladin_holy.menu.on_render_menu()
                         "Weight for target's distance in scoring (higher = prioritizes closer targets)")
                 end
             end)
+        end
+
+        -- Holy Prism settings
+        if FS.paladin_holy.talents.holy_prism then
+            FS.paladin_holy.menu.hp_header:render("Holy Prism Settings", color.white())
+            FS.paladin_holy.menu.hp_hp_threshold_slider:render("HP HP", "HP % threshold for Holy Prism healing")
+            FS.paladin_holy.menu.hp_min_targets_slider:render("HP Min Targets",
+                "Minimum targets for Holy Prism (cast on enemy)")
         end
     end)
 end
