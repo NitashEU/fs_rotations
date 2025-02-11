@@ -8,7 +8,8 @@
 ---@param skip_facing boolean Whether to skip facing requirement check
 ---@param skip_range boolean Whether to skip range requirement check
 ---@return game_object|nil target The target to cast the spell on if conditions are met, or nil if conditions not met
-function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets, range, spell_id, override_target, position_unit, skip_facing, skip_range)
+function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets, range, spell_id, override_target,
+                                                      position_unit, skip_facing, skip_range)
     -- Parameter validation
     if not hp_threshold or not min_targets or not range or not spell_id then
         return nil
@@ -24,12 +25,12 @@ function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets,
         if (override_target or FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, target, skip_facing, skip_range)) then
             local pos_unit = position_unit or override_target or target
             local targets_under_threshold = 0
-            
+
             for _, unit in ipairs(FS.modules.heal_engine.units) do
                 local health_data = FS.modules.heal_engine.current_health_values[unit]
-                if health_data 
-                   and health_data.health_percentage <= hp_threshold 
-                   and pos_unit:get_distance(unit) <= range then
+                if health_data
+                    and health_data.health_percentage <= hp_threshold
+                    and pos_unit:get_position():dist_to(unit:get_position()) <= range then
                     targets_under_threshold = targets_under_threshold + 1
                 end
             end

@@ -25,4 +25,10 @@ FS.paladin_holy.settings = {
     bov_cluster_weight = function() return FS.paladin_holy.menu.bov_weights.cluster:get() end,
     ---@type fun(): number
     bov_distance_weight = function() return FS.paladin_holy.menu.bov_weights.distance:get() end,
+
+    -- Holy Prism settings
+    ---@type fun(): number
+    hp_hp_threshold = function() return FS.paladin_holy.menu.hp_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    hp_min_targets = function() return FS.paladin_holy.menu.hp_min_targets_slider:get() end,
 }
