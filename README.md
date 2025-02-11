@@ -6,6 +6,17 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 FS Rotations is a Lua-based plugin for Project Sylvanas that provides automated combat rotation assistance. The system features advanced healing prediction, damage tracking, and priority-based decision making.
 
+## Project Structure
+
+The codebase is organized into the following components:
+
+- `main.lua` - Primary entry point and core execution logic
+- `header.lua` - Plugin configuration and initialization
+- `entry/` - Specialization-specific entry points and routing
+- `core/` - Core systems and shared functionality
+- `classes/` - Class-specific rotation implementations
+- `_api/` - Interface definitions for external integration
+
 ## Features
 
 - Real-time combat optimization
@@ -39,6 +50,14 @@ FS Rotations is a Lua-based plugin for Project Sylvanas that provides automated 
    - Adjust humanizer settings (min/max delays)
    - Configure specialization-specific thresholds
    - Set up keybinds
+
+## Development
+
+### Project Organization
+- Core systems and shared utilities are located in `core/`
+- Class-specific implementations are organized in `classes/`
+- Specialization entry points are managed in `entry/`
+- External interfaces are defined in `_api/`
 
 ## Requirements
 

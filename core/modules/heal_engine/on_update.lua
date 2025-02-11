@@ -31,7 +31,7 @@ function FS.modules.heal_engine.on_fast_update()
             if health_changed and last_value.health > total_health then
                 local damage = last_value.health - total_health
                 FS.modules.heal_engine.fight_total_damage[unit] = (FS.modules.heal_engine.fight_total_damage[unit] or 0) +
-                damage
+                    damage
 
                 -- Log fight-wide DPS if enabled and significant damage occurred
                 if FS.modules.heal_engine.settings.logging.dps.should_show_fight() and
@@ -58,7 +58,7 @@ function FS.modules.heal_engine.on_fast_update()
             local new_value = {
                 health = total_health,
                 max_health = unit:get_max_health(),
-                health_percentage = total_health / unit:get_max_health(),
+                health_percentage = current_health / unit:get_max_health(),
                 time = current_time
             }
 

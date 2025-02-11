@@ -11,7 +11,8 @@
 ---@param position_unit? game_object Optional unit to use as the center for cluster calculations (defaults to target)
 ---@return game_object|nil target The optimal target to cast on, or nil if conditions not met
 function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targets, max_targets, range, spell_id,
-                                                          prioritize_distance, skip_facing, skip_range, weights, position_unit)
+                                                          prioritize_distance, skip_facing, skip_range, weights,
+                                                          position_unit)
     -- Parameter validation
     if not hp_threshold or not min_targets or not max_targets or not range or not spell_id then
         return nil
@@ -67,24 +68,22 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
         if FS.api.spell_helper:is_spell_castable(spell_id, FS.variables.me, target, skip_facing, skip_range) then
             -- Use position_unit if provided, otherwise use target for cluster center
             local cluster_center = position_unit or target
-            
+
             -- Count potential affected targets and calculate cluster stats
-            local affected_count = 1 -- Include primary target
+            local affected_count = 0 -- Include primary target
             local total_health_deficit = 0
             local total_damage_score = calculate_damage_score(target)
             local lowest_health_pct = FS.modules.heal_engine.current_health_values[target].health_percentage
 
             for _, unit in ipairs(FS.modules.heal_engine.units) do
-                if unit ~= target then
-                    local health_data = FS.modules.heal_engine.current_health_values[unit]
-                    if health_data 
-                        and health_data.health_percentage <= hp_threshold 
-                        and cluster_center:get_position():dist_to(unit:get_position()) <= range then
-                        affected_count = affected_count + 1
-                        total_health_deficit = total_health_deficit + (1 - health_data.health_percentage)
-                        total_damage_score = total_damage_score + calculate_damage_score(unit)
-                        lowest_health_pct = math.min(lowest_health_pct, health_data.health_percentage)
-                    end
+                local health_data = FS.modules.heal_engine.current_health_values[unit]
+                if health_data
+                    and health_data.health_percentage <= hp_threshold
+                    and cluster_center:get_position():dist_to(unit:get_position()) <= range then
+                    affected_count = affected_count + 1
+                    total_health_deficit = total_health_deficit + (1 - health_data.health_percentage)
+                    total_damage_score = total_damage_score + calculate_damage_score(unit)
+                    lowest_health_pct = math.min(lowest_health_pct, health_data.health_percentage)
                 end
             end
 
@@ -97,10 +96,10 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
                 local distance_score = calculate_distance_score(target)
 
                 -- Combine scores with weights
-                local total_score = count_score * CLUSTER_WEIGHT + 
-                                  health_score * HEALTH_WEIGHT + 
-                                  damage_score * DAMAGE_WEIGHT + 
-                                  distance_score * DISTANCE_WEIGHT
+                local total_score = count_score * CLUSTER_WEIGHT +
+                    health_score * HEALTH_WEIGHT +
+                    damage_score * DAMAGE_WEIGHT +
+                    distance_score * DISTANCE_WEIGHT
 
                 if total_score > best_score then
                     best_score = total_score
