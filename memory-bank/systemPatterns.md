@@ -66,6 +66,7 @@
    - Error Handling → Recovery → Fallback
 2. Heal Engine → Target Selection → Spell Execution
    - Weight System → Target Scoring → Selection
+   - Enemy Target → Allied Healing → Position-based Calculations
 3. Settings → Configuration → Runtime Behavior
 4. Core API → Game Interface → Plugin Logic
 5. Humanizer → Delay Management → Action Execution
@@ -95,6 +96,8 @@
    - Normalized scoring calculations
    - Optional component weighting
    - Linear distance scoring model
+   - Enemy-to-ally healing patterns
+   - Position-based range calculations
 
 ## Core API Integration
 1. Buff Management
@@ -110,6 +113,8 @@
    - Unit validation
    - Combat range checks
    - Distance-based scoring
+   - Enemy target integration
+   - Position-based healing
 4. Utility Systems
    - Spell helpers
    - Unit helpers
@@ -144,3 +149,10 @@
    - Optional component weighting
    - Default weight fallbacks
    - Linear distance scoring
+
+6. Target Selection Patterns
+   - Direct target selection
+   - Enemy-based allied healing
+   - Position-based calculations
+   - Flexible range validation
+   - Spell queueing integration

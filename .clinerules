@@ -19,3 +19,4 @@
 18. Implement type-safe interfaces for all modules
 19. Pass weights as parameters for flexible targeting
 20. Normalize weights to ensure consistent scoring
+21. Use position-based calculations for area targeting
