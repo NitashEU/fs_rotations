@@ -7,9 +7,10 @@
 ---@param prioritize_distance boolean Whether to prioritize targets closer to the player
 ---@param skip_facing boolean Whether to skip facing requirement check
 ---@param skip_range boolean Whether to skip range requirement check
+---@param weights? {health: number, damage: number, cluster: number, distance: number} Optional weights for scoring (defaults to standard weights if not provided)
 ---@return game_object|nil target The optimal target to cast on, or nil if conditions not met
 function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targets, max_targets, range, spell_id,
-                                                          prioritize_distance, skip_facing, skip_range)
+                                                          prioritize_distance, skip_facing, skip_range, weights)
     -- Parameter validation
     if not hp_threshold or not min_targets or not max_targets or not range or not spell_id then
         return nil
@@ -18,19 +19,35 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     local best_target = nil
     local best_score = 0
 
-    -- Score calculation weights
-    local HEALTH_WEIGHT = 0.4
-    local DAMAGE_WEIGHT = 0.3
-    local CLUSTER_WEIGHT = 0.2
-    local DISTANCE_WEIGHT = 0.1
+    -- Use provided weights or defaults
+    local HEALTH_WEIGHT = (weights and weights.health) or 0.4
+    local DAMAGE_WEIGHT = (weights and weights.damage) or 0.3
+    local CLUSTER_WEIGHT = (weights and weights.cluster) or 0.2
+    local DISTANCE_WEIGHT = (weights and weights.distance) or 0.1
+
+    -- Normalize weights to ensure they sum to 1
+    local total = HEALTH_WEIGHT + DAMAGE_WEIGHT + CLUSTER_WEIGHT + DISTANCE_WEIGHT
+    if total > 0 then
+        HEALTH_WEIGHT = HEALTH_WEIGHT / total
+        DAMAGE_WEIGHT = DAMAGE_WEIGHT / total
+        CLUSTER_WEIGHT = CLUSTER_WEIGHT / total
+        DISTANCE_WEIGHT = DISTANCE_WEIGHT / total
+    end
+
+    -- Find highest damage taken across all units for normalization
+    local highest_damage = 0
+    for _, unit in ipairs(FS.modules.heal_engine.units) do
+        local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
+        highest_damage = math.max(highest_damage, damage)
+    end
 
     -- Helper function to calculate damage score for a unit
     ---@param unit game_object
     ---@return number
     local function calculate_damage_score(unit)
         local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
-        -- Normalize damage score (assuming 50k damage/sec as max for normalization)
-        return math.min(1, damage / 50000)
+        -- Normalize damage score based on highest damage taken
+        return highest_damage > 0 and (damage / highest_damage) or 0
     end
 
     -- Helper function to calculate distance score
@@ -40,8 +57,8 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
         if not prioritize_distance then return 1 end
 
         local distance = FS.variables.me:get_position():dist_to(unit:get_position())
-        -- Score decreases linearly with distance
-        return math.max(0.1, 1.0 - (distance / range))
+        -- Score increases linearly with distance (farther = higher score)
+        return math.min(1.0, distance / range)
     end
 
     ---@class NearbyTarget
