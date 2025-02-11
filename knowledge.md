@@ -1,7 +1,167 @@
 # Project Sylvanas Plugin Knowledge
 
-## Project Overview
+## Overview
 A plugin for Project Sylvanas WoW scripting platform providing Holy Paladin rotation and healing support.
+
+## Key Interfaces
+
+### Plugin Entry
+```lua
+---@class plugin_entry
+---@field public init fun(): boolean
+---@field public on_update fun(): nil
+---@field public on_render fun(): nil
+---@field public on_render_menu fun(): nil
+---@field public on_render_control_panel fun(control_panel: table): table
+```
+
+### Core Systems
+```lua
+---@class core_systems
+---@field public register_on_update_callback fun(callback: function): nil
+---@field public register_on_render_callback fun(callback: function): nil
+---@field public register_on_render_menu_callback fun(callback: function): nil
+---@field public register_on_render_control_panel_callback fun(callback: function): nil
+```
+
+## Coding Guidelines
+
+### File Structure
+- Use consistent file naming: lowercase with underscores
+- Group related functionality in subdirectories
+- Keep files focused and single-purpose
+- Place interfaces in dedicated files
+- Maintain clear separation between modules
+
+### Code Organization
+- Place requires at top of file
+- Group related functions together
+- Order functions by dependency (callers before callees)
+- Keep file size manageable (< 300 lines preferred)
+- Use clear section comments for logical groupings
+
+### Naming Conventions
+- Functions: verb_noun format (e.g., get_health, update_state)
+- Variables: noun_descriptor format (e.g., health_value, buff_duration)
+- Constants: UPPER_CASE
+- Use descriptive names that indicate purpose
+- Prefix private functions with underscore
+
+### Type Annotations
+- Always use ---@type annotations for variables
+- Document function parameters and returns
+- Define interfaces for complex types
+- Use consistent type naming (PascalCase)
+- Include null/optional annotations where applicable
+
+### Function Design
+- Single responsibility principle
+- Early returns for guard clauses
+- Validate parameters at function start
+- Return consistent types
+- Document side effects in comments
+
+### State Management
+- Minimize global state
+- Use getter functions for computed values
+- Cache frequently accessed values
+- Clear state in reset functions
+- Document state dependencies
+
+### Error Handling
+- Check parameters validity
+- Handle edge cases explicitly
+- Use consistent error patterns
+- Log meaningful error messages
+- Fail fast and visibly
+
+### Performance
+- Cache computed values
+- Minimize table creation in hot paths
+- Use appropriate update frequencies
+- Clean up resources properly
+- Profile critical sections
+
+### Comments and Documentation
+- Document non-obvious logic
+- Explain complex algorithms
+- Include usage examples for APIs
+- Keep comments current with code
+- Use consistent comment style
+
+### Testing and Debugging
+- Add debug logging for complex logic
+- Make code testable by design
+- Include validation checks
+- Support debug visualization
+- Add performance monitoring
+
+## Module Guidelines
+
+### Settings
+- Use consistent getter pattern
+- Normalize value ranges
+- Group related settings
+- Include validation
+- Document default values
+
+### Menu System
+- Follow tree structure pattern
+- Group related controls
+- Use consistent naming
+- Include tooltips
+- Support keyboard navigation
+
+### Rotation Logic
+- Separate spell logic from rotation
+- Use priority system
+- Handle edge cases
+- Support multiple modes
+- Include fallbacks
+
+### Spell Implementation
+- Validate requirements
+- Check resources
+- Handle cooldowns
+- Support cancellation
+- Include range checks
+
+## Best Practices
+
+### Code Quality
+- Keep functions small and focused
+- Avoid duplicate code
+- Use meaningful names
+- Document complex logic
+- Follow consistent style
+
+### Resource Management
+- Clean up in reset functions
+- Cache expensive operations
+- Release resources properly
+- Monitor memory usage
+- Handle combat transitions
+
+### Performance Optimization
+- Profile before optimizing
+- Cache frequent calculations
+- Use appropriate data structures
+- Batch operations when possible
+- Monitor frame times
+
+### Maintainability
+- Write self-documenting code
+- Keep dependencies clear
+- Make changes reversible
+- Support debugging
+- Document assumptions
+
+### Security
+- Validate all inputs
+- Handle edge cases
+- Protect against exploits
+- Log security events
+- Follow safe patterns
 
 ## Plugin Architecture
 
@@ -157,24 +317,6 @@ A plugin for Project Sylvanas WoW scripting platform providing Holy Paladin rota
 - Talent-based menu options
 - Control panel integration for quick toggles
 
-## Best Practices
-- Use heal engine's target selection functions
-- Keep spell implementations minimal and focused
-- Follow consistent menu structure patterns
-- Normalize weights in scoring systems
-- Use tree nodes for organized settings
-- Queue all spells through Sylvanas spell queue
-- Centralize IDs in dedicated files
-- Use debug logging for troubleshooting
-- Implement proper cleanup in module resets
-- Cache frequently accessed values
-- Use appropriate update frequencies
-- Use centralized ID definitions
-- Implement getters for dynamic values
-- Structure variables by purpose
-- Enable debug logging when needed
-- Clean up resources in combat transitions
-
 ## Technical Notes
 - Plugin must implement required interfaces
 - Modules handle their own state and updates
@@ -279,3 +421,96 @@ A plugin for Project Sylvanas WoW scripting platform providing Holy Paladin rota
 - Geometric calculations for targeting
 - Multiple specialized target selection algorithms
 - Comprehensive heal engine configuration options
+
+## Namespace Guidelines
+
+### Global Namespace
+```lua
+---@class FS
+---@field public spec_config SpecConfig
+---@field public loaded_modules ModuleConfig[]
+---@field public entry_helper entry_helper
+---@field public modules table<string, ModuleConfig>
+---@field public variables core_variables
+---@field public settings core_settings
+---@field public humanizer humanizer
+---@field public menu menu_system
+FS = {}
+```
+
+### Namespace Structure
+- All code lives under global FS namespace
+- Modules use dot notation: FS.module_name
+- Specs use nested paths: FS.class_name.spec_name
+- Settings follow module path: FS.module_name.settings
+- Variables follow module path: FS.module_name.variables
+
+### Namespace Best Practices
+- Initialize module tables before requiring submodules
+- Use consistent path structure across modules
+- Keep namespace hierarchy shallow (max 3-4 levels)
+- Document namespace structure in module headers
+- Follow consistent initialization pattern:
+```lua
+-- Initialize namespace
+FS.module_name = {}
+
+-- Require dependencies
+require("path/to/dependencies")
+
+-- Initialize submodules
+FS.module_name.submodule = {}
+```
+
+### Module Organization
+- Group related functionality under single namespace
+- Use submodules for logical separation
+- Keep interface modules separate from implementation
+- Follow consistent file structure:
+```lua
+-- File: module_name/index.lua
+FS.module_name = {}
+
+require("module_name/settings")
+require("module_name/variables")
+require("module_name/logic/index")
+```
+
+### Namespace Access Patterns
+- Use local references for frequently accessed paths
+- Cache namespace lookups in hot paths
+- Keep references up to date with resets
+- Example pattern:
+```lua
+---@type module_settings
+local settings = FS.module_name.settings
+---@type module_variables 
+local variables = FS.module_name.variables
+
+local function update()
+    if not settings.is_enabled() then
+        return
+    end
+    -- Use cached references
+end
+```
+
+### Initialization Order
+1. Core systems (FS.core)
+2. Required modules (FS.modules)
+3. Spec modules (FS.spec_config)
+4. Callbacks and hooks
+
+### Cleanup Patterns
+- Reset module state on combat end
+- Clear cached references when needed
+- Handle module unload properly
+- Follow consistent cleanup pattern:
+```lua
+function FS.module_name.reset()
+    -- Clear state
+    FS.module_name.state = {}
+    -- Reset cached values
+    FS.module_name.cache = {}
+end
+```
