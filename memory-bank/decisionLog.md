@@ -1,51 +1,47 @@
 # Decision Log
 
-## [2024-02-10] - Heal Engine Target Selection Design
+## [11.2.2025] - Multi-Target Heal Selection Implementation
 
-**Context:** Need to implement target selection functionality in the heal engine to support healing spells based on health thresholds and spell castability.
+**Context:**
+Need to implement a new target selector for spells like Beacon of Virtue that require selecting a primary target based on their proximity to other potential targets, considering both health and damage metrics.
 
-**Decision:** Design a get_single_target function with the following specifications:
-- Parameters:
-  - hp_threshold: Maximum health percentage to consider a target for healing
-  - spell_id: ID of the healing spell to check castability
-- Returns: Target with maximum missing health that meets the criteria
-- Implementation details:
-  - Uses heal_engine.units for unit pool
-  - Uses heal_engine.current_health_values for health data
-  - Uses spell_helper.is_spell_castable for spell checks
-  - Filters by HP threshold
-  - Returns unit with highest missing health amount
+**Decision:**
+Create a new generic target selector that will:
 
-**Rationale:** 
-- This design provides a flexible foundation for target selection
-- Integrates with existing heal_engine data structures
-- Considers both health state and spell castability
-- Returns the most efficient healing target (highest missing health)
-
-**Implementation:**
-- Function will be added to heal_engine module
-- Will be implemented in Code mode following established Lua conventions
-
-## [2024-02-10] - Holy Shock Implementation Design
-
-**Context:** Need to implement Holy Shock (ID: 20473) as the first healing spell for Holy Paladin, with configurable health threshold.
-
-**Decision:** Design Holy Shock implementation with the following specifications:
-- Spell ID: 20473
-- Default threshold: 0.9 (90%)
-- Configurable through menu system
-- Implementation details:
-  - Create dedicated spell module in classes/paladin/holy/logic/spells/
-  - Integrate with heal_engine's get_single_target for target selection
-  - Add menu configuration for threshold customization
-  - Follow functional programming paradigm as per project guidelines
+1. Consider both health missing and DPS taken as primary metrics
+2. Support distance-based target prioritization
+3. Validate minimum and maximum target requirements
+4. Check spell castability and range
+5. Optimize for affecting maximum number of valid targets
 
 **Rationale:**
-- Holy Shock is a core healing spell for Holy Paladin
-- Configurable threshold provides flexibility for different healing scenarios
-- Integration with heal_engine ensures consistent target selection behavior
-- Modular design allows for easy maintenance and future enhancements
+
+- Multiple spells will need this type of target selection
+- Target selection should be spell-agnostic for reusability
+- Distance-based prioritization allows for tactical positioning
+- Must ensure minimum target requirements are met for spell efficiency
+- Should maximize multi-target potential
 
 **Implementation:**
-- Will switch to Code mode for implementation following project's Lua conventions
-- Will create necessary files and integrate with existing systems
+
+1. Create new target selector: get_clustered_heal_target.lua
+   - Name reflects functionality rather than specific spell
+   - Indicates its purpose for healing targets in proximity
+2. Key Parameters:
+   - threshold: Minimum health/damage threshold
+   - min_targets: Minimum targets required
+   - max_targets: Maximum targets affected
+   - range: Maximum range for target consideration
+   - prioritize_distance: Boolean to prioritize targets closer to player
+3. Integration Points:
+   - Health prediction system
+   - Damage tracking metrics
+   - Distance calculation system
+   - Spell castability validation
+
+**Technical Considerations:**
+
+- Location: core/modules/heal_engine/target_selections/get_clustered_heal_target.lua
+- Will be used by spells like Beacon of Virtue initially
+- Extensible for future spells with similar targeting needs
+- Distance prioritization adds tactical depth to healing decisions
