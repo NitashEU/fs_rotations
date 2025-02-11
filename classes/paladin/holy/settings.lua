@@ -7,4 +7,12 @@ FS.paladin_holy.settings = {
     ac_hp_threshold = function() return FS.paladin_holy.menu.ac_hp_threshold_slider:get() / 100 end,
     ---@type fun(): number
     ac_min_targets = function() return FS.paladin_holy.menu.ac_min_targets_slider:get() end,
+
+    -- Beacon of Virtue settings
+    ---@type fun(): number
+    bov_hp_threshold = function() return FS.paladin_holy.menu.bov_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    bov_min_targets = function() return FS.paladin_holy.menu.bov_min_targets_slider:get() end,
+    ---@type fun(): boolean
+    bov_prioritize_distance = function() return FS.paladin_holy.menu.bov_prioritize_distance:get_state() end,
 }
