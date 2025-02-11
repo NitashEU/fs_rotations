@@ -53,5 +53,6 @@ require("core/modules/heal_engine/on_update")
 return {
     on_update = FS.modules.heal_engine.on_update,
     on_fast_update = FS.modules.heal_engine.on_fast_update,
-    on_render_menu = FS.modules.heal_engine.menu.on_render_menu
+    on_render_menu = FS.modules.heal_engine.menu.on_render_menu,
+    on_render = function() end,
 }
