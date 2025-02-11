@@ -1,83 +1,118 @@
-# FS Rotations - Holy Paladin Module
+# Product Context: Holy Paladin Rotation Plugin
 
-## Project Overview
-A World of Warcraft rotation script system focused on Holy Paladin specialization, providing automated combat rotation and decision-making capabilities. The system implements sophisticated healing prediction, damage tracking, and priority-based decision making.
+## Purpose
+This plugin automates Holy Paladin healing and damage rotations in World of Warcraft, enabling players to focus on high-level decision making while the plugin handles optimal spell selection and targeting.
 
-## Project Structure
-- Core Framework
-  - API Integration
-  - Menu System
-  - Settings Management
-  - Variable Tracking
-  - Humanizer System
-  - Heal Engine Module
+## Problems Solved
+1. Complex healing target prioritization
+2. Dynamic spell selection based on situation
+3. Quick reaction to incoming damage
+4. Efficient resource management
+5. Talent build optimization
+6. Plugin initialization and validation
+7. Natural-feeling rotation execution
+8. Latency compensation
+9. Consistent action timing
 
-- Holy Paladin Module
-  - Rotation Logic
-  - Spell Management
-  - Combat Decision Making
-  - UI Integration
-  - Settings Configuration
+## Core Functionality
+1. Entry System
+   - Plugin lifecycle management
+   - Dynamic module loading
+   - Spec validation
+   - Error handling
+   - Module dependency resolution
 
-## Core Components
-- Buff/Debuff Management
-- Combat Forecasting
-- Health Prediction
-- Spell Queue System
-- Target Selection
-- Plugin Support
+2. Healing Engine
+   - Smart target selection
+   - Damage prediction
+   - Group healing optimization
+   - Tank priority management
+   - Buff/Aura tracking
 
-## Technical Stack
-- Language: Lua
-- Framework: Custom WoW Integration
-- Core Systems: Menu, Settings, Variables
-- Specialized Modules: Heal Engine, Combat Logic
-
-## Memory Bank Structure
-- activeContext.md: Tracks current development session state
-- productContext.md: This file - Project overview and structure
-- progress.md: Development progress tracking
-- decisionLog.md: Key technical and architectural decisions
-- systemPatterns.md: Identified code patterns and conventions
-
-## Project Goals
-1. Provide efficient and reliable Holy Paladin rotation automation
-2. Maintain modular and extensible architecture
-3. Support robust healing prediction and decision making
-4. Enable customizable user configuration
-5. Ensure smooth integration with WoW client
-6. Optimize performance and resource usage
-7. Maintain clear documentation and patterns
-
-## Technical Requirements
-1. Real-time performance optimization
-   - Efficient health tracking
-   - Optimized damage prediction
-   - Resource-aware processing
-
-2. Accurate spell prediction and queuing
-   - Priority-based decision making
-   - Smart cooldown management
-   - Context-aware casting
-
-3. Reliable buff/debuff tracking
-   - Efficient state management
-   - Accurate duration tracking
-   - Priority-based processing
-
-4. Efficient memory management
-   - Optimized data structures
-   - Clear cleanup patterns
+3. Rotation Logic
+   - Healing priority system
+   - Damage dealing capabilities
+   - Cooldown management
    - Resource optimization
+   - Humanized execution timing
 
-5. Responsive user interface
-   - Clear control panel
-   - Intuitive configuration
-   - Real-time feedback
+4. Configuration
+   - Customizable settings
+   - Build-specific options
+   - Performance tuning
+   - Runtime validation
+   - Humanizer customization
+     * Base delay settings
+     * Jitter controls
+     * Latency adaptation
 
-## Implementation Focus
-1. Heal Engine Optimization
-2. Rotation Logic Refinement
-3. Pattern-based Development
-4. Documentation Maintenance
-5. Performance Monitoring
+5. Core Systems
+   - Buff Management
+     * Active buff tracking
+     * Aura monitoring
+     * Duration management
+   - Action Timing
+     * Dynamic delay calculation
+     * Latency compensation
+     * Natural randomization
+   - State Management
+     * Resource tracking
+     * Target validation
+     * Player state monitoring
+
+## User Experience Goals
+1. Intuitive Settings Interface
+   - Type-safe menu elements
+   - Hierarchical organization
+   - Clear categorization
+   - Consistent naming
+   - Visual feedback
+
+2. Natural Gameplay Feel
+   - Humanized action timing
+   - Latency-aware adjustments
+   - Smooth ability execution
+   - Predictable behavior
+
+3. Performance and Reliability
+   - Efficient resource usage
+   - Stable execution
+   - Error resilience
+   - Consistent behavior
+
+4. Adaptability
+   - Customizable settings
+   - Flexible configuration
+   - Build adaptation
+   - Playstyle accommodation
+
+5. Feedback and Monitoring
+   - Clear action feedback
+   - State visualization
+   - Error reporting
+   - Performance metrics
+
+6. Quality of Life
+   - Easy troubleshooting
+   - Smooth initialization
+   - Runtime reconfiguration
+   - Intuitive controls
+
+## Integration Points
+1. Game Systems
+   - Buff/debuff tracking
+   - Resource management
+   - Spell queueing
+   - Unit targeting
+
+2. User Interface
+   - Settings menu
+   - Control panel
+   - Keybind management
+   - Visual feedback
+
+3. Performance Optimization
+   - Efficient updates
+   - Memory management
+   - CPU usage optimization
+   - Latency handling

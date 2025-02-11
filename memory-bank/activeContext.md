@@ -1,74 +1,59 @@
-# Active Context
+# Active Context: Holy Paladin Rotation Plugin
 
 ## Current Focus
+1. Heal engine implementation is primary focus
+   - Target selection logic optimization in progress
+   - Clustered healing calculations being refined
+   - Performance optimization ongoing
+   - Health prediction system integration
+2. Core systems implementation stable
+3. Rotation logic implementation progressing
 
-Implementing clustered heal target selection system
+## Recent Changes
+1. Heal engine development advancing
+   - Target selection algorithms implemented
+   - Clustered healing logic developed
+   - Health prediction integration started
+   - Performance optimization initiated
+2. Documentation maintained and updated
+3. Core systems stability verified
+4. Module integration progressing
 
-### Requirements
+## Next Steps
+1. Complete heal engine optimization
+   - Finalize target selection algorithms
+   - Implement advanced healing strategies
+   - Complete health prediction integration
+   - Optimize performance metrics
+2. Enhance rotation logic modules
+   - Implement remaining spells
+   - Add talent-based variations
+   - Optimize priority system
+3. Expand configuration interface
+4. Implement testing framework
 
-- Create new generic target selector for clustered healing
-- Balance multiple metrics:
-  - Health missing
-  - DPS taken
-  - Number of nearby targets
-  - Distance to player (optional priority)
-- Support flexible configuration:
-  - Threshold values
-  - Target count requirements
-  - Range limitations
-  - Distance prioritization toggle
+## Active Decisions
+1. Heal engine optimization strategy
+   - Focus on performance-critical paths
+   - Optimize target selection algorithms
+   - Enhance prediction accuracy
+   - Balance CPU usage with effectiveness
+2. Module organization maintained
+   - Separate concerns (IDs, logic, settings, UI)
+   - Three-tiered rotation system
+   - Type-safe implementations
+3. Configuration management system
+   - Type-safe settings
+   - Runtime validation
+4. Documentation standards
+   - Comprehensive type annotations
+   - Clear module interfaces
 
-### Technical Scope
-
-- Location: core/modules/heal_engine/target_selections/
-- Key Files:
-  - New: get_clustered_heal_target.lua
-  - Reference: get_group_heal_target.lua
-  - Reference: get_tank_damage_target.lua
-
-### Implementation Strategy
-
-1. Core Components:
-
-   - Parameter validation system
-   - Target filtering logic
-   - Metric calculation system
-   - Result validation
-
-2. Scoring System:
-
-   - Health score (40% weight)
-   - Damage score (30% weight)
-   - Nearby targets score (20% weight)
-   - Distance score (10% weight when enabled)
-
-3. Integration Points:
-   - Health prediction system
-   - Damage tracking metrics
-   - Distance calculation
-   - Spell castability validation
-
-### Next Steps
-
-1. Create get_clustered_heal_target.lua
-2. Implement core selection logic
-3. Add parameter validation
-4. Integrate with heal engine
-5. Test with various scenarios:
-   - Different group sizes
-   - Various positioning setups
-   - With/without distance priority
-
-### Current Status
-
-- Architectural decisions documented
-- Implementation patterns defined
-- Ready for code implementation
-- Initial use case: Beacon of Virtue
-- Designed for reuse with similar spells
-
-### Open Questions
-
-- Should weight distributions be configurable per spell?
-- Do we need additional metrics for specific scenarios?
-- Should we add movement prediction for better clustering?
+## Current Considerations
+1. Target selection algorithm efficiency
+2. Health prediction accuracy vs performance
+3. Clustered healing optimization
+4. Memory usage optimization
+5. CPU performance impact
+6. Error handling robustness
+7. Talent build adaptations
