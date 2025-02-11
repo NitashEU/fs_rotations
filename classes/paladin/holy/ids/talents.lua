@@ -26,4 +26,5 @@ FS.paladin_holy.talents = {
     shining_righteousness = core.spell_book.is_spell_learned(414445),
     tyrs_boundless_justice = core.spell_book.is_spell_learned(200652),
     unbreakable_spirit = core.spell_book.is_spell_learned(11415),
+    breaking_dawn = core.spell_book.is_spell_learned(387879),
 }

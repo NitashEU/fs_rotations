@@ -11,6 +11,11 @@ FS.paladin_holy.menu = {
     ac_hp_threshold_slider = FS.menu.slider_int(1, 100, 80, tag .. "ac_hp_threshold_slider"),
     ac_min_targets_slider = FS.menu.slider_int(1, 10, 3, tag .. "ac_min_targets_slider"),
 
+    -- Word of Glory settings
+    wog_header = FS.menu.header(),
+    wog_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "wog_hp_threshold_slider"),
+    wog_tank_hp_threshold_slider = FS.menu.slider_int(1, 100, 90, tag .. "wog_tank_hp_threshold_slider"),
+
     -- Divine Toll settings
     dt_header = FS.menu.header(),
     dt_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "dt_hp_threshold_slider"),
@@ -42,6 +47,11 @@ FS.paladin_holy.menu = {
     hp_header = FS.menu.header(),
     hp_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "hp_hp_threshold_slider"),
     hp_min_targets_slider = FS.menu.slider_int(1, 5, 3, tag .. "hp_min_targets_slider"),
+
+    -- Light of Dawn settings
+    lod_header = FS.menu.header(),
+    lod_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "lod_hp_threshold_slider"),
+    lod_min_targets_slider = FS.menu.slider_int(1, 6, 3, tag .. "lod_min_targets_slider"),
 }
 
 ---@type on_render_menu
@@ -51,6 +61,12 @@ function FS.paladin_holy.menu.on_render_menu()
         FS.paladin_holy.menu.hs_hp_threshold_slider:render("HS HP", "HP % to cast Holy Shock at.")
         FS.paladin_holy.menu.ac_hp_threshold_slider:render("AC HP", "HP % threshold for Avenging Crusader healing")
         FS.paladin_holy.menu.ac_min_targets_slider:render("AC Targets", "Minimum targets for Avenging Crusader healing")
+
+        -- Word of Glory settings
+        FS.paladin_holy.menu.wog_header:render("Word of Glory Settings", color.white())
+        FS.paladin_holy.menu.wog_hp_threshold_slider:render("WoG HP", "HP % threshold for Word of Glory healing")
+        FS.paladin_holy.menu.wog_tank_hp_threshold_slider:render("WoG Tank HP",
+            "HP % threshold for Word of Glory tank healing")
 
         -- Divine Toll settings
         if FS.paladin_holy.talents.divine_toll then
@@ -101,6 +117,11 @@ function FS.paladin_holy.menu.on_render_menu()
             FS.paladin_holy.menu.hp_min_targets_slider:render("HP Min Targets",
                 "Minimum targets for Holy Prism (cast on enemy)")
         end
+
+        -- Light of Dawn settings
+        FS.paladin_holy.menu.lod_header:render("Light of Dawn Settings", color.white())
+        FS.paladin_holy.menu.lod_hp_threshold_slider:render("LoD HP", "HP % threshold for Light of Dawn healing")
+        FS.paladin_holy.menu.lod_min_targets_slider:render("LoD Min Targets", "Minimum targets for Light of Dawn")
     end)
 end
 
