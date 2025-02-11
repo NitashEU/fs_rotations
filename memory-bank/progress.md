@@ -34,15 +34,20 @@
    - Basic spell implementations
    - Type-safe interfaces
    - Settings framework
-   - Heal engine integration progressing
-     * Target selection framework implemented
-     * Clustered healing logic in place
+   - Heal engine integration advancing
+     * Target selection framework complete
+     * Enemy clustered heal target selection implemented
+     * Clustered healing logic refined
      * Health prediction integration started
+   - Holy Prism implementation complete
+     * Enemy target selection
+     * Allied healing radiation
+     * Settings and UI integration
+     * Rotation priority integration
 
 ## What's Left
 1. Core Systems
-   - Optimize heal engine implementation
-     * Refine target selection algorithms
+   - Further heal engine optimization
      * Performance optimization
      * Advanced healing strategies
      * Complete health prediction integration
@@ -51,7 +56,7 @@
    - Custom combat forecast implementation
 
 2. Features
-   - Complete healing rotations
+   - Complete remaining healing rotations
    - Optimize damage rotations
    - Full talent integration
    - Advanced configuration options
@@ -74,7 +79,7 @@
    - Settings: Complete
    - Variables: Complete
    - Buff management: Complete
-   - Target selection: Advanced Implementation
+   - Target selection: Complete
    - Combat systems: In Progress
    - Holy Paladin spec: Implementation Progressing
 
@@ -101,7 +106,6 @@
    - Unit helper only partially used
 
 2. Performance Considerations
-   - Target selection optimization needed
    - Health prediction efficiency
    - Rotation system performance
    - Memory usage optimization required
@@ -115,14 +119,13 @@
 ## Next Steps
 1. Core Systems
    - Optimize heal engine
-     * Refine target selection
      * Enhance prediction accuracy
      * Improve performance
    - Complete custom prediction systems
    - Enhance error handling
 
 2. Features
-   - Complete rotation systems
+   - Complete remaining rotations
    - Full talent integration
    - Expand configuration options
    - Add monitoring capabilities
