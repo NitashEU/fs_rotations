@@ -7,7 +7,9 @@ local name = "Holy Paladin"
 FS.paladin_holy.menu = {
     main_tree = FS.menu.tree_node(),
     enable_toggle = FS.menu.keybind(999, false, tag .. "enable_toggle"),
-    hs_hp_threshold_slider = FS.menu.slider_int(1, 100, 90, "hs_hp_threshold_slider"),
+    hs_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "hs_hp_threshold_slider"),
+    hs_last_charge_hp_threshold_slider = FS.menu.slider_int(1, 100, 80, tag .. "hs_last_charge_hp_threshold_slider"),
+    hs_rising_sun_hp_threshold_slider = FS.menu.slider_int(1, 100, 90, tag .. "hs_rising_sun_hp_threshold_slider"),
     ac_hp_threshold_slider = FS.menu.slider_int(1, 100, 80, tag .. "ac_hp_threshold_slider"),
     ac_min_targets_slider = FS.menu.slider_int(1, 10, 3, tag .. "ac_min_targets_slider"),
 
@@ -59,6 +61,8 @@ function FS.paladin_holy.menu.on_render_menu()
     FS.paladin_holy.menu.main_tree:render("Holy Paladin", function()
         FS.paladin_holy.menu.enable_toggle:render("Enable Script")
         FS.paladin_holy.menu.hs_hp_threshold_slider:render("HS HP", "HP % to cast Holy Shock at.")
+        FS.paladin_holy.menu.hs_last_charge_hp_threshold_slider:render("HS Last Charge HP", "HP % to cast Holy Shock when only 1 charge remains")
+        FS.paladin_holy.menu.hs_rising_sun_hp_threshold_slider:render("HS Rising Sun HP", "HP % to cast Holy Shock when Rising Sun buff is active")
         FS.paladin_holy.menu.ac_hp_threshold_slider:render("AC HP", "HP % threshold for Avenging Crusader healing")
         FS.paladin_holy.menu.ac_min_targets_slider:render("AC Targets", "Minimum targets for Avenging Crusader healing")
 

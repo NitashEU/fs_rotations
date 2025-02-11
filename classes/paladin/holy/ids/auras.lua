@@ -3,4 +3,5 @@ FS.paladin_holy.auras = {
     awakening_max = 414193,
     blessed_assurance = 433019,
     holy_armament_override = 432478,
+    rising_sunlight = 414204,
 }
