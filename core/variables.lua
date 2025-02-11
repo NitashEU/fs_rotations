@@ -34,6 +34,18 @@ function FS.variables.buff_remains(spell_id)
     return buff_manager:get_buff_data(FS.variables.me, { spell_id }).remaining
 end
 
+---@param spell_id number
+---@return boolean
+function FS.variables.aura_up(spell_id)
+    return buff_manager:get_aura_data(FS.variables.me, { spell_id }).is_active
+end
+
+---@param spell_id number
+---@return number
+function FS.variables.aura_remains(spell_id)
+    return buff_manager:get_aura_data(FS.variables.me, { spell_id }).remaining
+end
+
 ---@param power_type number
 ---@return number
 function FS.variables.resource(power_type)
