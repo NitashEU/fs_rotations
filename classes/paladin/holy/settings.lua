@@ -21,8 +21,6 @@ FS.paladin_holy.settings = {
     dt_damage_weight = function() return FS.paladin_holy.menu.dt_weights.damage:get() end,
     ---@type fun(): number
     dt_cluster_weight = function() return FS.paladin_holy.menu.dt_weights.cluster:get() end,
-    ---@type fun(): number
-    dt_critical_weight = function() return FS.paladin_holy.menu.dt_weights.critical:get() end,
 
     -- Beacon of Virtue settings
     ---@type fun(): number

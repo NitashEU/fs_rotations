@@ -15,21 +15,20 @@ FS.paladin_holy.menu = {
     dt_header = FS.menu.header(),
     dt_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "dt_hp_threshold_slider"),
     dt_min_targets_slider = FS.menu.slider_int(1, 5, 3, tag .. "dt_min_targets_slider"),
+    dt_weights_tree = FS.menu.tree_node(),
 
     -- Divine Toll weights
     dt_weights = {
         health = FS.menu.slider_float(0.1, 1.0, 0.4, tag .. "dt_weight_health"),
         damage = FS.menu.slider_float(0.1, 1.0, 0.3, tag .. "dt_weight_damage"),
-        cluster = FS.menu.slider_float(0.1, 1.0, 0.2, tag .. "dt_weight_cluster"),
-        critical = FS.menu.slider_float(0.1, 1.0, 0.1, tag .. "dt_weight_critical"),
-        distance = FS.menu.slider_float(0.1, 1.0, 0.1, tag .. "dt_weight_distance"),
+        cluster = FS.menu.slider_float(0.1, 1.0, 0.2, tag .. "dt_weight_cluster")
     },
 
     -- Beacon of Virtue settings
     bov_header = FS.menu.header(),
     bov_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "bov_hp_threshold_slider"),
     bov_min_targets_slider = FS.menu.slider_int(1, 5, 3, tag .. "bov_min_targets_slider"),
-
+    bov_weights_tree = FS.menu.tree_node(),
     -- Beacon of Virtue weights
     bov_weights = {
         health = FS.menu.slider_float(0.1, 1.0, 0.4, tag .. "bov_weight_health"),
@@ -60,7 +59,7 @@ function FS.paladin_holy.menu.on_render_menu()
             FS.paladin_holy.menu.dt_min_targets_slider:render("DT Min Targets", "Minimum targets for Divine Toll")
 
             -- Divine Toll weights
-            FS.menu.tree_node():render("Target Selection Weights", function()
+            FS.paladin_holy.menu.dt_weights_tree:render("DT Weights", function()
                 FS.paladin_holy.menu.dt_weights.health:render("Health Weight",
                     "Weight for target's health in scoring (higher = more important)")
                 FS.paladin_holy.menu.dt_weights.damage:render("Damage Weight",
@@ -79,15 +78,13 @@ function FS.paladin_holy.menu.on_render_menu()
             FS.paladin_holy.menu.bov_min_targets_slider:render("BoV Min Targets", "Minimum targets for Beacon of Virtue")
 
             -- Beacon of Virtue weights
-            FS.menu.tree_node():render("Target Selection Weights", function()
+            FS.paladin_holy.menu.bov_weights_tree:render("BoV Weights", function()
                 FS.paladin_holy.menu.bov_weights.health:render("Health Weight",
                     "Weight for target's health in scoring (higher = more important)")
                 FS.paladin_holy.menu.bov_weights.damage:render("Damage Weight",
                     "Weight for target's incoming damage in scoring (higher = more important)")
                 FS.paladin_holy.menu.bov_weights.cluster:render("Cluster Weight",
                     "Weight for number of nearby targets in scoring (higher = more important)")
-                FS.paladin_holy.menu.bov_weights.use_distance:render("Use Distance Weighting",
-                    "Enable distance-based target weighting")
 
                 -- Only show distance weight if distance weighting is enabled
                 if FS.paladin_holy.menu.bov_weights.use_distance:get_state() then
