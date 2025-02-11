@@ -6,7 +6,7 @@ local color = require("common/color")
 
 FS.modules.heal_engine.menu = {
     main_tree = FS.menu.tree_node(),
-    
+
     -- Logging settings
     logging = {
         tree = FS.menu.tree_node(),
@@ -23,7 +23,7 @@ FS.modules.heal_engine.menu = {
             show_windows = FS.menu.checkbox(true, tag .. "log_window_dps"),
         }
     },
-    
+
     -- DPS tracking settings
     tracking = {
         tree = FS.menu.tree_node(),
@@ -40,9 +40,9 @@ FS.modules.heal_engine.menu = {
 -- Render sub-menus
 local function render_health_logging()
     FS.modules.heal_engine.menu.logging.health.tree:render("Health Changes", function()
-        FS.modules.heal_engine.menu.logging.health.threshold:render("Threshold (%)", 
+        FS.modules.heal_engine.menu.logging.health.threshold:render("Threshold (%)",
             "Only log health changes greater than this % of max health")
-        FS.modules.heal_engine.menu.logging.health.show_cleanup:render("Show Cleanup Operations", 
+        FS.modules.heal_engine.menu.logging.health.show_cleanup:render("Show Cleanup Operations",
             "Log when old health values are cleaned up")
     end)
 end
@@ -81,7 +81,7 @@ function FS.modules.heal_engine.menu.on_render_menu()
             render_health_logging()
             render_dps_logging()
         end)
-        
+
         -- DPS tracking settings
         FS.modules.heal_engine.menu.tracking.tree:render("DPS Tracking", function()
             render_dps_windows()
