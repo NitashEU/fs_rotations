@@ -1,6 +1,3 @@
----@type spell_helper
-local spell_helper = require("common/utility/spell_helper")
-
 FS.paladin_holy.logic = {}
 
 require("classes/paladin/holy/logic/rotations/index")
