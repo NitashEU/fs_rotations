@@ -10,6 +10,7 @@ FS.paladin_holy.talents = {
     crusaders_might = core.spell_book.is_spell_learned(196926),
     divine_purpose = core.spell_book.is_spell_learned(223817),
     divine_resonance = core.spell_book.is_spell_learned(384029),
+    divine_toll = core.spell_book.is_spell_learned(375576),
     glimmer_of_light = core.spell_book.is_spell_learned(325966),
     golden_path = core.spell_book.is_spell_learned(377128),
     holy_avenger = core.spell_book.is_spell_learned(105809),

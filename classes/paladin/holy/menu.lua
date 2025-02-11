@@ -11,6 +11,20 @@ FS.paladin_holy.menu = {
     ac_hp_threshold_slider = FS.menu.slider_int(1, 100, 80, tag .. "ac_hp_threshold_slider"),
     ac_min_targets_slider = FS.menu.slider_int(1, 10, 3, tag .. "ac_min_targets_slider"),
 
+    -- Divine Toll settings
+    dt_header = FS.menu.header(),
+    dt_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "dt_hp_threshold_slider"),
+    dt_min_targets_slider = FS.menu.slider_int(1, 5, 3, tag .. "dt_min_targets_slider"),
+
+    -- Divine Toll weights
+    dt_weights = {
+        health = FS.menu.slider_float(0.1, 1.0, 0.4, tag .. "dt_weight_health"),
+        damage = FS.menu.slider_float(0.1, 1.0, 0.3, tag .. "dt_weight_damage"),
+        cluster = FS.menu.slider_float(0.1, 1.0, 0.2, tag .. "dt_weight_cluster"),
+        critical = FS.menu.slider_float(0.1, 1.0, 0.1, tag .. "dt_weight_critical"),
+        distance = FS.menu.slider_float(0.1, 1.0, 0.1, tag .. "dt_weight_distance"),
+    },
+
     -- Beacon of Virtue settings
     bov_header = FS.menu.header(),
     bov_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "bov_hp_threshold_slider"),
@@ -38,6 +52,25 @@ function FS.paladin_holy.menu.on_render_menu()
         FS.paladin_holy.menu.hs_hp_threshold_slider:render("HS HP", "HP % to cast Holy Shock at.")
         FS.paladin_holy.menu.ac_hp_threshold_slider:render("AC HP", "HP % threshold for Avenging Crusader healing")
         FS.paladin_holy.menu.ac_min_targets_slider:render("AC Targets", "Minimum targets for Avenging Crusader healing")
+
+        -- Divine Toll settings
+        if FS.paladin_holy.talents.divine_toll then
+            FS.paladin_holy.menu.dt_header:render("Divine Toll Settings", color.white())
+            FS.paladin_holy.menu.dt_hp_threshold_slider:render("DT HP", "HP % threshold for Divine Toll healing")
+            FS.paladin_holy.menu.dt_min_targets_slider:render("DT Min Targets", "Minimum targets for Divine Toll")
+
+            -- Divine Toll weights
+            FS.menu.tree_node():render("Target Selection Weights", function()
+                FS.paladin_holy.menu.dt_weights.health:render("Health Weight",
+                    "Weight for target's health in scoring (higher = more important)")
+                FS.paladin_holy.menu.dt_weights.damage:render("Damage Weight",
+                    "Weight for target's incoming damage in scoring (higher = more important)")
+                FS.paladin_holy.menu.dt_weights.cluster:render("Cluster Weight",
+                    "Weight for number of nearby targets in scoring (higher = more important)")
+                FS.paladin_holy.menu.dt_weights.distance:render("Distance Weight",
+                    "Weight for target's distance in scoring (higher = prioritizes closer targets)")
+            end)
+        end
 
         -- Beacon of Virtue settings
         if FS.paladin_holy.talents.beacon_of_virtue then

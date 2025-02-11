@@ -3,6 +3,9 @@ function FS.paladin_holy.logic.rotations.healing()
     if FS.paladin_holy.logic.spells.avenging_crusader() then
         return true
     end
+    if FS.paladin_holy.logic.spells.divine_toll() then
+        return true
+    end
     if FS.paladin_holy.logic.spells.beacon_of_virtue() then
         return true
     end
