@@ -1,7 +1,8 @@
 FS.paladin_holy.talents = {
     after_image = core.spell_book.is_spell_learned(385414),
     ashen_hallow = core.spell_book.is_spell_learned(316958),
-    awakening = core.spell_book.is_spell_learned(414193),
+    awakening = core.spell_book.is_spell_learned(414195),
+    avenging_crusader = core.spell_book.is_spell_learned(216331),
     avenging_wrath = core.spell_book.is_spell_learned(31884),
     beacon_of_faith = core.spell_book.is_spell_learned(156910),
     beacon_of_virtue = core.spell_book.is_spell_learned(200025),

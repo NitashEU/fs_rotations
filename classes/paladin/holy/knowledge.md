@@ -17,6 +17,17 @@ Holy Paladin specialization implementation.
   - 15px padding
   - Headers with separators
   - Group related settings
+- Column Alignment:
+  - Set window padding before begin()
+  - Track content lines (not headers) for spacing
+  - Use artificial bounds for alignment
+  - 36px spacing between items
+  - 64px multiplier for bounds calculations
+
+### Windows Organization
+- Settings Window: Core healing thresholds and configurations
+- Weights Window: Scoring weights for AoE healing spells
+- Each window independently toggleable
 
 ## Components
 
