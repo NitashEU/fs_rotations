@@ -17,3 +17,5 @@
 16. Follow three-tiered rotation priority system
 17. Separate IDs, logic, settings, and UI components
 18. Implement type-safe interfaces for all modules
+19. Pass weights as parameters for flexible targeting
+20. Normalize weights to ensure consistent scoring

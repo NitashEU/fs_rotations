@@ -53,11 +53,19 @@
    - Consistent access patterns
    - Centralized dependency management
 
+5. Weight System Pattern
+   - Parameterized scoring weights
+   - Normalized weight calculations
+   - Optional component weighting
+   - Spec-specific weight configurations
+   - Linear distance scoring model
+
 ## Component Relationships
 1. Entry System → Module Loading → Rotation Logic
    - Validation → Dependencies → Spec Module
    - Error Handling → Recovery → Fallback
 2. Heal Engine → Target Selection → Spell Execution
+   - Weight System → Target Scoring → Selection
 3. Settings → Configuration → Runtime Behavior
 4. Core API → Game Interface → Plugin Logic
 5. Humanizer → Delay Management → Action Execution
@@ -82,6 +90,11 @@
    - Consistent ID prefixing
    - Type-safe menu elements
    - Hierarchical organization
+9. Flexible targeting system
+   - Configurable weight parameters
+   - Normalized scoring calculations
+   - Optional component weighting
+   - Linear distance scoring model
 
 ## Core API Integration
 1. Buff Management
@@ -93,9 +106,10 @@
    - Custom heal engine
    - Custom predictions
 3. Target Selection
-   - Smart targeting
+   - Smart targeting with weights
    - Unit validation
    - Combat range checks
+   - Distance-based scoring
 4. Utility Systems
    - Spell helpers
    - Unit helpers
@@ -123,3 +137,10 @@
    - Efficient calculations
    - Smart caching
    - Minimal overhead
+
+5. Weight System Implementation
+   - Parameter-based weight configuration
+   - Runtime weight normalization
+   - Optional component weighting
+   - Default weight fallbacks
+   - Linear distance scoring
