@@ -1,5 +1,29 @@
 # Core Systems Knowledge
 
+## UI Guidelines
+
+### Window Styling
+- Set window properties before begin():
+  1. Set background gradient
+  2. Set initial size
+  3. Set padding
+- Use consistent colors:
+  - Background gradient: (20,20,31,255) to (31,31,46,255)
+  - Window background: Semi-transparent (20,20,31,200)
+  - Text: White (255,255,255,255)
+  - Separators: Light purple (77,77,102,255)
+- Standard spacing:
+  - Window padding: 15px
+  - Header spacing: 36px
+  - Column spacing: 400px
+  - Content line spacing: 64px for bounds
+
+### Menu Helpers
+- render_header: Consistent header styling and spacing
+- begin_columns: Two-column layout with proper alignment
+- render_settings_section: Group related settings with header
+- setup_window: Apply standard window styling
+
 ## Overview
 Core functionality and shared systems for the rotation framework.
 

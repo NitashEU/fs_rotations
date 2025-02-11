@@ -1,73 +1,52 @@
-# Active Context: Holy Paladin Rotation Plugin
+# Menu System Cleanup Plan
 
-## Current Focus
-1. Heal engine implementation is primary focus
-   - Target selection logic optimization complete
-   - Clustered healing calculations refined
-   - Enemy target selection implemented
-   - Performance optimization ongoing
-   - Health prediction system integration
-2. Core systems implementation stable
-3. Rotation logic implementation progressing
-   - Holy Prism implementation complete
-     * Cast on enemy target, radiates healing to allies
-     * Uses generic enemy clustered heal target selection
-     * Integrated with heal engine
-     * 30-yard radius, 5 target maximum
-     * Positioned after Beacon of Virtue in rotation
+## Current Issues
+1. Duplicate window setup code between settings and weights windows
+2. Complex manual offset calculations in settings window
+3. Inconsistent layout management
+4. Complex group handling
 
-## Recent Changes
-1. Heal engine development advancing
-   - Enemy clustered heal target selection added
-   - Target selection algorithms optimized
-   - Clustered healing logic refined
-   - Health prediction integration started
-2. Holy Prism implementation completed
-   - Added spell logic and settings
-   - Created enemy target selection
-   - Integrated with healing rotation
-3. Documentation maintained and updated
-4. Core systems stability verified
-5. Module integration progressing
+## Planned Improvements
+
+### 1. Common Window Functions
+Extract shared window setup logic into helper functions:
+```lua
+local function setup_window(window)
+    -- Set gradient background
+    -- Set initial size
+    -- Set padding
+end
+
+local function render_header(window, text)
+    -- Consistent header rendering with proper spacing
+end
+```
+
+### 2. Simplified Layout System
+- Replace manual offset calculations with cleaner column system
+- Improve group management for settings window
+- Standardize spacing and alignment
+
+### 3. Modular Window Components
+Break down window rendering into focused functions:
+```lua
+local function render_settings_window()
+    -- Left column: Holy Shock, Word of Glory
+    -- Right column: Divine Toll, Beacon, Holy Prism, Light of Dawn
+end
+
+local function render_weights_window()
+    -- Left column: Divine Toll weights
+    -- Right column: Beacon of Virtue weights
+end
+```
+
+### 4. Implementation Strategy
+1. Extract common window setup code
+2. Implement cleaner layout system
+3. Refactor settings window rendering
+4. Refactor weights window rendering
+5. Add proper spacing and alignment
 
 ## Next Steps
-1. Complete heal engine optimization
-   - Finalize remaining target selection algorithms
-   - Complete health prediction integration
-   - Optimize performance metrics
-2. Enhance rotation logic modules
-   - Add remaining talent-based variations
-   - Optimize priority system
-3. Expand configuration interface
-4. Implement testing framework
-
-## Active Decisions
-1. Heal engine optimization strategy
-   - Focus on performance-critical paths
-   - Optimize target selection algorithms
-   - Enhance prediction accuracy
-   - Balance CPU usage with effectiveness
-2. Module organization maintained
-   - Separate concerns (IDs, logic, settings, UI)
-   - Three-tiered rotation system
-   - Type-safe implementations
-3. Configuration management system
-   - Type-safe settings
-   - Runtime validation
-4. Documentation standards
-   - Comprehensive type annotations
-   - Clear module interfaces
-
-## Current Considerations
-1. Target selection algorithm efficiency
-2. Health prediction accuracy vs performance
-3. Clustered healing optimization
-4. Memory usage optimization
-5. CPU performance impact
-6. Error handling robustness
-7. Talent build adaptations
-8. Generic target selection patterns
-   - Enemy target selection reusability
-   - Ally healing radiation patterns
-   - Flexible position-based targeting
-   - Priority-based healing strategies
+Switch to Code mode to implement these improvements while maintaining all existing functionality.
