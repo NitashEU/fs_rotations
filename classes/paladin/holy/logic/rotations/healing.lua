@@ -15,6 +15,12 @@ function FS.paladin_holy.logic.rotations.healing()
     if FS.paladin_holy.logic.spells.holy_arnament() then
         return true
     end
+    if FS.paladin_holy.logic.spells.light_of_dawn() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.word_of_glory() then
+        return true
+    end
     if FS.paladin_holy.logic.spells.holy_shock() then
         return true
     end

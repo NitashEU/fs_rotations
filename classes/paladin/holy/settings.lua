@@ -8,6 +8,12 @@ FS.paladin_holy.settings = {
     ---@type fun(): number
     ac_min_targets = function() return FS.paladin_holy.menu.ac_min_targets_slider:get() end,
 
+    -- Word of Glory settings
+    ---@type fun(): number
+    wog_hp_threshold = function() return FS.paladin_holy.menu.wog_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    wog_tank_hp_threshold = function() return FS.paladin_holy.menu.wog_tank_hp_threshold_slider:get() / 100 end,
+
     -- Divine Toll settings
     ---@type fun(): number
     dt_hp_threshold = function() return FS.paladin_holy.menu.dt_hp_threshold_slider:get() / 100 end,
@@ -45,4 +51,10 @@ FS.paladin_holy.settings = {
     hp_hp_threshold = function() return FS.paladin_holy.menu.hp_hp_threshold_slider:get() / 100 end,
     ---@type fun(): number
     hp_min_targets = function() return FS.paladin_holy.menu.hp_min_targets_slider:get() end,
+
+    -- Light of Dawn settings
+    ---@type fun(): number
+    lod_hp_threshold = function() return FS.paladin_holy.menu.lod_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    lod_min_targets = function() return FS.paladin_holy.menu.lod_min_targets_slider:get() end
 }
