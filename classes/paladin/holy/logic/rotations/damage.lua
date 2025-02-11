@@ -16,5 +16,10 @@ function FS.paladin_holy.logic.rotations.damage()
         return true
     end
 
+    -- 4. Consecration
+    if FS.paladin_holy.logic.spells.consecration() then
+        return true
+    end
+
     return false
 end
