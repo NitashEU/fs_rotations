@@ -3,23 +3,20 @@
 ## Overview
 Holy Paladin specialization implementation.
 
-## Key Interfaces
+## UI Guidelines
 
-### Spell Implementation
-```lua
----@class holy_spell
----@field public cast fun(target: game_object): boolean
----@field public is_ready fun(): boolean
----@field public get_healing fun(): number
-```
-
-### Settings Interface
-```lua
----@class holy_settings
----@field public is_enabled fun(): boolean
----@field public get_hp_threshold fun(): number
----@field public get_min_targets fun(): number
-```
+### Settings Window
+- Use separate window instead of menu tree for complex settings
+- Window styling:
+  - Background: Gradient from darker (20,20,31) to lighter (31,31,46)
+  - Text: White (255,255,255,255)
+  - Window background: Semi-transparent dark (20,20,31,200)
+  - Separators: Light purple (77,77,102,255)
+- Layout:
+  - Two columns (380px each)
+  - 15px padding
+  - Headers with separators
+  - Group related settings
 
 ## Components
 
