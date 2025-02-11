@@ -82,8 +82,6 @@ function FS.paladin_holy.menu.on_render_menu()
                     "Weight for target's incoming damage in scoring (higher = more important)")
                 FS.paladin_holy.menu.dt_weights.cluster:render("Cluster Weight",
                     "Weight for number of nearby targets in scoring (higher = more important)")
-                FS.paladin_holy.menu.dt_weights.distance:render("Distance Weight",
-                    "Weight for target's distance in scoring (higher = prioritizes closer targets)")
             end)
         end
 
