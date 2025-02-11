@@ -1,55 +1,74 @@
-# Current Session Context
-Date: 2025-02-10 20:38 (UTC+1:00)
+# Active Context
 
 ## Current Focus
-Heal Engine optimization and enhancement
 
-## Active Goals
-1. ✓ Establish Memory Bank structure
-2. ✓ Document project architecture
-3. ✓ Analyze code patterns and systems
-4. ► Monitor heal engine implementation
-5. Review rotation logic effectiveness
+Implementing clustered heal target selection system
 
-## Session State
-- Memory Bank successfully initialized
-- Core documentation completed
-- Project structure documented
-- Code patterns identified and documented
-- Heal engine optimization in progress
-  * Performance improvements implemented
-  * Enhanced damage tracking system
-  * Improved combat state management
+### Requirements
 
-## Open Questions
-1. How to optimize heal engine performance?
-   - Binary search implementation shows promise
-   - Caching strategy implemented for DPS calculations
-   - Need to validate performance improvements
-   - Consider further optimization of health value storage
+- Create new generic target selector for clustered healing
+- Balance multiple metrics:
+  - Health missing
+  - DPS taken
+  - Number of nearby targets
+  - Distance to player (optional priority)
+- Support flexible configuration:
+  - Threshold values
+  - Target count requirements
+  - Range limitations
+  - Distance prioritization toggle
 
-2. What patterns can be identified in rotation logic?
-   - Clear priority-based system identified
-   - Potential for enhanced modularity in spell logic
+### Technical Scope
 
-3. How to best structure healing priority system?
-   - Current system uses damage prediction
-   - Fight-wide DPS tracking added
-   - Enhanced damage calculation accuracy
-   - Consider additional metrics for priority weighting
+- Location: core/modules/heal_engine/target_selections/
+- Key Files:
+  - New: get_clustered_heal_target.lua
+  - Reference: get_group_heal_target.lua
+  - Reference: get_tank_damage_target.lua
 
-## Current Resources
-- Complete codebase overview via repomix output
-- Core system documentation
-- Holy Paladin module implementation
-- Initialized Memory Bank structure
-- Enhanced heal engine implementation
+### Implementation Strategy
 
-## Recent Updates
-- Implemented performance optimizations in heal engine:
-  * Added binary search for damage calculation
-  * Implemented DPS caching system
-  * Enhanced combat state tracking
-  * Added fight-wide DPS monitoring
-  * Improved health value storage efficiency
-  * Enhanced logging and profiling system
+1. Core Components:
+
+   - Parameter validation system
+   - Target filtering logic
+   - Metric calculation system
+   - Result validation
+
+2. Scoring System:
+
+   - Health score (40% weight)
+   - Damage score (30% weight)
+   - Nearby targets score (20% weight)
+   - Distance score (10% weight when enabled)
+
+3. Integration Points:
+   - Health prediction system
+   - Damage tracking metrics
+   - Distance calculation
+   - Spell castability validation
+
+### Next Steps
+
+1. Create get_clustered_heal_target.lua
+2. Implement core selection logic
+3. Add parameter validation
+4. Integrate with heal engine
+5. Test with various scenarios:
+   - Different group sizes
+   - Various positioning setups
+   - With/without distance priority
+
+### Current Status
+
+- Architectural decisions documented
+- Implementation patterns defined
+- Ready for code implementation
+- Initial use case: Beacon of Virtue
+- Designed for reuse with similar spells
+
+### Open Questions
+
+- Should weight distributions be configurable per spell?
+- Do we need additional metrics for specific scenarios?
+- Should we add movement prediction for better clustering?
