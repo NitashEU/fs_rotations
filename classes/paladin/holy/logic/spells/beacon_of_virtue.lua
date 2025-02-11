@@ -8,7 +8,15 @@ function FS.paladin_holy.logic.spells.beacon_of_virtue()
     -- Get settings
     local hp_threshold = FS.paladin_holy.settings.bov_hp_threshold()
     local min_targets = FS.paladin_holy.settings.bov_min_targets()
-    local prioritize_distance = FS.paladin_holy.settings.bov_prioritize_distance()
+    local use_distance = FS.paladin_holy.settings.bov_use_distance()
+
+    -- Create weights table
+    local weights = {
+        health = FS.paladin_holy.settings.bov_health_weight(),
+        damage = FS.paladin_holy.settings.bov_damage_weight(),
+        cluster = FS.paladin_holy.settings.bov_cluster_weight(),
+        distance = use_distance and FS.paladin_holy.settings.bov_distance_weight() or 0
+    }
 
     -- Use clustered heal target selector
     local target = FS.modules.heal_engine.get_clustered_heal_target(
@@ -17,9 +25,10 @@ function FS.paladin_holy.logic.spells.beacon_of_virtue()
         5,                                       -- max_targets (Beacon of Virtue affects up to 4 targets)
         30,                                      -- range (fixed at 30 yards)
         FS.paladin_holy.spells.beacon_of_virtue, -- spell_id
-        prioritize_distance,                     -- prioritize_distance
+        use_distance,                            -- prioritize_distance
         true,                                    -- skip_facing
-        false                                    -- skip_range
+        false,                                   -- skip_range
+        weights                                  -- weights
     )
 
     if not target then

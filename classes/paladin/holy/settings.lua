@@ -14,5 +14,15 @@ FS.paladin_holy.settings = {
     ---@type fun(): number
     bov_min_targets = function() return FS.paladin_holy.menu.bov_min_targets_slider:get() end,
     ---@type fun(): boolean
-    bov_prioritize_distance = function() return FS.paladin_holy.menu.bov_prioritize_distance:get_state() end,
+    bov_use_distance = function() return FS.paladin_holy.menu.bov_weights.use_distance:get_state() end,
+
+    -- Beacon of Virtue weights
+    ---@type fun(): number
+    bov_health_weight = function() return FS.paladin_holy.menu.bov_weights.health:get() end,
+    ---@type fun(): number
+    bov_damage_weight = function() return FS.paladin_holy.menu.bov_weights.damage:get() end,
+    ---@type fun(): number
+    bov_cluster_weight = function() return FS.paladin_holy.menu.bov_weights.cluster:get() end,
+    ---@type fun(): number
+    bov_distance_weight = function() return FS.paladin_holy.menu.bov_weights.distance:get() end,
 }
