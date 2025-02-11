@@ -25,6 +25,8 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     local DISTANCE_WEIGHT = 0.1
 
     -- Helper function to calculate damage score for a unit
+    ---@param unit game_object
+    ---@return number
     local function calculate_damage_score(unit)
         local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
         -- Normalize damage score (assuming 50k damage/sec as max for normalization)
@@ -32,24 +34,40 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     end
 
     -- Helper function to calculate distance score
+    ---@param unit game_object
+    ---@return number
     local function calculate_distance_score(unit)
         if not prioritize_distance then return 1 end
 
-        local distance = FS.variables.me:get_distance(unit)
+        local distance = FS.variables.me:get_position():dist_to(unit:get_position())
         -- Score decreases linearly with distance
         return math.max(0.1, 1.0 - (distance / range))
     end
 
+    ---@class NearbyTarget
+    ---@field unit game_object
+    ---@field health_pct number
+    ---@field damage_score number
+
+    ---@class ClusterData
+    ---@field count number
+    ---@field avg_health_score number
+    ---@field avg_damage_score number
+    ---@field lowest_health_pct number
+
     -- Helper function to evaluate and score nearby targets
+    ---@param center_unit game_object
+    ---@return ClusterData | nil
     local function evaluate_cluster(center_unit)
         -- Collect and sort nearby targets by health percentage
+        ---@type NearbyTarget[]
         local nearby_targets = {}
 
         for _, unit in ipairs(FS.modules.heal_engine.units) do
             local health_data = FS.modules.heal_engine.current_health_values[unit]
             if health_data
                 and health_data.health_percentage <= hp_threshold
-                and center_unit:get_distance(unit) <= range then
+                and center_unit:get_position():dist_to(unit:get_position()) <= range then
                 table.insert(nearby_targets, {
                     unit = unit,
                     health_pct = health_data.health_percentage,
