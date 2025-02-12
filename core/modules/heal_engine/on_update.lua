@@ -94,6 +94,28 @@ end
 -- Track last DPS update time
 FS.modules.heal_engine.last_dps_update = FS.modules.heal_engine.last_dps_update or 0
 
+-- Helper to update DPS values for all units based on enabled tracking windows.
+local function update_all_units_dps()
+    for _, unit in pairs(FS.modules.heal_engine.units) do
+        if FS.modules.heal_engine.settings.tracking.windows.is_1s_enabled() then
+            FS.modules.heal_engine.damage_taken_per_second[unit] =
+                FS.modules.heal_engine.get_damage_taken_per_second(unit, 1)
+        end
+        if FS.modules.heal_engine.settings.tracking.windows.is_5s_enabled() then
+            FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] =
+                FS.modules.heal_engine.get_damage_taken_per_second(unit, 5)
+        end
+        if FS.modules.heal_engine.settings.tracking.windows.is_10s_enabled() then
+            FS.modules.heal_engine.damage_taken_per_second_last_10_seconds[unit] =
+                FS.modules.heal_engine.get_damage_taken_per_second(unit, 10)
+        end
+        if FS.modules.heal_engine.settings.tracking.windows.is_15s_enabled() then
+            FS.modules.heal_engine.damage_taken_per_second_last_15_seconds[unit] =
+                FS.modules.heal_engine.get_damage_taken_per_second(unit, 15)
+        end
+    end
+end
+
 function FS.modules.heal_engine.on_update()
     local current_time = core.game_time()
     local is_in_combat = FS.variables.me:is_in_combat()
@@ -134,26 +156,7 @@ function FS.modules.heal_engine.on_update()
         -- Only update DPS every 500ms to reduce spam
         if current_time - FS.modules.heal_engine.last_dps_update >= 500 then
             FS.modules.heal_engine.last_dps_update = current_time
-
-            for _, unit in pairs(FS.modules.heal_engine.units) do
-                -- Calculate DPS for enabled windows
-                if FS.modules.heal_engine.settings.tracking.windows.is_1s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 1)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_5s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 5)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_10s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_10_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 10)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_15s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_15_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 15)
-                end
-            end
+            update_all_units_dps()
         end
     end
 end
