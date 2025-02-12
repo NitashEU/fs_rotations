@@ -4,18 +4,20 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 ## Overview
 
-FS Rotations is a Lua-based plugin for Project Sylvanas that provides automated combat rotation assistance. The system features advanced healing prediction, damage tracking, and priority-based decision making.
+ FS Rotations is a powerful plugin system that provides intelligent combat rotation automation with features including:
+- Advanced healing prediction and target selection
+- Combat state analysis and optimization
+- Sophisticated spell queuing and prioritization
+- Humanized action timing system
+- Comprehensive buff/debuff tracking
 
 ## Project Structure
 
-The codebase is organized into the following components:
-
-- `main.lua` - Primary entry point and core execution logic
-- `header.lua` - Plugin configuration and initialization
-- `entry/` - Specialization-specific entry points and routing
-- `core/` - Core systems and shared functionality
-- `classes/` - Class-specific rotation implementations
-- `_api/` - Interface definitions for external integration
+- **_api/** - Core API abstraction and utilities
+- **classes/** - Class-specific implementations
+- **core/** - Core systems and shared functionality
+- **entry/** - System initialization and bootstrapping
+- **docs/** - Documentation and guides
 
 ## Features
 
@@ -30,16 +32,20 @@ The codebase is organized into the following components:
 - Intelligent target selection
 - Customizable settings per specialization
 
-## Supported Specializations
+## Currently Supported Specializations
 
 - Holy Paladin
-- (Additional specs to be added)
+
+## Requirements
+
+- Project Sylvanas Core
+- Lua 5.1+
 
 ## Installation
 
 1. Download the latest release
-2. Extract the contents to your Project Sylvanas plugins directory
-3. Restart Project Sylvanas if it's running
+2. Extract contents to your Sylvanas plugins directory
+3. Restart Sylvanas if it was running
 
 ## Usage
 
@@ -53,16 +59,17 @@ The codebase is organized into the following components:
 
 ## Development
 
+For developers interested in contributing or creating new class modules:
+
+1. Review the [Developer Getting Started Guide](docs/fs-rotations/api/getting-started-dev.md)
+2. Follow our [coding standards and best practices](docs/fs-rotations/api/common-issues.md)
+3. Refer to module-specific documentation in respective `knowledge.md` files
+
 ### Project Organization
 - Core systems and shared utilities are located in `core/`
 - Class-specific implementations are organized in `classes/`
 - Specialization entry points are managed in `entry/`
 - External interfaces are defined in `_api/`
-
-## Requirements
-
-- Project Sylvanas (latest version)
-- Supported game version
 
 ## Configuration
 
@@ -81,11 +88,11 @@ The plugin provides extensive customization through its menu system:
 
 ## Technical Features
 
-- Advanced heal engine with predictive healing
-- Combat state tracking and analysis
-- Performance-optimized spell queuing
-- Intelligent resource management
-- Built-in profiling system
+- Modular architecture with clear separation of concerns
+- Type-safe configuration system
+- Advanced combat prediction algorithms
+- Efficient memory management and caching
+- Comprehensive error handling
 
 ## Version
 
@@ -97,4 +104,4 @@ Current Version: 1.0.0
 
 ## License
 
-All rights reserved. For personal use only.
+Copyright © 2025 FS. All rights reserved.
