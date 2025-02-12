@@ -42,17 +42,31 @@ The rotation system follows a strict priority order:
 
 ### 2. Ability Priorities
 #### Healing Rotation
-1. Avenging Crusader (when conditions met)
-2. Divine Toll (based on cluster healing needs)
-3. Beacon of Virtue (for group healing)
-4. Holy Prism (talent-based healing)
-5. Holy Armament (context-aware targeting)
-6. Light of Dawn (frontal cone healing)
-7. Word of Glory (single target and tank healing)
-8. Holy Shock (charge-based healing)
-9. Judgment (for Holy Power generation)
-10. Crusader Strike
-11. Hammer of Wrath
+1. Utility spells (AC, Divine Toll, Beacon of Virtue)
+2. Holy Prism
+3. Holy Power spenders:
+   - Word of Glory (tank priority)
+   - Light of Dawn (group healing)
+   - Shield of the Righteous (damage)
+4. Holy Shock (charge-based healing)
+5. Builders (Judgment, Crusader Strike)
+6. Damage abilities (Hammer of Wrath, Consecration)
+
+#### Avenging Crusader Phase
+1. Judgment
+2. Crusader Strike (with Blessed Assurance)
+3. Holy Power spenders (without Blessed Assurance)
+4. Crusader Strike (without Blessed Assurance)
+5. Holy Shock
+
+### 3. Holy Power Management
+- Spend at 4+ Holy Power in normal rotation
+- During AC: spend when Blessed Assurance is not active
+- Spending priority:
+  1. Word of Glory on tanks below threshold
+  2. Light of Dawn for group healing
+  3. Word of Glory on other targets
+  4. Shield of the Righteous when damage appropriate
 
 #### Damage Rotation
 1. Judgment
@@ -150,3 +164,10 @@ Both supporting:
 - menu.lua: UI configuration
 - settings.lua: User preferences
 - variables.lua: State tracking
+
+## Implementation Notes
+
+### Testing Limitations
+- Code runs inside another process's memory space
+- Cannot use traditional unit tests
+- Must rely on in-game testing and validation

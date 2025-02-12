@@ -9,5 +9,14 @@ function FS.paladin_holy.logic.rotations.avenging_crusader()
     if FS.paladin_holy.logic.spells.ac_crusader_strike() then
         return true
     end
-    return true
+    if FS.paladin_holy.logic.spells.spend_holy_power(false) then
+        return true
+    end
+    if (not FS.paladin_holy.variables.blessed_assurance_up()) and FS.paladin_holy.logic.spells.crusader_strike() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.holy_shock() then
+        return true
+    end
+    return false
 end
