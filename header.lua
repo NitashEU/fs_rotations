@@ -1,7 +1,7 @@
 if false then
     return {
         name = "FS Rotations",
-        version = "1.2.3",
+        version = "1.3.0",
         author = "FS",
         load = false
     }
@@ -18,7 +18,7 @@ require("entry/index")
 
 local plugin = {
     name = "FS Rotations",
-    version = "1.2.3",
+    version = "1.3.0",
     author = "FS",
     load = true
 }
