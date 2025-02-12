@@ -30,12 +30,21 @@ commit_type=$(echo "$commit_msg" | grep -oE '^(feat|fix|perf|docs|style|refactor
 # Get repository root
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
+# Extract current version from header.lua before any changes
+current_version=$(grep 'version = ".*"' "$REPO_ROOT/header.lua" | head -n 1 | sed 's/.*version = "\(.*\)".*/\1/')
+
+# Stage the specified files first
+for file in "$@"; do
+    if [ -f "$file" ]; then
+        git add "$file"
+        echo "Staged: $file"
+    else
+        echo "Warning: File not found: $file"
+    fi
+done
+
 # Only proceed with version bump for specific types
 if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
-    # Extract current version from header.lua
-    current_version=$(grep 'version = ".*"' "$REPO_ROOT/header.lua" | head -n 1 | sed 's/.*version = "\(.*\)".*/\1/')
-    echo "Current version: $current_version"
-
     # Split version into components
     IFS='.' read -r major minor patch <<< "$current_version"
 
@@ -48,6 +57,7 @@ if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
         new_version="$major.$minor.$new_patch"
     fi
 
+    echo "Current version: $current_version"
     echo "New version will be: $new_version"
 
     # Update version in header.lua (both occurrences)
@@ -65,19 +75,8 @@ else
     echo "Commit type $commit_type will not trigger version bump"
 fi
 
-# Stage the specified files
-for file in "$@"; do
-    if [ -f "$file" ]; then
-        git add "$file"
-        echo "Staged: $file"
-    else
-        echo "Warning: File not found: $file"
-    fi
-done
-
 # Prepare full commit message
 if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
-    # Add version bump info to commit message
     full_commit_msg="${commit_msg}
 
 ${version_info}"
