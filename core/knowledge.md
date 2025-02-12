@@ -1,85 +1,184 @@
-# Core Systems Knowledge
-
-## UI Guidelines
-
-### Window Styling
-- Set window properties before begin():
-  1. Set background gradient
-  2. Set initial size
-  3. Set padding
-- Use consistent colors:
-  - Background gradient: (20,20,31,255) to (31,31,46,255)
-  - Window background: Semi-transparent (20,20,31,200)
-  - Text: White (255,255,255,255)
-  - Separators: Light purple (77,77,102,255)
-- Standard spacing:
-  - Window padding: 15px
-  - Header spacing: 36px
-  - Column spacing: 400px
-  - Content line spacing: 64px for bounds
-
-### Menu Helpers
-- render_header: Consistent header styling and spacing
-- begin_columns: Two-column layout with proper alignment
-- render_settings_section: Group related settings with header
-- setup_window: Apply standard window styling
+# Core Knowledge
 
 ## Overview
-Core functionality and shared systems for the rotation framework.
+The core folder provides fundamental logic and utilities that every class or module relies on. It implements essential services through five main components: API integration, state management, action timing control, settings management, and UI rendering.
 
-## Key Interfaces
+## System Architecture
 
-### Settings Interface
+### 1. API System (api.lua)
+Centralized module access through `FS.api`:
 ```lua
----@class core_settings
----@field public is_enabled fun(): boolean
----@field public min_delay fun(): number
----@field public max_delay fun(): number
----@field public jitter table<string, function>
+FS.api = {
+    buff_manager,      -- Track buffs and debuffs
+    combat_forecast,   -- Predict combat states
+    health_prediction, -- Forecast health changes
+    spell_helper,      -- Validate spell states
+    spell_queue,      -- Manage casting queue
+    unit_helper,      -- Check unit states
+    target_selector,   -- Select optimal targets
+    plugin_helper,     -- Handle plugin lifecycle
+    control_panel_helper, -- Manage UI panels
+    key_helper         -- Handle input bindings
+}
 ```
 
-### Variables Interface
+### 2. Variables System (variables.lua)
+Core state management through `FS.variables`:
 ```lua
----@class core_variables
----@field public me game_object
----@field public resource fun(power_type: number): number
----@field public buff_up fun(aura_id: number): boolean
----@field public buff_remains fun(aura_id: number): number
----@field public aura_up fun(aura_id: number): boolean
+FS.variables = {
+    me,              -- Local player object
+    target,          -- Current target getter
+    enemy_target,    -- Valid enemy target getter
+    is_valid_enemy_target, -- Target validation
+    buff_up,         -- Check buff presence
+    buff_remains,    -- Get buff duration
+    aura_up,         -- Check aura presence
+    aura_remains,    -- Get aura duration
+    resource         -- Get power resources
+}
 ```
 
-### Humanizer Interface
+Key Features:
+- Lazy evaluation through getter functions
+- Automatic target validation
+- Buff/debuff tracking
+- Resource management
+- Combat state validation
+
+### 3. Humanizer System (humanizer.lua)
+Sophisticated action timing with `FS.humanizer`:
 ```lua
----@class humanizer
----@field public can_run fun(): boolean
----@field public update fun(): nil
----@field public get_delay fun(): number
+FS.humanizer = {
+    next_run,        -- Next action timestamp
+    can_run,         -- Action availability check
+    update,          -- Update timing state
+}
 ```
 
-## Components
+Timing Features:
+- Network-aware delays (1.5x ping)
+- Configurable jitter system:
+  - Base jitter: 5-30% randomization
+  - Latency jitter: 1-20% based on ping
+  - Maximum jitter cap: 10-50%
+- Random delay distribution
+- Normalized latency impact
 
-### API Integration
-- Wraps game API functionality
-- Provides typed interfaces
-- Manages core system access
+### 4. Settings System (settings.lua)
+Configuration management through `FS.settings`:
+```lua
+FS.settings = {
+    is_enabled,      -- Global enable state
+    min_delay,       -- Minimum action delay
+    max_delay,       -- Maximum action delay
+    jitter = {
+        is_enabled,      -- Jitter toggle
+        base_jitter,     -- Base randomization
+        latency_jitter,  -- Network adjustment
+        max_jitter       -- Upper bound
+    },
+    is_toggle_enabled -- Plugin toggle state
+}
+```
 
-### Humanizer
-- Adds realistic delays and jitter
-- Prevents detection
-- Configurable timing parameters
+### 5. Menu System (menu.lua)
+Advanced UI management through `FS.menu`:
 
-### Settings
-- Centralized configuration
-- Consistent getter patterns
-- Debug options
+Components:
+- Window Management
+  ```lua
+  window_style = {
+      background,    -- Gradient colors
+      size,         -- Default dimensions
+      padding,      -- Content spacing
+      header_color, -- Text styling
+      header_spacing,
+      column_spacing
+  }
+  ```
 
-### Variables
-- Shared state management
-- Cross-module communication
-- Runtime configuration
+UI Elements:
+- Core Controls
+  - Checkboxes (`checkbox`)
+  - Sliders (`slider_int`, `slider_float`)
+  - Keybinds (`keybind`)
+  - Comboboxes (`combobox`, `combobox_reorderable`)
+  - Color Pickers (`colorpicker`)
+  - Text Input (`text_input`)
+  - Headers (`header`)
+  - Buttons (`button`)
+
+Layout Features:
+- Two-column system (`begin_columns`)
+- Consistent headers (`render_header`)
+- Settings sections (`render_settings_section`)
+- Window styling (`setup_window`)
+
+## Integration System
+
+### Core Initialization (index.lua)
+```lua
+FS.modules = {}  -- Module registry
+```
+
+Required Components:
+1. API integration
+2. Humanizer system
+3. Menu system
+4. Settings management
+5. Variable tracking
+
+### Module Interface
+```lua
+---@class base_module
+---@field public on_update fun(): nil
+---@field public on_fast_update fun()?: nil
+---@field public on_render fun()?: nil
+---@field public on_render_menu fun()?: nil
+```
+
+## Implementation Guidelines
+
+### State Management
+- Use getter functions for dynamic values
+- Validate game objects before use
+- Handle invalid states gracefully
+- Cache frequently accessed values
+
+### Action Timing
+- Check `humanizer.can_run()` before actions
+- Update timing with `humanizer.update()`
+- Consider network conditions
+- Use appropriate jitter settings
+
+### Settings Integration
+- Access via `FS.settings` getters
+- Use toggle state management
+- Implement proper validation
+- Handle plugin integration
+
+### Menu Implementation
+- Follow window style guidelines
+- Use standard control creation
+- Implement proper layouts
+- Handle window management
 
 ## Best Practices
-- Use consistent error handling
-- Cache frequently accessed values
-- Clean up resources in resets
-- Follow type definitions
+
+### Error Handling
+- Validate all inputs
+- Check object states
+- Handle transitions
+- Provide fallbacks
+
+### Performance
+- Use lazy evaluation
+- Cache frequent calls
+- Update appropriately
+- Manage memory
+
+### Integration
+- Follow module patterns
+- Use correct interfaces
+- Implement callbacks
+- Handle state properly
