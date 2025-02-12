@@ -96,7 +96,7 @@ The plugin provides extensive customization through its menu system:
 
 ## Version
 
-Current Version: 1.5.1
+Current Version: 1.5.2
 
 ## Authors
 
