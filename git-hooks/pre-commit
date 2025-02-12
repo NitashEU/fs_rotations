@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Get the commit message from the COMMIT_EDITMSG file
+commit_msg=$(cat .git/COMMIT_EDITMSG)
+
+# Extract commit type
+commit_type=$(echo "$commit_msg" | grep -oE '^(feat|fix|perf|docs|style|refactor|test|chore):' | sed 's/://')
+
+# Exit if not a versioning commit type
+if [[ ! $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
+    exit 0
+fi
+
+# Extract current version from header.lua
+current_version=$(grep 'version = ".*"' header.lua | head -n 1 | sed 's/.*version = "\(.*\)".*/\1/')
+
+# Split version into components
+IFS='.' read -r major minor patch <<< "$current_version"
+
+# Determine version bump type based on commit type
+if [[ $commit_type == "feat" ]]; then
+    new_minor=$((minor + 1))
+    new_version="$major.$new_minor.0"
+elif [[ $commit_type =~ ^(fix|perf|refactor)$ ]]; then
+    new_patch=$((patch + 1))
+    new_version="$major.$minor.$new_patch"
+else
+    exit 0
+fi
+
+# Update version in header.lua (both occurrences)
+sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" header.lua
+
+# Update version in README.md
+sed -i "s/Current Version: $current_version/Current Version: $new_version/" README.md
+
+# Add the modified files back to the commit
+git add header.lua README.md
+
+echo "Version bumped from $current_version to $new_version based on $commit_type commit"
+
+exit 0
