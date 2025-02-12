@@ -1,12 +1,19 @@
+--- Beacon of Virtue logic
+--- Attempts to cast Beacon of Virtue when conditions are met
+--- Requires:
+--- - Talent is learned
+--- - Group healing requirements met (HP threshold and minimum targets in range)
+--- - Spell is castable on player
+---@param ignore_threshold boolean? If true, ignores HP threshold check
 ---@return boolean
-function FS.paladin_holy.logic.spells.beacon_of_virtue()
+function FS.paladin_holy.logic.spells.beacon_of_virtue(ignore_threshold)
     -- Check if talent is learned
     if not FS.paladin_holy.talents.beacon_of_virtue then
         return false
     end
 
     -- Get settings
-    local hp_threshold = FS.paladin_holy.settings.bov_hp_threshold()
+    local hp_threshold = ignore_threshold and 1 or FS.paladin_holy.settings.bov_hp_threshold()
     local min_targets = FS.paladin_holy.settings.bov_min_targets()
     local use_distance = FS.paladin_holy.settings.bov_use_distance()
 

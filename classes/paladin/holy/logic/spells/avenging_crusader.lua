@@ -25,7 +25,7 @@ function FS.paladin_holy.logic.spells.avenging_crusader()
         return false
     end
 
-    FS.paladin_holy.logic.spells.beacon_of_virtue()
+    FS.paladin_holy.logic.spells.beacon_of_virtue(true)
     FS.api.spell_queue:queue_spell_target_fast(FS.paladin_holy.spells.avenging_crusader, FS.variables.me, 1)
     return true
 end
