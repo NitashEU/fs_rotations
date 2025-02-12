@@ -1,162 +1,20 @@
-# Project Knowledge
+# Instructions
+There are two modes
+You will always start in plan mode
+If I start a message with "PLAN" (Plan Mode), then you should not edit any files or run any commands and create a new `.plan-knowledge` file if not existing. Only ask the for feedback or changes you would make, you are here to advise and will only act when given explict permission to do so .
+If I start a message with "ACT" (Action Required), Check `plan-knowledge` then you should take action on the current task then update the `.plan-knowledge` file if necessary.
+Read files, check assumptions and include a confidence percent, if the score is less than 90% propose questions or actions to increase the score.
+Asking for more information if you are missing about the plan .
+During your interaction with the user, if you find anything reusable in this project (e.g. version of a library, model name), especially about a fix to a mistake you made or a correction you received, you should take note in the `Lessons` section in the `.plan-knowledge` file so you will not make the same mistake again.
 
-## Overview
-Welcome to the main knowledge base for this FS Rotations project. This document provides a high-level summary of how all modules within the repository fit together, explaining our core architecture, usage patterns, best practices, and serves as a hub for more detailed references in sub-directories.
+You should also use the `.plan-knowledge` file as a Scratchpad to organize your thoughts. Especially when you receive a new task, you should first review the content of the Scratchpad, clear old different task if necessary, first explain the task, and plan the steps you need to take to complete the task. You can use todo markers to indicate the progress, e.g.
+[X] Task 1
+[ ] Task 2
 
-## File & Folder Structure
-Below is an overview of the top-level directories and their roles:
-- **_api/**
-  • Core API abstraction layer and utilities
-  • Geometry/math libraries and vector operations
-  • Spell queue and prediction systems
-  • Combat forecast and health prediction
-  • Buff/debuff management system
-  
-- **classes/**
-  • Class-specific implementations and specs
-  • Standardized module structure per spec
-  • Supported classes: Paladin (Holy)
-  • Planned: Warriors, Hunters, Rogues, Priests, Death Knights, Shamans, Mages, Warlocks
-  
-- **core/**
-  • Global menu and settings management
-  • Heal engine with target prioritization
-  • Humanizer and input handling
-  • Shared variables and state management
-  
-- **entry/**
-  • System initialization and bootstrapping
-  • Callback registration (update/render)
-  • Module loading and configuration
-  • Spec detection and routing
-  
-- **docs/**
-  • API documentation and usage guides
-  • Plugin development tutorials
-  • Architecture overviews
-  • Best practices and patterns
+Also update the progress of the task in the Scratchpad when you finish a subtask.
+Especially when you finished a milestone, it will help to improve your depth of task accomplishment to use the Scratchpad to reflect and plan.
+The goal is to help you maintain a big picture as well as the progress of the task. Always refer to the Scratchpad when you plan the next step.
 
-## Key Modules & Systems
+ALWAYS start your response with your current mode. e.g. `[PLAN] ...`
 
-### 1. Entry System & Initialization
-- Plugin bootstrap sequence in header.lua
-  • Plugin metadata validation
-  • Local player validation
-  • Class/spec detection
-  • Module prerequisites check
-- Core initialization in main.lua
-  • Entry helper system
-  • Core callback registration
-  • Module loading pipeline
-  • Error handling
-
-### 2. Core Systems
-- API Integration (api.lua)
-  • Centralized module access
-  • Buff/debuff management
-  • Combat state tracking
-  • Health prediction
-- Humanizer (humanizer.lua)
-  • Dynamic delay calculation
-  • Network-aware timing
-  • Configurable jitter
-  • Performance optimization
-- Settings Management (settings.lua)
-  • Global configuration
-  • Per-module settings
-  • User preferences
-  • Runtime validation
-- Menu System (menu.lua)
-  • Hierarchical UI structure
-  • Type-safe controls
-  • Consistent styling
-  • Event handling
-
-### 3. Healing Engine
-- Health & Damage Tracking
-  • Multiple time windows
-  • Role-based analysis
-  • Performance optimization
-  • State caching
-- Target Selection Algorithms
-  • Single target healing
-  • Group healing optimization
-  • Position-based selection
-  • Role prioritization
-- Combat State Management
-  • Fight statistics
-  • Damage prediction
-  • Resource tracking
-  • Performance monitoring
-
-### 4. Class Implementation (Holy Paladin)
-- Core Systems
-  • Resource management
-  • Buff tracking
-  • Spell queueing
-  • Target selection
-- Rotation Logic
-  • Priority-based decisions
-  • State-driven actions
-  • Resource optimization
-  • Position management
-- Settings & UI
-  • Configurable thresholds
-  • Role-specific options
-  • Visual feedback
-  • Performance tuning
-
-## Best Practices
-
-### 1. Module Development
-- Clear interface definitions
-- Strong type annotations
-- Consistent error handling
-- Performance optimization
-- State cleanup procedures
-
-### 2. Integration Patterns
-- Use spell queue for all cast operations
-- Leverage buff manager for aura states
-- Utilize prediction for positioning
-- Share state through core variables
-- Follow module dependency patterns
-
-### 3. Performance Guidelines
-- Cache frequently accessed values
-- Optimize update frequencies
-- Manage memory efficiently
-- Use appropriate data structures
-- Monitor system impact
-
-## Plugin Architecture
-
-### Core Structure
-```lua
-FS = {
-    spec_config = nil,    -- Current spec configuration
-    loaded_modules = {},  -- Array of loaded module configs
-    entry_helper = {      -- Core initialization system
-        init,            -- System initialization
-        check_spec,      -- Spec validation
-        on_update,       -- Main update loop
-        on_render,       -- Rendering system
-        on_render_menu   -- UI system
-    }
-}
-```
-
-### Module Interface
-```lua
----@class base_module
----@field on_update function() Update callback
----@field on_fast_update function()? Optional high-frequency update
----@field on_render function()? Optional render callback
----@field on_render_menu function()? Optional menu callback
-```
-
-## Change Log
-- **2/12/2025**: Enhanced documentation structure
-- **2/12/2025**: Updated spell queue integration
-- **2/12/2025**: Added prediction system details
-- **2/12/2025**: Improved module organization
+Stay in your current mode, unless manually switched by user-
