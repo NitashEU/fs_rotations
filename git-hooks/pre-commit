@@ -1,18 +1,29 @@
 #!/bin/bash
 
+# Get absolute path to repo root
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Debug output
+echo "Running pre-commit hook..."
+echo "Repo root: $REPO_ROOT"
+
 # Get the commit message from the COMMIT_EDITMSG file
-commit_msg=$(cat .git/COMMIT_EDITMSG)
+commit_msg=$(cat "$REPO_ROOT/.git/COMMIT_EDITMSG")
+echo "Commit message: $commit_msg"
 
 # Extract commit type
 commit_type=$(echo "$commit_msg" | grep -oE '^(feat|fix|perf|docs|style|refactor|test|chore):' | sed 's/://')
+echo "Detected commit type: $commit_type"
 
 # Exit if not a versioning commit type
 if [[ ! $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
+    echo "Not a version-bumping commit type, exiting"
     exit 0
 fi
 
 # Extract current version from header.lua
-current_version=$(grep 'version = ".*"' header.lua | head -n 1 | sed 's/.*version = "\(.*\)".*/\1/')
+current_version=$(grep 'version = ".*"' "$REPO_ROOT/header.lua" | head -n 1 | sed 's/.*version = "\(.*\)".*/\1/')
+echo "Current version: $current_version"
 
 # Split version into components
 IFS='.' read -r major minor patch <<< "$current_version"
@@ -28,14 +39,16 @@ else
     exit 0
 fi
 
+echo "New version will be: $new_version"
+
 # Update version in header.lua (both occurrences)
-sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" header.lua
+sed -i "s/version = \"$current_version\"/version = \"$new_version\"/" "$REPO_ROOT/header.lua"
 
 # Update version in README.md
-sed -i "s/Current Version: $current_version/Current Version: $new_version/" README.md
+sed -i "s/Current Version: $current_version/Current Version: $new_version/" "$REPO_ROOT/README.md"
 
 # Add the modified files back to the commit
-git add header.lua README.md
+git add "$REPO_ROOT/header.lua" "$REPO_ROOT/README.md"
 
 echo "Version bumped from $current_version to $new_version based on $commit_type commit"
 
