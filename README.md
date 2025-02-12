@@ -96,7 +96,7 @@ The plugin provides extensive customization through its menu system:
 
 ## Version
 
-Current Version: 1.3.7
+Current Version: 1.3.8
 
 ## Authors
 
@@ -105,9 +105,3 @@ Current Version: 1.3.7
 ## License
 
 Copyright © 2025 FS. All rights reserved.
-# Test line
-test
-test2
-test3
-test4
-Final test
