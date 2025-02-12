@@ -13,8 +13,8 @@ FS.api = {
     combat_forecast,   -- Predict combat states
     health_prediction, -- Forecast health changes
     spell_helper,      -- Validate spell states
-    spell_queue,      -- Manage casting queue
-    unit_helper,      -- Check unit states
+    spell_queue,       -- Manage casting queue
+    unit_helper,       -- Check unit states
     target_selector,   -- Select optimal targets
     plugin_helper,     -- Handle plugin lifecycle
     control_panel_helper, -- Manage UI panels

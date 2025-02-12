@@ -31,22 +31,50 @@ The system loads modules in a specific sequence:
 #### SpecConfig Interface
 ```lua
 ---@class SpecConfig
----@field class_id number
----@field spec_id number
----@field on_update function()
----@field on_render function()
----@field on_render_menu function()
----@field on_render_control_panel function(control_panel)
+---@field class_id number -- Class identifier from enums
+---@field spec_id number -- Specialization identifier from enums
+---@field on_update function() -- Main rotation update
+---@field on_render function() -- Visual updates
+---@field on_render_menu function() -- Settings UI
+---@field on_render_control_panel function(control_panel) -- Control panel elements
 ```
 
 #### ModuleConfig Interface
 ```lua
 ---@class ModuleConfig
----@field on_update function()
----@field on_fast_update function()
----@field on_render function()
----@field on_render_menu function()
+---@field on_update function() -- Standard update cycle
+---@field on_fast_update function()? -- Optional high-frequency updates
+---@field on_render function()? -- Optional visual updates
+---@field on_render_menu function()? -- Optional settings UI
 ```
+
+## Implementation Guidelines
+
+### Module Loading
+- Use pcall for protected module loading
+- Validate module interfaces after loading
+- Initialize in correct order (core → required → spec)
+- Handle loading failures gracefully
+
+### Spec Validation
+- Check class/spec combination against allowed_specs
+- Validate spec_id matches current player spec
+- Create default spec config if validation passes
+- Return false and prevent loading if validation fails
+
+### Update Cycle Management
+- Check enabled state before updates
+- Run fast updates first
+- Verify humanizer timing
+- Update player state
+- Execute module updates in order
+- Run spec-specific updates last
+
+### UI Integration
+- Render core menu elements first
+- Allow modules to extend menu
+- Handle spec-specific UI elements
+- Maintain consistent styling
 
 ## Core Functionality
 
@@ -73,23 +101,20 @@ The main update cycle (`on_update`) includes:
 - Spec-specific UI elements
 
 ## Class/Spec Support
-Currently implemented specs include:
-- Warriors (Arms, Fury, Protection)
-- Paladins (Holy, Protection, Retribution)
-- Hunters (Beast Mastery, Marksmanship, Survival)
-- Rogues (Assassination, Outlaw, Subtlety)
-- Priests (Discipline, Holy, Shadow)
-- Death Knights (Blood, Frost, Unholy)
-- Shamans (Elemental, Enhancement, Restoration)
-- Mages (Arcane, Fire, Frost)
-- Warlocks (Affliction)
+Currently supported specs:
+- Holy Paladin (fully implemented)
 
-Note: Currently, only Holy Paladin is marked as an allowed spec.
+Future planned specs:
+- Protection Paladin
+- Retribution Paladin
+
+Note: Other specs listed in class_spec_map are planned but not yet implemented.
 
 ## Error Handling
 - Module loading failures are caught and logged
 - Spec validation prevents unsupported spec execution
 - Graceful fallbacks for missing components
+- Protected calls for module updates
 
 ## Performance Considerations
 - Humanizer implementation for action timing
@@ -115,3 +140,24 @@ entry/
 ├── init.lua               -- Initialization
 ├── load_required_modules.lua
 └── load_spec_module.lua
+```
+
+## Best Practices
+
+### Module Development
+- Implement all required interface methods
+- Handle state transitions properly
+- Clean up resources when disabled
+- Follow error handling patterns
+
+### Spec Implementation
+- Validate all required fields
+- Implement optional methods as needed
+- Handle spec-specific resources
+- Clean up on spec changes
+
+### Integration
+- Follow module loading sequence
+- Use protected calls for safety
+- Handle all error cases
+- Maintain UI consistency
