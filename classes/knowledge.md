@@ -8,22 +8,22 @@ Contains class-specific implementations for supported WoW classes. Each speciali
 ### Class Module
 ```lua
 ---@class class_module
----@field public spec_id number
----@field public class_id number
----@field public settings table<string, function>
----@field public variables table<string, function>
----@field public talents table<number, boolean>
+---@field public spec_id number -- Specialization identifier
+---@field public class_id number -- Class identifier
+---@field public settings table<string, function> -- Configuration getters
+---@field public variables table<string, function> -- Runtime state
+---@field public talents table<number, boolean> -- Selected talents
 ```
 
 ### Spec Configuration
 ```lua
 ---@class SpecConfig
----@field spec_id number
----@field class_id number
----@field on_update function(delta_time: number)
----@field on_render function()
----@field on_render_menu function()
----@field on_render_control_panel function()
+---@field spec_id number -- Spec identifier
+---@field class_id number -- Class identifier
+---@field on_update function(delta_time: number) -- Main update loop
+---@field on_render function() -- Visual updates
+---@field on_render_menu function() -- Settings UI
+---@field on_render_control_panel function() -- Control panel UI
 ```
 
 ## Directory Structure

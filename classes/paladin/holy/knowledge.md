@@ -96,7 +96,7 @@ Intelligent targeting using weighted criteria:
 - Health status (40%)
 - Damage intake (30%)
 - Cluster density (20%)
-- 30 yard range check
+- 30 yard range
 - 5 target maximum
 
 ### Beacon of Virtue
