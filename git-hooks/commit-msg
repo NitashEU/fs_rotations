@@ -5,7 +5,7 @@ commit_msg=$(cat "$commit_msg_file")
 
 # Check for valid prefix
 prefix_pattern="^(feat|fix|perf|docs|style|refactor|test|chore):"
-if ! echo "$commit_msg" | grep -qE "$prefix_pattern"; then
+if ! echo "$commit_msg" | head -n 1 | grep -qE "$prefix_pattern"; then
     echo "Error: Commit message must start with one of: feat:, fix:, perf:, docs:, style:, refactor:, test:, chore:"
     exit 1
 fi
