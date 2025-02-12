@@ -7,12 +7,20 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 echo "Running pre-commit hook..."
 echo "Repo root: $REPO_ROOT"
 
-# Get the commit message from the COMMIT_EDITMSG file
-commit_msg=$(cat "$REPO_ROOT/.git/COMMIT_EDITMSG")
+# Get the current commit message
+current_msg_file="$REPO_ROOT/.git/COMMIT_EDITMSG"
+if [ -f "$current_msg_file" ]; then
+    commit_msg=$(cat "$current_msg_file")
+    echo "Using current commit message from COMMIT_EDITMSG"
+else
+    echo "No commit message found, skipping version bump"
+    exit 0
+fi
+
 echo "Commit message: $commit_msg"
 
-# Extract commit type
-commit_type=$(echo "$commit_msg" | grep -oE '^(feat|fix|perf|docs|style|refactor|test|chore):' | sed 's/://')
+# Extract commit type from the first line only
+commit_type=$(echo "$commit_msg" | head -n 1 | grep -oE '^(feat|fix|perf|docs|style|refactor|test|chore):' | sed 's/://')
 echo "Detected commit type: $commit_type"
 
 # Exit if not a versioning commit type
