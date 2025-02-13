@@ -64,5 +64,17 @@ FS.paladin_holy.settings = {
     ---@type fun(): number
     lod_hp_threshold = function() return FS.paladin_holy.menu.lod_hp_threshold_slider:get() / 100 end,
     ---@type fun(): number
-    lod_min_targets = function() return FS.paladin_holy.menu.lod_min_targets_slider:get() end
+    lod_min_targets = function() return FS.paladin_holy.menu.lod_min_targets_slider:get() end,
+
+    -- Flash of Light settings
+    ---@type fun(): number
+    fol_hp_threshold = function() return FS.paladin_holy.menu.fol_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    fol_infusion_hp_threshold = function() return FS.paladin_holy.menu.fol_infusion_hp_threshold_slider:get() / 100 end,
+
+    -- Holy Light settings
+    ---@type fun(): number
+    hl_hp_threshold = function() return FS.paladin_holy.menu.hl_hp_threshold_slider:get() / 100 end,
+    ---@type fun(): number
+    hl_infusion_hp_threshold = function() return FS.paladin_holy.menu.hl_infusion_hp_threshold_slider:get() / 100 end
 }
