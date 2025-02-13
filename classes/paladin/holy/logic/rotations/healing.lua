@@ -15,22 +15,28 @@ function FS.paladin_holy.logic.rotations.healing()
     if FS.paladin_holy.logic.spells.holy_arnament() then
         return true
     end
-    if FS.paladin_holy.logic.spells.light_of_dawn() then
-        return true
-    end
-    if FS.paladin_holy.logic.spells.word_of_glory() then
-        return true
-    end
-    if FS.paladin_holy.logic.spells.holy_shock() then
+    if FS.paladin_holy.logic.spells.spend_holy_power(true) then
         return true
     end
     if FS.paladin_holy.logic.spells.judgment() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.holy_shock() then
         return true
     end
     if FS.paladin_holy.logic.spells.crusader_strike() then
         return true
     end
     if FS.paladin_holy.logic.spells.hammer_of_wrath() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.consecration() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.flash_of_light() then
+        return true
+    end
+    if FS.paladin_holy.logic.spells.holy_light() then
         return true
     end
     return false
