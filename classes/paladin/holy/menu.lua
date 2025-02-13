@@ -70,6 +70,16 @@ FS.paladin_holy.menu = {
     awakening_header = FS.menu.header(),
     awakening_hp_threshold_slider = FS.menu.slider_int(1, 100, 80, tag .. "awakening_hp_threshold_slider"),
     awakening_min_targets_slider = FS.menu.slider_int(1, 10, 3, tag .. "awakening_min_targets_slider"),
+
+    -- Flash of Light settings
+    fol_header = FS.menu.header(),
+    fol_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "fol_hp_threshold_slider"),
+    fol_infusion_hp_threshold_slider = FS.menu.slider_int(1, 100, 90, tag .. "fol_infusion_hp_threshold_slider"),
+
+    -- Holy Light settings
+    hl_header = FS.menu.header(),
+    hl_hp_threshold_slider = FS.menu.slider_int(1, 100, 85, tag .. "hl_hp_threshold_slider"),
+    hl_infusion_hp_threshold_slider = FS.menu.slider_int(1, 100, 90, tag .. "hl_infusion_hp_threshold_slider"),
 }
 
 -- Helper function to render weight sliders
@@ -124,6 +134,18 @@ local function render_settings_window()
                         { slider = menu.awakening_min_targets_slider,  label = "Minimum Targets",  tooltip = "Minimum injured targets to optimize for procs" }
                     })
                 end
+
+                -- Flash of Light settings
+                FS.menu.render_settings_section(menu.settings_window, "Flash of Light", {
+                    { slider = menu.fol_hp_threshold_slider,             label = "Health Threshold",      tooltip = "Cast when target health falls below this percentage" },
+                    { slider = menu.fol_infusion_hp_threshold_slider,    label = "Infusion Threshold",    tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
+                })
+
+                -- Holy Light settings
+                FS.menu.render_settings_section(menu.settings_window, "Holy Light", {
+                    { slider = menu.hl_hp_threshold_slider,             label = "Health Threshold",      tooltip = "Cast when target health falls below this percentage" },
+                    { slider = menu.hl_infusion_hp_threshold_slider,    label = "Infusion Threshold",    tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
+                })
             end,
             -- Right Column
             function()
