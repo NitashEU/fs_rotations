@@ -4,7 +4,8 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 ## Overview
 
- FS Rotations is a powerful plugin system that provides intelligent combat rotation automation with features including:
+FS Rotations is a powerful plugin system that provides intelligent combat rotation automation with features including:
+
 - Advanced healing prediction and target selection
 - Combat state analysis and optimization
 - Sophisticated spell queuing and prioritization
@@ -13,7 +14,7 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 ## Project Structure
 
-- **_api/** - Core API abstraction and utilities
+- **\_api/** - Core API abstraction and utilities
 - **classes/** - Class-specific implementations
 - **core/** - Core systems and shared functionality
 - **entry/** - System initialization and bootstrapping
@@ -66,6 +67,7 @@ For developers interested in contributing or creating new class modules:
 3. Refer to module-specific documentation in respective `knowledge.md` files
 
 ### Project Organization
+
 - Core systems and shared utilities are located in `core/`
 - Class-specific implementations are organized in `classes/`
 - Specialization entry points are managed in `entry/`
@@ -76,11 +78,13 @@ For developers interested in contributing or creating new class modules:
 The plugin provides extensive customization through its menu system:
 
 ### Core Settings
+
 - Script enable/disable
 - Humanizer configuration (delays)
 - Performance options
 
 ### Holy Paladin Settings
+
 - Holy Shock HP threshold
 - Avenging Crusader settings
 - Target selection preferences
@@ -93,6 +97,10 @@ The plugin provides extensive customization through its menu system:
 - Advanced combat prediction algorithms
 - Efficient memory management and caching
 - Comprehensive error handling
+
+## HOW TO COMMIT
+
+./commit.sh "refactor: extract dps calculation helpers into separate functions" core/modules/heal_engine/get_damage_taken_per_second.lua core/modules/heal_engine/on_update.lua
 
 ## Version
 
