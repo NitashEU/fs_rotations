@@ -8,6 +8,7 @@ FS.paladin_holy.variables = {
     blessed_assurance_up = function() return FS.variables.buff_up(FS.paladin_holy.auras.blessed_assurance) end,
     holy_armament_override_up = function() return FS.variables.aura_up(FS.paladin_holy.auras.holy_armament_override) end,
     rising_sunlight_up = function() return FS.variables.buff_up(FS.paladin_holy.auras.rising_sunlight) end,
+    
     holy_shock_charges = function()
         local charges = core.spell_book.get_spell_charge(FS.paladin_holy.spells.holy_shock)
         local max_charges = core.spell_book.get_spell_charge_max(FS.paladin_holy.spells.holy_shock)
@@ -17,9 +18,10 @@ FS.paladin_holy.variables = {
         end
 
         local cooldown = FS.api.spell_helper:get_remaining_charge_cooldown(FS.paladin_holy.spells.holy_shock)
-        local recharge_mod = 1 -- TODO: Add haste/CDR modifiers if needed
-        local recharge = cooldown / core.spell_book.get_spell_charge_cooldown_duration(FS.paladin_holy.spells.holy_shock)
+        -- Instead of haste, use base cooldown as it already includes haste
+        local base_cooldown = core.spell_book.get_spell_charge_cooldown_duration(FS.paladin_holy.spells.holy_shock)
+        local recharge = cooldown / base_cooldown
 
-        return charges + ((recharge_mod - recharge) / recharge_mod)
+        return charges + (1 - recharge)
     end
 }
