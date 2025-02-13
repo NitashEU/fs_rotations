@@ -8,6 +8,10 @@ FS.paladin_holy.settings = {
     ---@type fun(): number
     hs_rising_sun_hp_threshold = function() return FS.paladin_holy.menu.hs_rising_sun_hp_threshold_slider:get() / 100 end,
     ---@type fun(): number
+    hs_critical_priority = function() return FS.paladin_holy.menu.hs_critical_priority_slider:get() / 100 end,
+    ---@type fun(): boolean
+    hs_predictive_healing = function() return FS.paladin_holy.menu.hs_predictive_healing_check:get_state() end,
+    ---@type fun(): number
     ac_hp_threshold = function() return FS.paladin_holy.menu.ac_hp_threshold_slider:get() / 100 end,
     ---@type fun(): number
     ac_min_targets = function() return FS.paladin_holy.menu.ac_min_targets_slider:get() end,

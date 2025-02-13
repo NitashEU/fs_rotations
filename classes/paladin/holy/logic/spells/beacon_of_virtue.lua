@@ -16,26 +16,24 @@ function FS.paladin_holy.logic.spells.beacon_of_virtue(ignore_threshold)
     local hp_threshold = ignore_threshold and 1 or FS.paladin_holy.settings.bov_hp_threshold()
     local min_targets = FS.paladin_holy.settings.bov_min_targets()
     local use_distance = FS.paladin_holy.settings.bov_use_distance()
+    local range = 30 -- Fixed at 30 yards
 
-    -- Create weights table
-    local weights = {
-        health = FS.paladin_holy.settings.bov_health_weight(),
-        damage = FS.paladin_holy.settings.bov_damage_weight(),
-        cluster = FS.paladin_holy.settings.bov_cluster_weight(),
-        distance = use_distance and FS.paladin_holy.settings.bov_distance_weight() or 0
-    }
-
-    -- Use clustered heal target selector
+    -- Use clustered heal target selector with proper weights
     local target = FS.modules.heal_engine.get_clustered_heal_target(
         hp_threshold,                            -- hp_threshold
-        min_targets,                             -- min_targets
-        5,                                       -- max_targets (Beacon of Virtue affects up to 4 targets)
-        30,                                      -- range (fixed at 30 yards)
+        min_targets,                            -- min_targets
+        5,                                      -- max_targets (affects up to 4 allies + primary)
+        range,                                  -- range in yards
         FS.paladin_holy.spells.beacon_of_virtue, -- spell_id
-        use_distance,                            -- prioritize_distance
-        true,                                    -- skip_facing
-        false,                                   -- skip_range
-        weights                                  -- weights
+        use_distance,                           -- prioritize_distance
+        true,                                   -- skip_facing
+        false,                                  -- don't skip range
+        {
+            health = FS.paladin_holy.settings.bov_health_weight(),
+            damage = FS.paladin_holy.settings.bov_damage_weight(),
+            cluster = FS.paladin_holy.settings.bov_cluster_weight(),
+            distance = use_distance and FS.paladin_holy.settings.bov_distance_weight() or 0
+        }
     )
 
     if not target then
