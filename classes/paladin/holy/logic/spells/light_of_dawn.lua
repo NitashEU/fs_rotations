@@ -8,8 +8,8 @@ function FS.paladin_holy.logic.spells.light_of_dawn()
     local target = FS.modules.heal_engine.get_frontal_cone_heal_target(
         hp_threshold,                        -- hp_threshold
         min_targets,                         -- min_targets
-        15,                                  -- radius (cone length)
-        46,                                  -- angle (in degrees)
+        15,                                  -- range
+        46,                                  -- cone angle in degrees
         FS.paladin_holy.spells.light_of_dawn -- spell_id
     )
 
@@ -17,7 +17,7 @@ function FS.paladin_holy.logic.spells.light_of_dawn()
         return false
     end
 
-    -- Queue spell cast
-    FS.api.spell_queue:queue_spell_target(FS.paladin_holy.spells.light_of_dawn, target, 1)
+    -- Queue spell cast on player (cone originates from us)
+    FS.api.spell_queue:queue_spell_target(FS.paladin_holy.spells.light_of_dawn, FS.variables.me, 1)
     return true
 end
