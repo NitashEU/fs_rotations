@@ -148,3 +148,20 @@
   - Core API methods
   - Extension points
 - Avoid tight coupling between module interfaces
+
+## Event System Learnings
+- Use dot notation for hierarchical events (system.type.subtype.action)
+- Emit with detailed source context for better debugging
+- Create utility functions for common event patterns
+- Implement error isolation to prevent one handler from breaking others
+- Add debug views early in development cycle
+- Ensure all callbacks are wrapped with error_handler:safe_execute
+- Use standardized event data structures with timestamps
+- Implement event priorities where execution order matters
+- Use emit_hierarchical for events that should bubble up
+- Create standardized events for core system operations
+- Properly clean up one-time listeners to avoid memory leaks
+- Integrate with existing systems like settings and error handling
+- Implement lifecycle state tracking (e.g., combat state changes)
+- Collect events in debug mode for troubleshooting
+- Support testing tools for event emission and reception verification
