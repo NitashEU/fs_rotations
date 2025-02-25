@@ -1,5 +1,5 @@
 -- Required modules with interface validation
----@type table<string, string>
+---@type table<string, {path: string, interface: string}>
 local required_modules = {
     heal_engine = {
         path = "core/modules/heal_engine/index",

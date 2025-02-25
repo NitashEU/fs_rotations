@@ -44,9 +44,9 @@ local spec_module_registry = {
 -- Helper to check if dependencies are available
 ---@param dependencies string[] List of required module names
 ---@return boolean success
----@return string? error_message
+---@return string|nil error_message
 local function validate_dependencies(dependencies)
-    if not dependencies then return true end
+    if not dependencies then return true, nil end
     
     for _, module_name in ipairs(dependencies) do
         if not FS.modules[module_name] then
@@ -54,7 +54,7 @@ local function validate_dependencies(dependencies)
         end
     end
     
-    return true
+    return true, nil
 end
 
 --- Checks if a specialization is supported by the registry
@@ -75,7 +75,7 @@ end
 --- Loads a specialization module with dependency validation and interface compliance checks
 ---@param spec_enum number The specialization enum to load
 ---@return boolean success
----@return table|string module_or_error Module if successful, error message if not
+---@return table|string|nil module_or_error Module if successful, error message if not
 function FS.load_spec_module(spec_enum)
     local module_info = spec_module_registry[spec_enum]
     

@@ -82,7 +82,8 @@ FS.module_interface = {
     -- Check for deprecated fields and log warnings
     for field_name, warning in pairs(interface.deprecated_fields or {}) do
       if module[field_name] ~= nil then
-        FS.error_handler:record(component_name, "Warning: " .. warning, true)
+        -- Use 2 as the stack level to indicate this is a warning, not an error
+        FS.error_handler:record(component_name, "Warning: " .. warning, 2)
       end
     end
 

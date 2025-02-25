@@ -1,6 +1,7 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
+## [1.16.1] - 2025-02-25
 ## [1.16.0] - 2025-02-25
 ### Added## [1.15.3] - 2025-02-25
 - implement module interface standardization with validation and documentation## [1.15.2] - 2025-02-25
@@ -13,7 +14,7 @@ All notable changes to FS Rotations will be documented in this file.
 ## [1.10.4] - 2025-02-25
 ### Changed## [1.10.3] - 2025-02-25
 - restructure heal engine with domain-oriented separation of concerns### Fixed
-- resolve remaining Lua diagnostics issues with combobox render method- resolve remaining diagnostics issues with menu extension functions- resolve Lua diagnostics issues and improve error handling- Implement comprehensive input validation for heal engine target selection functions
+- resolve type errors in module interface system- resolve remaining Lua diagnostics issues with combobox render method- resolve remaining diagnostics issues with menu extension functions- resolve Lua diagnostics issues and improve error handling- Implement comprehensive input validation for heal engine target selection functions
 
 ## [1.10.2] - 2025-02-25
 ### Performance
