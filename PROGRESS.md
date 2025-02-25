@@ -253,10 +253,26 @@ FS.validator = {
 
 ### 1. Apply Patterns to Holy Paladin
 
-- [ ] Update spell implementations with validation
-- [ ] Convert to use events for communication
+- [ ] Update spell implementations with validation and error handling
+  - Implement proper parameter validation using FS.validator
+  - Add clear error messages with component context
+  - Create fallback behavior for error cases
+  - Ensure all edge cases are properly handled
+- [ ] Optimize rotation performance
+  - Implement direct function calls for critical path operations
+  - Use procedural approach for spell selection logic
+  - Minimize abstraction layers in combat-critical code
+  - Create clear priority-based decision tree
 - [ ] Implement memory optimization patterns
+  - Cache frequently accessed values
+  - Pool objects for spells and targets
+  - Implement proper reset functions
+  - Use appropriate pre-allocation for expected usage
 - [ ] Add comprehensive documentation
+  - Document all function parameters and return values
+  - Add clear examples for complex functions
+  - Create specialization-specific best practices
+  - Ensure consistent naming and structure throughout
 
 ### 2. Create Template for New Specializations
 
