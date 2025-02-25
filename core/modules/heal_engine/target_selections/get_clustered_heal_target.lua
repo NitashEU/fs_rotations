@@ -59,17 +59,11 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
         if not prioritize_distance then return 1 end
 
         local distance = FS.modules.heal_engine.get_cached_distance(
-            FS.variables.me:get_position(),
-            unit:get_position()
+            FS.modules.heal_engine.get_cached_position(FS.variables.me),
+            FS.modules.heal_engine.get_cached_position(unit)
         )
         -- Score increases linearly with distance (farther = higher score)
         return math.min(1.0, distance / range)
-    end
-
-    -- Position cache to avoid repeated position lookups
-    local position_cache = {}
-    for _, unit in ipairs(FS.modules.heal_engine.units) do
-        position_cache[unit] = unit:get_position()
     end
 
     -- Evaluate each potential target
@@ -77,7 +71,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
         if FS.api.spell_helper:is_spell_castable(spell_id, FS.variables.me, target, skip_facing, skip_range) then
             -- Use position_unit if provided, otherwise use target for cluster center
             local cluster_center = position_unit or target
-            local center_pos = position_cache[cluster_center]
+            local center_pos = FS.modules.heal_engine.get_cached_position(cluster_center)
 
             -- Count potential affected targets and calculate cluster stats
             local affected_count = 0 -- Include primary target
@@ -91,7 +85,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
                     -- Use cached distance calculation
                     local distance = FS.modules.heal_engine.get_cached_distance(
                         center_pos,
-                        position_cache[unit]
+                        FS.modules.heal_engine.get_cached_position(unit)
                     )
                     
                     if distance <= range then

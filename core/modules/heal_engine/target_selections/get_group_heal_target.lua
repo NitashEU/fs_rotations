@@ -28,10 +28,14 @@ function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets,
 
             for _, unit in ipairs(FS.modules.heal_engine.units) do
                 local health_data = FS.modules.heal_engine.current_health_values[unit]
-                if health_data
-                    and health_data.health_percentage <= hp_threshold
-                    and pos_unit:get_position():dist_to(unit:get_position()) <= range then
-                    targets_under_threshold = targets_under_threshold + 1
+                if health_data and health_data.health_percentage <= hp_threshold then
+                    local distance = FS.modules.heal_engine.get_cached_distance(
+                        FS.modules.heal_engine.get_cached_position(pos_unit),
+                        FS.modules.heal_engine.get_cached_position(unit)
+                    )
+                    if distance <= range then
+                        targets_under_threshold = targets_under_threshold + 1
+                    end
                 end
             end
 

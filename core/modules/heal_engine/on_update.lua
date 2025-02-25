@@ -7,6 +7,11 @@ function FS.modules.heal_engine.on_fast_update()
     
     -- Maintain caches periodically
     FS.modules.heal_engine.maintain_caches(current_time)
+    
+    -- Update position cache for all units
+    -- This ensures all target selection functions use fresh positions
+    FS.modules.heal_engine.position_cache = {}
+    FS.modules.heal_engine.position_cache_last_cleared = current_time
 
     -- Update health values for all units
     for _, unit in pairs(FS.modules.heal_engine.units) do

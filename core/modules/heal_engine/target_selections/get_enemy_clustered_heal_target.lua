@@ -33,13 +33,17 @@ function FS.modules.heal_engine.get_enemy_clustered_heal_target(hp_threshold, mi
 
     for _, unit in ipairs(FS.modules.heal_engine.units) do
         local health_data = FS.modules.heal_engine.current_health_values[unit]
-        if health_data
-            and health_data.health_percentage <= hp_threshold
-            and target:get_position():dist_to(unit:get_position()) <= range then
-            table.insert(nearby_allies, {
-                unit = unit,
-                health_pct = health_data.health_percentage,
-            })
+        if health_data and health_data.health_percentage <= hp_threshold then
+            local distance = FS.modules.heal_engine.get_cached_distance(
+                FS.modules.heal_engine.get_cached_position(target),
+                FS.modules.heal_engine.get_cached_position(unit)
+            )
+            if distance <= range then
+                table.insert(nearby_allies, {
+                    unit = unit,
+                    health_pct = health_data.health_percentage,
+                })
+            end
         end
     end
 

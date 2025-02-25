@@ -104,7 +104,7 @@ The plugin provides extensive customization through its menu system:
 
 ## Version
 
-Current Version: 1.10.1
+Current Version: 1.10.2
 
 ## Authors
 

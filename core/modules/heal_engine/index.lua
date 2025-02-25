@@ -8,7 +8,7 @@
 local MAX_HISTORY_SIZE = FS.config:get("heal_engine.history.max_records", 100)
 local MAX_EXPECTED_UNITS = FS.config:get("heal_engine.pooling.expected_units", 40)
 local POOL_INITIAL_SIZE = FS.config:get("heal_engine.pooling.initial_size", 100)
-local CACHE_LIFETIME = FS.config:get("heal_engine.caching.lifetime", 2000)
+local CACHE_LIFETIME = FS.config:get("heal_engine.caching.lifetime", 200) -- 200ms, aligned with average human reaction time
 
 -- Initialize heal engine module
 FS.modules.heal_engine = {
@@ -51,8 +51,12 @@ FS.modules.heal_engine = {
     array_pool = {},
     ---@type table<string, number> Distance calculation cache
     distance_cache = {},
+    ---@type table<game_object, table> Position cache for unit positions
+    position_cache = {},
     ---@type number Last time the distance cache was cleared
     distance_cache_last_cleared = 0,
+    ---@type number Last time the position cache was cleared
+    position_cache_last_cleared = 0,
     ---@type table Statistics for object pooling
     pool_stats = {
         health_value_created = 0,
@@ -152,6 +156,21 @@ function FS.modules.heal_engine.store_health_value(unit, health_value)
     buffer.count = math.min(buffer.count + 1, buffer.capacity)
 end
 
+---@param unit game_object The unit to get position for
+---@return table Vector3 The position of the unit
+function FS.modules.heal_engine.get_cached_position(unit)
+    -- Return cached position if it exists
+    if FS.modules.heal_engine.position_cache[unit] then
+        return FS.modules.heal_engine.position_cache[unit]
+    end
+    
+    -- Get and cache the position
+    local position = unit:get_position()
+    FS.modules.heal_engine.position_cache[unit] = position
+    
+    return position
+end
+
 ---@param from_pos table Vector3 position
 ---@param to_pos table Vector3 position
 ---@return number
@@ -199,6 +218,12 @@ function FS.modules.heal_engine.maintain_caches(current_time)
     if current_time - FS.modules.heal_engine.distance_cache_last_cleared > CACHE_LIFETIME then
         FS.modules.heal_engine.distance_cache = {}
         FS.modules.heal_engine.distance_cache_last_cleared = current_time
+    end
+    
+    -- Clear position cache if it's been too long since last clear
+    if current_time - FS.modules.heal_engine.position_cache_last_cleared > CACHE_LIFETIME then
+        FS.modules.heal_engine.position_cache = {}
+        FS.modules.heal_engine.position_cache_last_cleared = current_time
     end
 end
 

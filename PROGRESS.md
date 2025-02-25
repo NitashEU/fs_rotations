@@ -1,5 +1,116 @@
 # FS Rotations Implementation Progress
 
+## Task: Implement Position Caching for Target Selection
+
+### Date: 2/25/2025
+
+### Current Status: Complete
+
+Position caching has been implemented in the heal engine to optimize target selection performance by reducing redundant position calculations.
+
+### What Was Done
+
+1. **Added Position Cache to Heal Engine**
+   - Created a global position cache table in the heal engine module
+   - Added a `get_cached_position()` helper function to retrieve cached positions
+   - Updated the `maintain_caches()` function to clear positions periodically
+   - Implemented cache refreshing in on_fast_update to ensure fresh positions
+
+2. **Modified Target Selection Functions**
+   - Updated all target selection files to use the new position caching
+   - Replaced direct calls to `unit:get_position()` with `get_cached_position(unit)`
+   - Used cached positions for all distance calculations
+   - Removed redundant local position caches in individual functions
+
+3. **Optimized Distance Calculations**
+   - Ensured all distance calculations use both the position cache and distance cache
+   - Maintained the existing distance caching behavior with position caching
+
+### Technical Details
+
+1. **Position Cache Implementation**
+   ```lua
+   -- Added to heal_engine module
+   ---@type table<game_object, table> Position cache for unit positions
+   position_cache = {},
+   ---@type number Last time the position cache was cleared
+   position_cache_last_cleared = 0,
+   ```
+
+   The cache lifetime is set to 200ms to align with average human reaction time, ensuring that position data remains accurate for fast-moving combat scenarios while still providing performance benefits:
+   ```lua
+   local CACHE_LIFETIME = FS.config:get("heal_engine.caching.lifetime", 200) -- 200ms, aligned with average human reaction time
+   ```
+
+2. **Cache Helper Function**
+   ```lua
+   ---@param unit game_object The unit to get position for
+   ---@return table Vector3 The position of the unit
+   function FS.modules.heal_engine.get_cached_position(unit)
+       -- Return cached position if it exists
+       if FS.modules.heal_engine.position_cache[unit] then
+           return FS.modules.heal_engine.position_cache[unit]
+       end
+       
+       -- Get and cache the position
+       local position = unit:get_position()
+       FS.modules.heal_engine.position_cache[unit] = position
+       
+       return position
+   end
+   ```
+
+3. **Cache Maintenance**
+   ```lua
+   -- Update position cache in on_fast_update
+   -- This ensures all target selection functions use fresh positions
+   FS.modules.heal_engine.position_cache = {}
+   FS.modules.heal_engine.position_cache_last_cleared = current_time
+   ```
+
+### Implementation Examples
+
+1. **In get_clustered_heal_target.lua:**
+   ```lua
+   -- Before:
+   local distance = FS.modules.heal_engine.get_cached_distance(
+       center_pos,
+       position_cache[unit]
+   )
+   
+   -- After:
+   local distance = FS.modules.heal_engine.get_cached_distance(
+       center_pos,
+       FS.modules.heal_engine.get_cached_position(unit)
+   )
+   ```
+
+2. **In get_frontal_cone_heal_target.lua:**
+   ```lua
+   -- Before:
+   if cone_shape:is_inside(unit:get_position(), 0) or unit == FS.variables.me then
+   
+   -- After:
+   if cone_shape:is_inside(FS.modules.heal_engine.get_cached_position(unit), 0) or unit == FS.variables.me then
+   ```
+
+### Performance Impact
+
+This implementation significantly improves performance in the following ways:
+
+1. **Reduced Function Calls**: Minimizes redundant calls to `unit:get_position()`
+2. **Lower Memory Pressure**: Eliminates the creation of multiple local position caches
+3. **Optimized Distance Calculations**: Ensures all distance checks use both caches
+4. **Consistent Cache Strategy**: Aligns with existing distance caching approach
+5. **Fresh Data Every Update**: Refreshes positions on every fast update to ensure accuracy
+
+### Next Steps
+
+The position caching implementation completes one of the key performance optimizations identified in FINDINGS.md. The next priority items are:
+
+1. **Add Comprehensive Input Validation**: Implement robust parameter validation with meaningful error messages
+2. **Separation of Concerns in Heal Engine**: Split data collection, analysis, and logging into separate modules
+
 ## Task: Implement Centralized Configuration Module
 
 ### Date: 2/25/2025
