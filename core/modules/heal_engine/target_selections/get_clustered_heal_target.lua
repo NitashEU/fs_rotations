@@ -58,9 +58,18 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     local function calculate_distance_score(unit)
         if not prioritize_distance then return 1 end
 
-        local distance = FS.variables.me:get_position():dist_to(unit:get_position())
+        local distance = FS.modules.heal_engine.get_cached_distance(
+            FS.variables.me:get_position(),
+            unit:get_position()
+        )
         -- Score increases linearly with distance (farther = higher score)
         return math.min(1.0, distance / range)
+    end
+
+    -- Position cache to avoid repeated position lookups
+    local position_cache = {}
+    for _, unit in ipairs(FS.modules.heal_engine.units) do
+        position_cache[unit] = unit:get_position()
     end
 
     -- Evaluate each potential target
@@ -68,6 +77,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
         if FS.api.spell_helper:is_spell_castable(spell_id, FS.variables.me, target, skip_facing, skip_range) then
             -- Use position_unit if provided, otherwise use target for cluster center
             local cluster_center = position_unit or target
+            local center_pos = position_cache[cluster_center]
 
             -- Count potential affected targets and calculate cluster stats
             local affected_count = 0 -- Include primary target
@@ -77,13 +87,19 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
 
             for _, unit in ipairs(FS.modules.heal_engine.units) do
                 local health_data = FS.modules.heal_engine.current_health_values[unit]
-                if health_data
-                    and health_data.health_percentage <= hp_threshold
-                    and cluster_center:get_position():dist_to(unit:get_position()) <= range then
-                    affected_count = affected_count + 1
-                    total_health_deficit = total_health_deficit + (1 - health_data.health_percentage)
-                    total_damage_score = total_damage_score + calculate_damage_score(unit)
-                    lowest_health_pct = math.min(lowest_health_pct, health_data.health_percentage)
+                if health_data and health_data.health_percentage <= hp_threshold then
+                    -- Use cached distance calculation
+                    local distance = FS.modules.heal_engine.get_cached_distance(
+                        center_pos,
+                        position_cache[unit]
+                    )
+                    
+                    if distance <= range then
+                        affected_count = affected_count + 1
+                        total_health_deficit = total_health_deficit + (1 - health_data.health_percentage)
+                        total_damage_score = total_damage_score + calculate_damage_score(unit)
+                        lowest_health_pct = math.min(lowest_health_pct, health_data.health_percentage)
+                    end
                 end
             end
 

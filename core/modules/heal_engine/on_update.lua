@@ -4,11 +4,22 @@ function FS.modules.heal_engine.on_fast_update()
     end
 
     local current_time = core.game_time()
+    
+    -- Maintain caches periodically
+    FS.modules.heal_engine.maintain_caches(current_time)
 
     -- Update health values for all units
     for _, unit in pairs(FS.modules.heal_engine.units) do
-        local stored_values = FS.modules.heal_engine.health_values[unit] or {}
-        local last_value = #stored_values > 0 and stored_values[#stored_values] or nil
+        -- Ensure circular buffer is initialized
+        if not FS.modules.heal_engine.health_values[unit] then
+            FS.modules.heal_engine.initialize_circular_buffer(unit)
+        end
+        
+        local buffer = FS.modules.heal_engine.health_values[unit]
+        local records = buffer.records
+        local last_index = (buffer.next_index - 2) % buffer.capacity + 1
+        local last_value = buffer.count > 0 and records[last_index] or nil
+        
         local current_health = unit:get_health()
         local current_shield = unit:get_total_shield() or 0
         local total_health = current_health + current_shield
@@ -55,39 +66,19 @@ function FS.modules.heal_engine.on_fast_update()
         end
 
         if should_store then
-            local new_value = {
-                health = total_health,
-                max_health = unit:get_max_health(),
-                health_percentage = current_health / unit:get_max_health(),
-                time = current_time
-            }
+            -- Get a health value object from the pool
+            local new_value = FS.modules.heal_engine.get_health_value()
+            new_value.health = total_health
+            new_value.max_health = unit:get_max_health()
+            new_value.health_percentage = current_health / unit:get_max_health()
+            new_value.time = current_time
 
-            table.insert(stored_values, new_value)
+            -- Store in circular buffer
+            FS.modules.heal_engine.store_health_value(unit, new_value)
+            
+            -- Update current health values reference
             FS.modules.heal_engine.current_health_values[unit] = new_value
         end
-
-        -- Only clean up old values every 5 seconds to avoid excessive processing
-        if current_time % 5000 < 100 then
-            local valid_values = {}
-            local removed_count = 0
-            for _, value in ipairs(stored_values) do
-                if current_time - value.time < 15000 then
-                    table.insert(valid_values, value)
-                else
-                    removed_count = removed_count + 1
-                end
-            end
-
-            if FS.modules.heal_engine.settings.logging.health.should_show_cleanup() and
-                FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                removed_count > 0 then
-                core.log(string.format("Cleaned up %d old values for %s", removed_count, unit:get_name()))
-            end
-
-            stored_values = valid_values
-        end
-
-        FS.modules.heal_engine.health_values[unit] = stored_values
     end
 end
 
