@@ -1,6 +1,7 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
+## [1.15.2] - 2025-02-25
 ## [1.15.1] - 2025-02-25
 ## [1.15.0] - 2025-02-25
 ## [1.14.0] - 2025-02-25
@@ -10,7 +11,7 @@ All notable changes to FS Rotations will be documented in this file.
 ## [1.10.4] - 2025-02-25
 ### Changed## [1.10.3] - 2025-02-25
 - restructure heal engine with domain-oriented separation of concerns### Fixed
-- resolve Lua diagnostics issues and improve error handling- Implement comprehensive input validation for heal engine target selection functions
+- resolve remaining diagnostics issues with menu extension functions- resolve Lua diagnostics issues and improve error handling- Implement comprehensive input validation for heal engine target selection functions
 
 ## [1.10.2] - 2025-02-25
 ### Performance

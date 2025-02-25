@@ -9,10 +9,13 @@ local vec2 = require("common/geometry/vector_2")
 
 local tag = "fs_rotations_core_"
 
+-- Initialize menu namespace
+FS.menu = FS.menu or {}
+
 -- Add window extensions for tooltip handling
 ---@param window window The window to extend
 ---@return window Extended window with additional methods
-local function extend_window(window)
+function FS.menu.extend_window(window)
     -- Add is_last_widget_hovered method
     window.is_last_widget_hovered = function(self)
         -- This is a simplification - ideally we would track the last widget bounds
@@ -33,7 +36,7 @@ end
 -- Extend combobox functionality
 ---@param combobox combobox The combobox to extend
 ---@return combobox Extended combobox with additional methods
-local function extend_combobox(combobox)
+function FS.menu.extend_combobox(combobox)
     local items = {}
     local selected_index = 1
     
@@ -66,6 +69,8 @@ local function extend_combobox(combobox)
     return combobox
 end
 
+-- Extend base menu with core elements
+FS.menu = FS.menu or {}
 FS.menu = {
     main_tree = core.menu.tree_node(),
     enable_script_check = core.menu.checkbox(false, tag .. "enable_script_check"),
