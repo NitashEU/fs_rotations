@@ -2,6 +2,24 @@
 
 All notable changes to FS Rotations will be documented in this file.
 
+## [1.10.0] - 2025-02-25
+
+### Added
+- Robust error handling and exception boundaries system
+- Error recovery mechanisms for all callbacks
+- Visual error reporting in UI
+- Automatic component disabling after repeated errors
+- Error tracking and management
+
+## [1.9.0] - 2025-02-25
+
+### Added
+- Centralized versioning system
+- Automatic changelog generation
+- Version display in UI
+- Version-based settings migration
+- Version compatibility checking
+
 ## [1.8.0] - 2025-02-25
 
 ### Added
