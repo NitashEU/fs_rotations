@@ -51,18 +51,21 @@
 - Access cached positions via `cache.get_position(unit)`
 - Access cached distances via `cache.get_distance(pos1, pos2)`
 
-## Input Validation
+## Input Validation and Error Handling
 - Use FS.validator library for ALL parameter validation
+- Use FS.error_handler:safe_execute for critical operations
 - Follow this validation order in all functions:
   1. Required parameters first (`check_required`)
   2. Type and range validation next (`check_number`, `check_percent`, etc.)
   3. Set defaults for optional parameters using `FS.validator.default()`
   4. Validate optional parameters after setting defaults
-- Always specify component name in validation calls
+- Always specify consistent component name in dot notation (heal_engine.module.function)
 - Document all parameters with LuaDoc annotations including type and value ranges
 - Add detailed parameter descriptions in documentation
 - Validate objects using `check_game_object` before accessing properties
 - For collections, validate both existence and non-emptiness
+- Implement fallback behavior when critical operations fail
+- Maintain consistency in error component names to enable proper error propagation
 
 ## Logging
 - Centralize logging in `logging/health.lua`

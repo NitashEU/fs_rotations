@@ -88,10 +88,24 @@ FS.validator = {
 ```
 
 ### 2. Enhanced Error Handling
-- [ ] Add stack trace capture to error_handler.record
-- [ ] Implement progressive backoff for circuit breaker
-- [ ] Create basic error visualization in menu
-- [ ] Add component status indicators
+- [x] Add stack trace capture to error_handler.record
+  - Added detailed stack trace capture using debug.traceback
+  - Created structured error_instance class with message, stack, timestamp, and game state
+  - Implemented filtering to remove internal error handling lines from stack trace
+- [x] Implement progressive backoff for circuit breaker
+  - Added exponential backoff based on error frequency
+  - Created configurable base and maximum cooldown parameters
+  - Implemented formula: base_cooldown * 2^(excess_errors)
+- [x] Create advanced error visualization in menu
+  - Designed color-coded error list with status indicators
+  - Added detailed error view with timestamp, message, and stack trace
+  - Implemented game state context display (player, target, combat status)
+  - Created clickable error entries for easy navigation
+- [x] Add component status indicators
+  - Added ⚠️ for active errors and ⛔ for disabled components
+  - Included time-ago display for error occurrence
+  - Added status indicators showing remaining disable time
+  - Created comprehensive documentation in docs/fs-rotations/api/error-handler.md
 
 ### 3. Performance Metrics
 - [ ] Create performance tracking module

@@ -29,9 +29,12 @@
 - Performance: Cache frequently accessed values (positions, distances), utilize object pooling, optimize update frequencies
 - Error Handling: 
   - Use FS.validator for ALL input parameter validation (never validate manually)
+  - Always use FS.error_handler:safe_execute for critical operations with proper component names
+  - Use consistent component naming with dot notation (module.submodule.function)
   - Add component name to all validation calls for clear error tracking
   - Handle all potential nil values and provide meaningful default values
-  - Include fallback behavior for error cases
+  - Implement fallback behavior for error cases 
+  - Use nested structure for component names to enable parent/child error relationship
 
 ## Code Organization
 - `/classes/` - Class-specific implementations organized by class/spec
