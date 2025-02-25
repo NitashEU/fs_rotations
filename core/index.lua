@@ -13,6 +13,7 @@ require("core/settings_manager")  -- Centralized settings manager
 require("core/settings_interface") -- Interface between legacy and centralized settings
 require("core/settings_validation") -- Validation for settings
 require("core/settings_menu")      -- UI for centralized settings
+require("core/module_interface")   -- Module interface standardization
 
 -- Initialize settings system
 FS.settings_manager:init()

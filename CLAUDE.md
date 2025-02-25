@@ -12,6 +12,18 @@
   - Example: `./commit.sh "fix: correct healing threshold" classes/paladin/holy/logic/healing.lua`
 - VSCode + sumneko Lua extension recommended for intellisense
 
+## Module Interface System
+- All modules must implement appropriate interfaces from `FS.module_interface`
+- Core modules should implement the `core_module` interface
+- Specialization modules should implement the `spec_module` interface
+- Four standard interfaces available:
+  - `core_module`: Base functionality modules with update cycles and menu
+  - `spec_module`: Class specialization modules with rotation logic
+  - `ui_module`: Interface components and visualizations
+  - `data_module`: Data collection, analysis, and reporting
+- See `docs/fs-rotations/plugin/architecture/module-interfaces.md` for details
+- Use `FS.module_interface:validate(module, interface_name, component_name)` to validate
+
 ## Code Style Guidelines
 - Indentation: Use spaces (2 or 4), be consistent with file
 - Documentation:

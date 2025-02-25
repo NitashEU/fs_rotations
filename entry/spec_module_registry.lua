@@ -10,6 +10,7 @@ local enums = require("common/enums")
 --- - Explicit dependency declaration 
 --- - Better error handling
 --- - Easier maintenance
+--- - Interface compliance validation
 
 -- Spec module registry maps spec enums to module info
 local spec_module_registry = {
@@ -20,6 +21,7 @@ local spec_module_registry = {
         dependencies = {
             "heal_engine"
         },
+        interface = "spec_module",
         enabled = true
     },
     
@@ -33,6 +35,7 @@ local spec_module_registry = {
             "heal_engine",
             "atonement_tracker"
         },
+        interface = "spec_module",
         enabled = false -- Not yet implemented
     }
     --]]
@@ -69,7 +72,7 @@ function FS.get_spec_module_info(spec_enum)
     return spec_module_registry[spec_enum]
 end
 
---- Loads a specialization module with dependency validation
+--- Loads a specialization module with dependency validation and interface compliance checks
 ---@param spec_enum number The specialization enum to load
 ---@return boolean success
 ---@return table|string module_or_error Module if successful, error message if not
@@ -99,9 +102,23 @@ function FS.load_spec_module(spec_enum)
         return false, "Failed to load " .. module_info.name .. ": " .. tostring(result)
     end
     
-    -- Validate module interface
+    -- Validate basic module structure
     if type(result) ~= "table" then
-        return false, "Invalid module format for " .. module_info.name
+        return false, "Invalid module format for " .. module_info.name .. ": expected table, got " .. type(result)
+    end
+    
+    -- Validate module interface
+    if module_info.interface and FS.module_interface then
+        local component_name = "module_registry." .. module_info.name
+        local interface_valid, interface_error = FS.module_interface:validate(
+            result, 
+            module_info.interface, 
+            component_name
+        )
+        
+        if not interface_valid then
+            return false, "Interface validation failed for " .. module_info.name .. ": " .. interface_error
+        end
     end
     
     return true, result
