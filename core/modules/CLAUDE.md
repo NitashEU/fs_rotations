@@ -1,5 +1,11 @@
 # Core Modules Implementation Guidelines
 
+## Implementation Constraints
+- Shares memory with WoW client and other plugins - memory management is critical
+- No automated testing - validate through manual testing and user feedback
+- Performance-critical code that runs in game loop - optimize accordingly
+- Maintain compatibility with _api interfaces (do not modify these)
+
 ## Module Structure
 - Implement `index.lua` as the main entry point
 - Expose a consistent interface for all modules

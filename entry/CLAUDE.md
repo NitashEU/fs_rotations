@@ -1,5 +1,11 @@
 # Entry System Implementation Guidelines
 
+## Implementation Constraints
+- Shares memory with WoW client and other system components
+- No automated testing - validate through manual testing and user feedback
+- Performance optimization is critical for entry points and callbacks
+- Maintain compatibility with _api interfaces (do not modify these)
+
 ## Callback Structure
 - Register callbacks through appropriate entry points
 - Implement all required callbacks in spec modules:

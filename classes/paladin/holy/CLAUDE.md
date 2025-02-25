@@ -1,5 +1,11 @@
 # Holy Paladin Implementation Guidelines
 
+## Implementation Constraints
+- Shares memory with WoW client - validate all inputs thoroughly
+- No automated testing - testing done manually through user feedback
+- Performance optimization is critical for smooth gameplay experience
+- Maintain compatibility with _api interfaces (do not modify these)
+
 ## Rotation Logic
 - Implement all rotation logic in `logic/rotations/*.lua`
 - Healing priority follows HP thresholds and role priority

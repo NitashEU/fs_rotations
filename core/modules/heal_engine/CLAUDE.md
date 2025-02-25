@@ -1,5 +1,11 @@
 # Heal Engine Implementation Guidelines
 
+## Implementation Constraints
+- Shares memory with WoW client and other plugins - memory management is critical
+- Testing is done manually through user feedback and logs
+- Performance-critical component that runs in game loop - optimize accordingly
+- Maintain compatibility with _api interfaces (do not modify these)
+
 ## Module Structure
 - Domain-oriented organization in subdirectories:
   - `core/` - Core functionality and initialization

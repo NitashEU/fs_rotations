@@ -1,5 +1,11 @@
 # CLAUDE.md - FS Rotations Guidelines
 
+## Project Constraints
+- Plugin for World of Warcraft that shares memory with game, other plugins, and scripts
+- `/_api/` directory contains interfaces to the game that CANNOT be modified
+- No automated testing available - testing is manual with user feedback and logs
+- Memory management is critical due to shared environment
+
 ## Build & Development Commands
 - `./commit.sh "<type>: <message>" <file1> <file2>...` - Commit with version bump
   - Types: feat, fix, perf, docs, style, refactor, test, chore
