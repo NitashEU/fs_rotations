@@ -17,7 +17,7 @@
   - Handle visualization in drawing.lua
 - Settings: All thresholds should be percentage-based (0-100)
 - Performance: Cache frequently accessed values (positions, distances), utilize object pooling, optimize update frequencies
-- Error Handling: Validate input parameters, check for nil before operations
+- Error Handling: Validate input parameters with detailed error messages, check for nil values, validate parameter types and ranges
 
 ## Code Organization
 - `/classes/` - Class-specific implementations organized by class/spec

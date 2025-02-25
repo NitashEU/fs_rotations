@@ -29,6 +29,15 @@
 - Access cached positions via `get_cached_position(unit)`
 - Access cached distances via `get_cached_distance(pos1, pos2)`
 
+## Input Validation
+- Implement comprehensive parameter validation for all functions
+- Check required parameters with specific error messages
+- Validate parameter types and value ranges
+- Check object methods and properties before use
+- Use the error_handler system to report validation failures
+- Add default values for optional boolean parameters
+- Validate collections for existence and non-emptiness
+
 ## Interface Integration
 - Expose a consistent API for all healing specializations
 - Document all public functions with type annotations
