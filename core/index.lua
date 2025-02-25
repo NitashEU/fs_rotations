@@ -14,6 +14,8 @@ require("core/settings_interface") -- Interface between legacy and centralized s
 require("core/settings_validation") -- Validation for settings
 require("core/settings_menu")      -- UI for centralized settings
 require("core/module_interface")   -- Module interface standardization
+require("core/events")           -- Event system for pub/sub communication
+require("core/events_debug")     -- Debug tools for event system
 
 -- Initialize settings system
 FS.settings_manager:init()

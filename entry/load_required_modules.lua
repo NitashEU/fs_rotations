@@ -72,6 +72,15 @@ function FS.entry_helper.load_required_modules()
         FS.modules[module_name] = result
         table.insert(FS.loaded_modules, result)
         core.log("Loaded required module: " .. module_name)
+        
+        -- Emit module.loaded event if events system is available
+        if FS.events then
+            FS.events:emit("module.loaded", {
+                name = module_name,
+                module = result,
+                timestamp = core.game_time() / 1000
+            }, "load_required_modules")
+        end
     end
     
     return true

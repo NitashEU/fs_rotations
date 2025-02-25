@@ -204,54 +204,36 @@ FS.validator = {
   - Updated load_required_modules.lua to validate core modules
   - Improved error reporting with component context
   - Maintained backward compatibility with existing modules
+  - Fixed type annotations for proper diagnostics integration
 
 ## Phase 3: Advanced Architecture (3-4 weeks)
 
 ### 1. Event System
 
-- [ ] Design publish/subscribe system
-- [ ] Implement event bus
-- [ ] Create debugging tools for event tracing
-- [ ] Convert critical components to use events
-
-```lua
--- Example event system implementation
-FS.events = {
-    listeners = {},
-
-    on = function(self, event_name, callback)
-        self.listeners[event_name] = self.listeners[event_name] or {}
-        table.insert(self.listeners[event_name], callback)
-        return function() -- Return unsubscribe function
-            self:off(event_name, callback)
-        end
-    end,
-
-    off = function(self, event_name, callback)
-        if not self.listeners[event_name] then return end
-        for i, cb in ipairs(self.listeners[event_name]) do
-            if cb == callback then
-                table.remove(self.listeners[event_name], i)
-                break
-            end
-        end
-    end,
-
-    emit = function(self, event_name, data)
-        if not self.listeners[event_name] then return end
-        for _, callback in ipairs(self.listeners[event_name]) do
-            FS.error_handler:safe_execute(callback, data)
-        end
-    end,
-
-    debug = {
-        enabled = false,
-        log = function(event_name, data)
-            -- Log events when debugging is enabled
-        end
-    }
-}
-```
+- [x] Design publish/subscribe system
+  - Created comprehensive event system with type-safe interfaces
+  - Implemented hierarchical event patterns using dot notation
+  - Added support for prioritized event handlers
+  - Designed clear event data structure with consistent fields
+  - Created one-time event subscription capability
+- [x] Implement event bus
+  - Developed core/events.lua with full pub/sub implementation
+  - Added error handling via error_handler integration
+  - Implemented proper listener management with unique IDs
+  - Created source tracking for event emission
+  - Added safety mechanisms for callback execution
+- [x] Create debugging tools for event tracing
+  - Implemented comprehensive events_debug.lua debug UI
+  - Created event history tracking with timestamp and source information
+  - Added test event generation capabilities
+  - Built interactive UI for event monitoring and listener inspection
+  - Integrated with settings system for enabling/disabling debugging
+- [x] Convert critical components to use events
+  - Updated on_update.lua to emit standard events
+  - Integrated events with module loading for load notifications
+  - Added combat state change detection with event emission
+  - Created render events in on_render.lua
+  - Documented standard event types and naming conventions
 
 ### 2. Dependency Injection
 

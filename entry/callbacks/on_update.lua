@@ -11,8 +11,11 @@ local function safe_execute(module, func_name, module_name)
     local component = module_name .. "." .. func_name
     
     -- Use the enhanced safe_execute method in error_handler
-    FS.error_handler:safe_execute(module[func_name], component)
+    return FS.error_handler:safe_execute(module[func_name], component)
 end
+
+-- Track combat state for change detection
+local last_combat_state = false
 
 ---@type on_update
 function FS.entry_helper.on_update()
@@ -29,6 +32,11 @@ function FS.entry_helper.on_update()
             FS.error_handler.max_cooldown = FS.menu.error_handler.max_cooldown_slider:get()
             FS.error_handler.capture_state = FS.menu.error_handler.capture_state_checkbox:get()
         end)
+    end
+    
+    -- Emit system.fast_update event
+    if FS.events then
+        FS.events:emit("system.fast_update", {timestamp = core.game_time() / 1000}, "entry.on_update")
     end
     
     -- Execute fast updates with error protection
@@ -51,8 +59,41 @@ function FS.entry_helper.on_update()
     
     FS.variables.me = player
     
+    -- Check for combat state changes
+    if FS.events and player then
+        local in_combat = player.in_combat
+        
+        -- Detect combat state changes
+        if in_combat ~= last_combat_state then
+            if in_combat then
+                -- Combat started
+                FS.events:emit("player.combat.enter", {
+                    player = player,
+                    timestamp = core.game_time() / 1000
+                }, "entry.on_update")
+            else
+                -- Combat ended
+                FS.events:emit("player.combat.exit", {
+                    player = player,
+                    timestamp = core.game_time() / 1000
+                }, "entry.on_update")
+            end
+            
+            -- Update state
+            last_combat_state = in_combat
+        end
+    end
+    
     -- Update humanizer
     safe_execute(FS.humanizer, "update", "humanizer")
+    
+    -- Emit system.update event
+    if FS.events then
+        FS.events:emit("system.update", {
+            player = player,
+            timestamp = core.game_time() / 1000
+        }, "entry.on_update")
+    end
     
     -- Execute normal updates with error protection
     for i, module in pairs(FS.loaded_modules) do
@@ -62,5 +103,12 @@ function FS.entry_helper.on_update()
     -- Execute spec update with error protection
     if FS.spec_config then
         safe_execute(FS.spec_config, "on_update", "spec_" .. (FS.spec_config.name or "unknown"))
+    end
+    
+    -- Emit system.update.end event to signal completion of update cycle
+    if FS.events then
+        FS.events:emit("system.update.end", {
+            timestamp = core.game_time() / 1000
+        }, "entry.on_update")
     end
 end

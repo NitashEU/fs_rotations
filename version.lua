@@ -3,8 +3,8 @@
 
 local version = {
     major = 1,
-    minor = 16,
-    patch = 1,
+    minor = 17,
+    patch = 0,
 
     -- Generate string version for display
     toString = function(self)
@@ -15,7 +15,7 @@ local version = {
     bump = function(self, type)
         if type == "feat" then
             self.minor = self.minor + 1
-            self.patch = 1
+            self.patch = 0
         elseif type == "fix" or type == "perf" or type == "refactor" then
             self.patch = self.patch + 1
         end

@@ -1,10 +1,11 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
+## [1.17.0] - 2025-02-25
 ## [1.16.1] - 2025-02-25
 ## [1.16.0] - 2025-02-25
 ### Added## [1.15.3] - 2025-02-25
-- implement module interface standardization with validation and documentation## [1.15.2] - 2025-02-25
+- implement comprehensive event system with debugging tools- implement module interface standardization with validation and documentation## [1.15.2] - 2025-02-25
 ## [1.15.1] - 2025-02-25
 ## [1.15.0] - 2025-02-25
 ## [1.14.0] - 2025-02-25

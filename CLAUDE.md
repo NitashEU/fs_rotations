@@ -24,6 +24,20 @@
 - See `docs/fs-rotations/plugin/architecture/module-interfaces.md` for details
 - Use `FS.module_interface:validate(module, interface_name, component_name)` to validate
 
+## Event System
+- Use the event system for decoupled communication between components
+- Subscribe to events with `FS.events:on(event_name, callback, options)`
+- Emit events with `FS.events:emit(event_name, data, source)`
+- Use hierarchical event names with dot notation (e.g., `module.action.result`)
+- Always include timestamps in event data
+- Standard event types:
+  - System: `system.update`, `system.fast_update`, `system.render`
+  - Player: `player.combat.enter`, `player.combat.exit`
+  - Module: `module.loaded`, `spec.loaded`
+- Event debugging can be enabled through settings
+- Use `emit_hierarchical` for events that should trigger parent handlers
+- See `docs/fs-rotations/api/events.md` for full documentation
+
 ## Code Style Guidelines
 - Indentation: Use spaces (2 or 4), be consistent with file
 - Documentation:
