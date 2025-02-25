@@ -1,6 +1,7 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
+## [1.11.0] - 2025-02-25
 ## [1.10.4] - 2025-02-25
 ### Changed## [1.10.3] - 2025-02-25
 - restructure heal engine with domain-oriented separation of concerns### Fixed
@@ -17,7 +18,7 @@ All notable changes to FS Rotations will be documented in this file.
 ## [1.10.0] - 2025-02-25
 
 ### Added
-- Robust error handling and exception boundaries system
+- add standardized validation library- Robust error handling and exception boundaries system
 - Error recovery mechanisms for all callbacks
 - Visual error reporting in UI
 - Automatic component disabling after repeated errors

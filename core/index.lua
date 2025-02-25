@@ -6,6 +6,7 @@ require("core/menu")
 require("core/settings")
 require("core/variables")
 require("core/error_handler")
+require("core/validator")     -- Load validation library after error_handler
 
 -- Initialize modules table
 FS.modules = {}
