@@ -22,6 +22,15 @@ FS.menu = {
         base_jitter = core.menu.slider_float(0.05, 0.30, 0.15, tag .. "base_jitter"),
         latency_jitter = core.menu.slider_float(0.01, 0.20, 0.05, tag .. "latency_jitter"),
         max_jitter = core.menu.slider_float(0.10, 0.50, 0.25, tag .. "max_jitter"),
+    },
+    
+    -- Add error handler menu elements
+    error_handler = {
+        tree = core.menu.tree_node(),
+        show_errors = core.menu.checkbox(false, tag .. "show_errors"),
+        clear_errors = core.menu.button(tag .. "clear_errors"),
+        max_errors_slider = core.menu.slider_int(1, 20, 5, tag .. "max_errors"),
+        cooldown_slider = core.menu.slider_int(10, 300, 60, tag .. "error_cooldown")
     }
 }
 
