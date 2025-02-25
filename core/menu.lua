@@ -24,13 +24,18 @@ FS.menu = {
         max_jitter = core.menu.slider_float(0.10, 0.50, 0.25, tag .. "max_jitter"),
     },
     
-    -- Add error handler menu elements
+    -- Add enhanced error handler menu elements
     error_handler = {
         tree = core.menu.tree_node(),
         show_errors = core.menu.checkbox(false, tag .. "show_errors"),
+        show_stack_traces = core.menu.checkbox(false, tag .. "show_stack_traces"),
         clear_errors = core.menu.button(tag .. "clear_errors"),
+        error_details = core.menu.tree_node(),
         max_errors_slider = core.menu.slider_int(1, 20, 5, tag .. "max_errors"),
-        cooldown_slider = core.menu.slider_int(10, 300, 60, tag .. "error_cooldown")
+        base_cooldown_slider = core.menu.slider_int(5, 60, 10, tag .. "base_cooldown"),
+        max_cooldown_slider = core.menu.slider_int(60, 600, 300, tag .. "max_cooldown"),
+        capture_state_checkbox = core.menu.checkbox(true, tag .. "capture_state"),
+        selected_error = nil -- This will store the currently selected error for detailed view
     }
 }
 

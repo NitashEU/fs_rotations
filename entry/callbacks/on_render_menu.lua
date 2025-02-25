@@ -3,46 +3,51 @@ local color = require("common/color")
 
 ---@alias on_render_menu fun()
 
--- Safe execution wrapper for module menu rendering functions
--- @param module table The module containing the function
--- @param func_name string Name of the function to call
--- @param module_name string Name of the module for error tracking
+---Safe execution wrapper for module menu rendering functions
+---@param module table The module containing the function
+---@param func_name string Name of the function to call
+---@param module_name string Name of the module for error tracking
 local function safe_render_menu(module, func_name, module_name)
     if not module[func_name] then return end
     
-    -- Check if this component is allowed to run based on error history
-    if not FS.error_handler:can_run(module_name .. "." .. func_name) then
-        return
-    end
+    -- Create component name
+    local component = module_name .. "." .. func_name
     
-    local success, error_msg = pcall(module[func_name])
-    if not success then
-        -- Record the error and get guidance on whether to continue using this component
-        FS.error_handler:record(module_name .. "." .. func_name, error_msg)
-    end
+    -- Use the enhanced safe_execute method in error_handler
+    FS.error_handler:safe_execute(module[func_name], component)
 end
 
--- Safe function to render menu elements
--- @param menu_element table The menu element to render
--- @param label string The label for the menu element
--- @param tooltip string Optional tooltip
--- @return boolean Whether the render was successful
+---Safe function to render menu elements
+---@param menu_element table The menu element to render
+---@param label string The label for the menu element
+---@param tooltip string|nil Optional tooltip
+---@return boolean Whether the render was successful
 local function safe_render_element(menu_element, label, tooltip)
     if not menu_element then return false end
     
-    local success, error_msg
-    if tooltip then
-        success, error_msg = pcall(function() menu_element:render(label, tooltip) end)
-    else
-        success, error_msg = pcall(function() menu_element:render(label) end)
+    local component = "menu_element." .. label
+    
+    local render_func = function()
+        if tooltip then
+            menu_element:render(label, tooltip)
+        else
+            menu_element:render(label)
+        end
+        
+        -- For buttons, return true if they were clicked
+        if type(menu_element.was_clicked) == "function" and menu_element:was_clicked() then
+            return true
+        end
+        return false -- Not clicked or not a button
     end
     
+    local success, result = FS.error_handler:safe_execute(render_func, component)
+    
     if not success then
-        FS.error_handler:record("menu_element." .. label, error_msg)
         return false
     end
     
-    return true
+    return result or false -- Convert nil to false
 end
 
 ---@type on_render_menu
@@ -72,51 +77,152 @@ function FS.entry_helper.on_render_menu()
                     "Maximum total jitter percentage")
             end
             
-            -- Error handler settings (new section)
+            -- Enhanced error handler settings
             if FS.menu.error_handler then
                 safe_render_element(FS.menu.error_handler.tree, "Error Handling", color.white())
                 
                 -- Only render error handling menu if the tree node is open
                 if FS.menu.error_handler.tree:is_open() then
+                    -- Basic settings section
+                    core.menu.text("Settings"):render()
+                    
                     safe_render_element(FS.menu.error_handler.show_errors, "Show Error Details", 
                         "Display detailed error information in the menu")
+                    
+                    safe_render_element(FS.menu.error_handler.show_stack_traces, "Show Stack Traces", 
+                        "Show detailed stack traces for errors (can be verbose)")
+                    
+                    safe_render_element(FS.menu.error_handler.capture_state_checkbox, "Capture Game State", 
+                        "Capture game state when errors occur (player, target, combat status)")
                     
                     safe_render_element(FS.menu.error_handler.max_errors_slider, "Max Errors Before Disabling", 
                         "Number of errors before temporarily disabling a component")
                     
-                    safe_render_element(FS.menu.error_handler.cooldown_slider, "Disable Duration (seconds)", 
-                        "How long to disable a component after repeated errors")
+                    safe_render_element(FS.menu.error_handler.base_cooldown_slider, "Base Disable Duration (seconds)", 
+                        "Initial duration to disable a component after repeated errors")
+                    
+                    safe_render_element(FS.menu.error_handler.max_cooldown_slider, "Max Disable Duration (seconds)", 
+                        "Maximum duration to disable a component with frequent errors")
                     
                     if safe_render_element(FS.menu.error_handler.clear_errors, "Clear All Errors") then
                         -- Button was clicked, clear error history
                         FS.error_handler:reset()
+                        FS.menu.error_handler.selected_error = nil
                     end
                     
                     -- Display error list if enabled
                     if FS.menu.error_handler.show_errors:get_state() then
-                        local error_count = 0
+                        -- Get errors for display
+                        local errors_for_display = FS.error_handler:get_errors_for_display()
+                        local error_count = #errors_for_display
                         
-                        -- Count errors
-                        for _ in pairs(FS.error_handler.errors) do
-                            error_count = error_count + 1
+                        -- Separator
+                        core.menu.separator():render()
+                        
+                        -- Display error count with color-coded header
+                        if error_count > 0 then
+                            core.menu.text("Active Errors: " .. error_count):render(color.new(255, 100, 100, 255))
+                        else
+                            core.menu.text("No Active Errors"):render(color.new(100, 255, 100, 255))
                         end
-                        
-                        -- Display error count
-                        core.menu.text("Active Errors: " .. error_count):render()
                         
                         -- List errors
                         if error_count > 0 then
-                            for component, error_data in pairs(FS.error_handler.errors) do
-                                local disabled_until = error_data.disabled_until or 0
-                                local current_time = core.game_time() / 1000
-                                local status = ""
+                            for i, error_info in ipairs(errors_for_display) do
+                                -- Format time for display
+                                local time_ago = math.floor(core.game_time() / 1000 - error_info.timestamp)
+                                local time_text = time_ago <= 60 and time_ago .. "s ago" or 
+                                                 math.floor(time_ago / 60) .. "m " .. (time_ago % 60) .. "s ago"
                                 
-                                if disabled_until > current_time then
-                                    status = " [DISABLED for " .. math.floor(disabled_until - current_time) .. "s]"
+                                -- Create error display text with color coding based on status
+                                local error_text
+                                local err_color
+                                
+                                if error_info.status:find("Disabled") then
+                                    error_text = "⛔ " .. error_info.component .. " (" .. error_info.count .. ") - " .. time_text
+                                    err_color = color.new(255, 80, 80, 255)
+                                else
+                                    error_text = "⚠️ " .. error_info.component .. " (" .. error_info.count .. ") - " .. time_text
+                                    err_color = color.new(255, 180, 0, 255)
                                 end
                                 
-                                local error_text = component .. status .. " (" .. error_data.count .. " times)"
-                                core.menu.text(error_text):render()
+                                -- Display the error with selection capability
+                                local error_button = core.menu.button("error_" .. i)
+                                error_button:render_as_selectable(error_text, err_color, FS.menu.error_handler.selected_error == error_info.component)
+                                
+                                -- Handle error selection for details view
+                                if error_button:was_clicked() then
+                                    if FS.menu.error_handler.selected_error == error_info.component then
+                                        FS.menu.error_handler.selected_error = nil -- Deselect if already selected
+                                    else
+                                        FS.menu.error_handler.selected_error = error_info.component
+                                        FS.error_handler:mark_reported(error_info.component)
+                                    end
+                                end
+                            end
+                            
+                            -- Show details for selected error
+                            if FS.menu.error_handler.selected_error then
+                                local details = FS.error_handler:get_error_details(FS.menu.error_handler.selected_error)
+                                
+                                if details and #details.instances > 0 then
+                                    -- Separator
+                                    core.menu.separator():render()
+                                    
+                                    -- Display details header
+                                    core.menu.text("Error Details: " .. FS.menu.error_handler.selected_error):render(color.new(255, 255, 100, 255))
+                                    
+                                    -- Display the latest error instance
+                                    local latest = details.instances[1]
+                                    
+                                    -- Error message
+                                    core.menu.text("Message: " .. latest.message):render()
+                                    
+                                    -- Timestamp
+                                    local time_ago = math.floor(core.game_time() / 1000 - latest.timestamp)
+                                    local time_text = time_ago <= 60 and time_ago .. " seconds ago" or 
+                                                    math.floor(time_ago / 60) .. " minutes " .. (time_ago % 60) .. " seconds ago"
+                                    core.menu.text("Time: " .. time_text):render()
+                                    
+                                    -- Stack trace if enabled
+                                    if FS.menu.error_handler.show_stack_traces:get_state() and latest.stack then
+                                        core.menu.text("Stack Trace:"):render()
+                                        
+                                        -- Process stack trace to remove the initial lines related to our error handling
+                                        local stack_lines = {}
+                                        for line in latest.stack:gmatch("([^\n]+)") do
+                                            -- Skip internal error handler lines
+                                            if not line:find("safe_execute") and not line:find("pcall") then
+                                                table.insert(stack_lines, line)
+                                            end
+                                        end
+                                        
+                                        -- Display each line of the stack trace
+                                        for _, line in ipairs(stack_lines) do
+                                            core.menu.text("  " .. line):render()
+                                        end
+                                    end
+                                    
+                                    -- Game state if captured
+                                    if latest.game_state then
+                                        core.menu.text("Game State:"):render()
+                                        
+                                        if latest.game_state.player then
+                                            core.menu.text("  Player: " .. latest.game_state.player.name .. 
+                                                          " (" .. latest.game_state.player.class .. 
+                                                          ", HP: " .. latest.game_state.player.health_percent .. "%)"):render()
+                                        end
+                                        
+                                        if latest.game_state.target then
+                                            core.menu.text("  Target: " .. latest.game_state.target.name .. 
+                                                          " (HP: " .. latest.game_state.target.health_percent .. "%)"):render()
+                                        else
+                                            core.menu.text("  Target: None"):render()
+                                        end
+                                        
+                                        core.menu.text("  In Combat: " .. (latest.game_state.in_combat and "Yes" or "No")):render()
+                                    end
+                                end
                             end
                         end
                     end

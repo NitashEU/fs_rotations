@@ -1,6 +1,7 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
+## [1.12.0] - 2025-02-25
 ## [1.11.0] - 2025-02-25
 ## [1.10.4] - 2025-02-25
 ### Changed## [1.10.3] - 2025-02-25
@@ -18,7 +19,7 @@ All notable changes to FS Rotations will be documented in this file.
 ## [1.10.0] - 2025-02-25
 
 ### Added
-- add standardized validation library- Robust error handling and exception boundaries system
+- enhance error handler with stack traces, progressive backoff, and UI improvements- add standardized validation library- Robust error handling and exception boundaries system
 - Error recovery mechanisms for all callbacks
 - Visual error reporting in UI
 - Automatic component disabling after repeated errors
