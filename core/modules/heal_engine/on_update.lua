@@ -31,11 +31,15 @@ function FS.modules.heal_engine.on_fast_update()
             FS.modules.heal_engine.fight_total_damage[unit] = 0
         end
 
-        -- Only store if health changed or enough time passed (250ms)
+        -- Get config values for health tracking
+        local significant_change = FS.config:get("heal_engine.history.significant_change", 0.01)
+        local record_interval = FS.config:get("heal_engine.history.record_interval", 250)
+        
+        -- Only store if health changed or enough time passed
         local should_store = not last_value
         if last_value then
-            local health_changed = math.abs(last_value.health - total_health) > 0.01
-            local time_passed = current_time - last_value.time >= 250
+            local health_changed = math.abs(last_value.health - total_health) > significant_change
+            local time_passed = current_time - last_value.time >= record_interval
             should_store = health_changed or time_passed
 
             -- Track fight-wide damage

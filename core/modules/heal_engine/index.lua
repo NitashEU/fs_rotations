@@ -4,11 +4,11 @@
 ---@field public health_percentage number
 ---@field public time number
 
--- Object pool constants
-local MAX_HISTORY_SIZE = 100 -- Maximum health records per unit
-local MAX_EXPECTED_UNITS = 40 -- Maximum expected party size (raid)
-local POOL_INITIAL_SIZE = 100 -- Initial pool size
-local CACHE_LIFETIME = 2000 -- Cache lifetime in ms
+-- Get configuration values from centralized config
+local MAX_HISTORY_SIZE = FS.config:get("heal_engine.history.max_records", 100)
+local MAX_EXPECTED_UNITS = FS.config:get("heal_engine.pooling.expected_units", 40)
+local POOL_INITIAL_SIZE = FS.config:get("heal_engine.pooling.initial_size", 100)
+local CACHE_LIFETIME = FS.config:get("heal_engine.caching.lifetime", 2000)
 
 -- Initialize heal engine module
 FS.modules.heal_engine = {

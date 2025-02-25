@@ -3,8 +3,9 @@
 
 FS.error_handler = {
     errors = {},
-    max_errors = 5,  -- Maximum errors before disabling a component
-    cooldown_period = 60, -- Seconds to disable a component after repeated errors
+    max_errors = FS.config:get("core.error_handler.max_errors", 5),  -- Maximum errors before disabling
+    cooldown_period = FS.config:get("core.error_handler.cooldown_period", 60), -- Seconds to disable
+    error_window = FS.config:get("core.error_handler.error_window", 300), -- Time window for counting errors
     
     -- Record an error and determine if component should be disabled
     -- @param component string Name of the component (module/function)
@@ -30,7 +31,7 @@ FS.error_handler = {
         
         -- Disable problematic component if error threshold reached
         if error_data.count >= self.max_errors and 
-           current_time - error_data.first_seen <= 300 then -- 5 minutes
+           current_time - error_data.first_seen <= self.error_window then
            
             error_data.disabled_until = current_time + self.cooldown_period
             core.log_warning("Temporarily disabled " .. component .. " due to repeated errors")
