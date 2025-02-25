@@ -229,6 +229,273 @@ function FS.entry_helper.on_render_menu()
                 end
             end
             
+            -- Performance metrics menu
+            if FS.menu.profiler then
+                safe_render_element(FS.menu.profiler.tree, "Performance Metrics", color.white())
+                
+                -- Only render performance metrics menu if the tree node is open
+                if FS.menu.profiler.tree:is_open() then
+                    -- Basic settings section
+                    core.menu.text("Settings"):render()
+                    
+                    -- Enable/disable profiling
+                    if safe_render_element(FS.menu.profiler.enabled, "Enable Performance Metrics",
+                        "Track and display performance metrics for functions and memory usage") then
+                        FS.profiler.config.enabled = FS.menu.profiler.enabled:get_state()
+                    end
+                    
+                    -- Show metrics option
+                    safe_render_element(FS.menu.profiler.show_metrics, "Show Metrics", 
+                        "Display detailed performance metrics in the menu")
+                    
+                    -- Add memory capture button
+                    if safe_render_element(FS.menu.profiler.capture_memory, "Capture Memory Snapshot") then
+                        FS.profiler:capture_memory_snapshot()
+                    end
+                    
+                    -- Add clear metrics button
+                    if safe_render_element(FS.menu.profiler.clear_metrics, "Clear All Metrics") then
+                        FS.profiler:reset()
+                        FS.menu.profiler.selected_metric = nil
+                    end
+                    
+                    -- Configuration section
+                    safe_render_element(FS.menu.profiler.config_tree, "Advanced Configuration")
+                    if FS.menu.profiler.config_tree:is_open() then
+                        -- Limit number of stored metrics
+                        if safe_render_element(FS.menu.profiler.max_metrics, "Max Stored Metrics",
+                            "Maximum number of metrics to keep in memory") then
+                            FS.profiler.config.max_metrics = FS.menu.profiler.max_metrics:get()
+                        end
+                        
+                        -- History size for charts
+                        if safe_render_element(FS.menu.profiler.history_size, "History Size",
+                            "Number of historical data points to keep for charts") then
+                            FS.profiler.config.history_size = FS.menu.profiler.history_size:get()
+                        end
+                        
+                        -- Warning threshold
+                        if safe_render_element(FS.menu.profiler.warning_threshold, "Warning Threshold (ms)",
+                            "Execution time above which to show warning indicators") then
+                            FS.profiler.config.default_warning_threshold = FS.menu.profiler.warning_threshold:get()
+                        end
+                        
+                        -- Alert threshold
+                        if safe_render_element(FS.menu.profiler.alert_threshold, "Alert Threshold (ms)",
+                            "Execution time above which to show alert indicators") then
+                            FS.profiler.config.default_alert_threshold = FS.menu.profiler.alert_threshold:get()
+                        end
+                    end
+                    
+                    -- Display metrics if enabled
+                    if FS.menu.profiler.show_metrics:get_state() and FS.profiler.config.enabled then
+                        -- Separator
+                        core.menu.separator():render()
+                        
+                        -- Setup combobox options for categories
+                        local categories = { "All Categories" }
+                        local category_map = { [0] = nil }  -- Index to category mapping
+                        
+                        -- Collect all unique categories
+                        local category_set = {}
+                        for _, metric in pairs(FS.profiler.metrics) do
+                            if not category_set[metric.category] then
+                                category_set[metric.category] = true
+                                table.insert(categories, metric.category)
+                                category_map[#categories - 1] = metric.category
+                            end
+                        end
+                        
+                        -- Update combobox options
+                        FS.menu.profiler.category_filter:set_options(categories)
+                        
+                        -- Display filter options
+                        core.menu.text("Filter & Sort"):render()
+                        
+                        -- Category filter
+                        safe_render_element(FS.menu.profiler.category_filter, "Category")
+                        
+                        -- Sort options
+                        FS.menu.profiler.sort_by:set_options({ "Total Time", "Count", "Average Time", "Max Time", "Last Time" })
+                        safe_render_element(FS.menu.profiler.sort_by, "Sort By")
+                        
+                        -- Get selected category
+                        local selected_category_idx = FS.menu.profiler.category_filter:get()
+                        local selected_category = category_map[selected_category_idx]
+                        
+                        -- Get selected sort method
+                        local sort_methods = { "total_time", "count", "avg_time", "max_time", "last_time" }
+                        local selected_sort = sort_methods[FS.menu.profiler.sort_by:get() + 1] or "total_time"
+                        
+                        -- Get metrics for display
+                        local metrics = FS.profiler:get_metrics_for_display(selected_category, selected_sort, 20)
+                        
+                        -- Separator before metrics
+                        core.menu.separator():render()
+                        
+                        -- Check if we have any metrics to display
+                        if #metrics == 0 then
+                            core.menu.text("No metrics available"):render(color.new(180, 180, 180, 255))
+                        else
+                            -- Display memory usage first
+                            local memory_stats = FS.profiler:get_memory_stats()
+                            
+                            -- Memory usage header with color based on trend
+                            local mem_color = color.new(180, 180, 180, 255) -- Default grey
+                            if memory_stats.change_rate > 1024 * 10 then -- 10 KB/s growth
+                                mem_color = color.new(255, 100, 100, 255) -- Red for fast growth
+                            elseif memory_stats.change_rate > 1024 then -- 1 KB/s growth
+                                mem_color = color.new(255, 200, 0, 255) -- Orange for moderate growth
+                            elseif memory_stats.change_rate < 0 then -- Shrinking
+                                mem_color = color.new(100, 255, 100, 255) -- Green for shrinking
+                            end
+                            
+                            core.menu.text(string.format("Memory Usage: %.2f MB", memory_stats.memory_mb)):render(mem_color)
+                            
+                            if memory_stats.change_rate ~= 0 then
+                                local change_text = memory_stats.change_rate > 0 and "+" or ""
+                                change_text = string.format("%s%.2f KB/s", change_text, memory_stats.change_rate / 1024)
+                                core.menu.text("  Rate: " .. change_text):render(mem_color)
+                            end
+                            
+                            -- Display metrics table header
+                            core.menu.separator():render()
+                            core.menu.text("Performance Metrics (Top 20)"):render(color.new(255, 255, 100, 255))
+                            
+                            -- Simple table header
+                            local header_text = "Name                        Count      Avg (ms)    Max (ms)    Total (ms)"
+                            core.menu.text(header_text):render()
+                            
+                            -- Render metrics rows
+                            for i, metric in ipairs(metrics) do
+                                -- Determine color based on avg time
+                                local row_color
+                                if metric.avg_time >= metric.alert_threshold then
+                                    row_color = color.new(255, 80, 80, 255) -- Red for slow
+                                elseif metric.avg_time >= metric.warning_threshold then
+                                    row_color = color.new(255, 200, 0, 255) -- Orange for warning
+                                else
+                                    row_color = color.white -- Default
+                                end
+                                
+                                -- Format name with category
+                                local name = metric.category .. "." .. metric.name
+                                if #name > 25 then
+                                    name = name:sub(1, 22) .. "..."
+                                else
+                                    name = name .. string.rep(" ", 25 - #name)
+                                end
+                                
+                                -- Format values
+                                local count_str = string.format("%-10d", metric.count)
+                                local avg_str = string.format("%-11.2f", metric.avg_time)
+                                local max_str = string.format("%-11.2f", metric.max_time)
+                                local total_str = string.format("%.2f", metric.total_time)
+                                
+                                -- Combine into row
+                                local row_text = name .. count_str .. avg_str .. max_str .. total_str
+                                
+                                -- Create selectable button for the row
+                                local metric_button = core.menu.button("metric_" .. i)
+                                metric_button:render_as_selectable(row_text, row_color, 
+                                    FS.menu.profiler.selected_metric == metric.key)
+                                
+                                -- Handle metric selection for details
+                                if metric_button:was_clicked() then
+                                    if FS.menu.profiler.selected_metric == metric.key then
+                                        FS.menu.profiler.selected_metric = nil -- Deselect if already selected
+                                    else
+                                        FS.menu.profiler.selected_metric = metric.key
+                                    end
+                                end
+                            end
+                            
+                            -- Show details for selected metric
+                            if FS.menu.profiler.selected_metric then
+                                local selected_key = FS.menu.profiler.selected_metric
+                                local metric = FS.profiler.metrics[selected_key]
+                                local history = FS.profiler.history[selected_key]
+                                
+                                if metric and history and #history > 0 then
+                                    -- Separator
+                                    core.menu.separator():render()
+                                    
+                                    -- Display details header
+                                    core.menu.text("Metric Details: " .. selected_key):render(color.new(255, 255, 100, 255))
+                                    
+                                    -- Basic stats
+                                    core.menu.text(string.format("  Calls: %d", metric.count)):render()
+                                    core.menu.text(string.format("  Avg Time: %.2f ms", metric.count > 0 and metric.total_time / metric.count or 0)):render()
+                                    core.menu.text(string.format("  Min Time: %.2f ms", metric.min_time)):render()
+                                    core.menu.text(string.format("  Max Time: %.2f ms", metric.max_time)):render()
+                                    core.menu.text(string.format("  Total Time: %.2f ms", metric.total_time)):render()
+                                    
+                                    -- Last execution
+                                    local time_ago = (core.game_time() - metric.last_timestamp) / 1000
+                                    if time_ago < 60 then
+                                        core.menu.text(string.format("  Last Call: %.1f seconds ago (%.2f ms)", time_ago, metric.last_time)):render()
+                                    else
+                                        core.menu.text(string.format("  Last Call: %.1f minutes ago (%.2f ms)", time_ago / 60, metric.last_time)):render()
+                                    end
+                                    
+                                    -- Display history graph if enabled and enough data points
+                                    if FS.menu.profiler.show_charts:get_state() and #history >= 2 then
+                                        -- Only display the most recent 30 points for clarity
+                                        local display_points = math.min(30, #history)
+                                        
+                                        -- Get data for chart
+                                        local values = {}
+                                        for i = 1, display_points do
+                                            table.insert(values, history[i])
+                                        end
+                                        
+                                        -- Calculate min/max for y-axis
+                                        local min_val = math.huge
+                                        local max_val = 0
+                                        for _, val in ipairs(values) do
+                                            min_val = math.min(min_val, val)
+                                            max_val = math.max(max_val, val)
+                                        end
+                                        
+                                        -- Ensure reasonable min/max scale with padding
+                                        min_val = math.max(0, min_val * 0.8)
+                                        max_val = max_val * 1.2
+                                        
+                                        -- Show graph
+                                        core.menu.text("  Execution Time History (ms)"):render()
+                                        core.ui.plot_lines("##" .. selected_key, values, min_val, max_val)
+                                    end
+                                end
+                            end
+                            
+                            -- Memory usage history chart if enabled
+                            if FS.menu.profiler.show_charts:get_state() and #memory_stats.memory_history > 1 then
+                                -- Separator
+                                core.menu.separator():render()
+                                
+                                -- Header
+                                core.menu.text("Memory Usage History (MB)"):render(mem_color)
+                                
+                                -- Calculate min/max for better scaling
+                                local min_val = math.huge
+                                local max_val = 0
+                                for _, val in ipairs(memory_stats.memory_history) do
+                                    min_val = math.min(min_val, val)
+                                    max_val = math.max(max_val, val)
+                                end
+                                
+                                -- Ensure reasonable min/max with padding
+                                min_val = math.max(0, min_val * 0.95)
+                                max_val = max_val * 1.05
+                                
+                                -- Show graph
+                                core.ui.plot_lines("##memory_history", memory_stats.memory_history, min_val, max_val)
+                            end
+                        end
+                    end
+                end
+            end
+            
             -- Module menus
             for i, module in pairs(FS.loaded_modules) do
                 safe_render_menu(module, "on_render_menu", "module_" .. i)

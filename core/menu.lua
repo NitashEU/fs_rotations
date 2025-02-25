@@ -36,6 +36,30 @@ FS.menu = {
         max_cooldown_slider = core.menu.slider_int(60, 600, 300, tag .. "max_cooldown"),
         capture_state_checkbox = core.menu.checkbox(true, tag .. "capture_state"),
         selected_error = nil -- This will store the currently selected error for detailed view
+    },
+    
+    -- Add performance metrics menu elements
+    profiler = {
+        tree = core.menu.tree_node(),
+        enabled = core.menu.checkbox(true, tag .. "profiler_enabled"),
+        show_metrics = core.menu.checkbox(false, tag .. "show_metrics"),
+        clear_metrics = core.menu.button(tag .. "clear_metrics"),
+        capture_memory = core.menu.button(tag .. "capture_memory"),
+        
+        -- Filter and sorting options
+        category_filter = core.menu.combobox(0, tag .. "profiler_category"),
+        sort_by = core.menu.combobox(2, tag .. "profiler_sort_by"), -- default to avg_time
+        
+        -- Configuration
+        config_tree = core.menu.tree_node(),
+        max_metrics = core.menu.slider_int(10, 200, 100, tag .. "profiler_max_metrics"),
+        history_size = core.menu.slider_int(10, 120, 60, tag .. "profiler_history_size"),
+        warning_threshold = core.menu.slider_int(10, 100, 50, tag .. "profiler_warning_threshold"),
+        alert_threshold = core.menu.slider_int(50, 500, 100, tag .. "profiler_alert_threshold"),
+        
+        -- Visualization options
+        show_charts = core.menu.checkbox(true, tag .. "profiler_show_charts"),
+        selected_metric = nil -- This will store the currently selected metric for detailed view
     }
 }
 

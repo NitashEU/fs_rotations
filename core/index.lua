@@ -7,6 +7,7 @@ require("core/settings")
 require("core/variables")
 require("core/error_handler")
 require("core/validator")     -- Load validation library after error_handler
+require("core/profiler")      -- Load performance metrics system
 
 -- Initialize modules table
 FS.modules = {}
