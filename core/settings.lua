@@ -19,6 +19,22 @@ FS.settings = {
         latency_jitter = function() return FS.menu.humanizer_jitter.latency_jitter:get() end,
         ---@type fun(): number
         max_jitter = function() return FS.menu.humanizer_jitter.max_jitter:get() end,
+    },
+
+    -- Version tracking for settings migration
+    version = {
+        ---@type string Current settings version in storage
+        current = core.settings.get("fs_rotations_version", "0.0.0"),
+        
+        ---@param new_version string Update the stored settings version
+        update = function(new_version)
+            core.settings.set("fs_rotations_version", new_version)
+        end,
+        
+        ---@return boolean True if settings version is older than code version
+        needs_migration = function()
+            return FS.version:isNewerThan(FS.settings.version.current)
+        end
     }
 }
 

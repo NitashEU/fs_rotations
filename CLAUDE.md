@@ -29,3 +29,12 @@
 - Main class implementation guidelines: `/classes/{class}/{spec}/CLAUDE.md`
 - Core module guidelines: `/core/modules/CLAUDE.md`
 - Heal engine guidelines: `/core/modules/heal_engine/CLAUDE.md`
+
+## Versioning System
+- Centralized in `version.lua` - single source of truth
+- Automatically updated by commit script based on commit type:
+  - `feat:` - Increments minor version (1.2.0 → 1.3.0)
+  - `fix:`, `perf:`, `refactor:` - Increments patch version (1.2.3 → 1.2.4)
+- Changelog automatically updated with each version bump
+- Version displayed in UI menu
+- Version-based settings migration handled during initialization

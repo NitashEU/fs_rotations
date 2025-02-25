@@ -1,7 +1,9 @@
+local version = require("version")
+
 if true then
     return {
         name = "FS Rotations",
-        version = "1.8.0",
+        version = version:toString(),
         author = "FS",
         load = false
     }
@@ -11,14 +13,16 @@ FS = {
     ---@type SpecConfig
     spec_config = nil,
     ---@type ModuleConfig[]
-    loaded_modules = {}
+    loaded_modules = {},
+    -- Make version accessible globally
+    version = version
 }
 
 require("entry/index")
 
 local plugin = {
     name = "FS Rotations",
-    version = "1.8.0",
+    version = version:toString(),
     author = "FS",
     load = true
 }

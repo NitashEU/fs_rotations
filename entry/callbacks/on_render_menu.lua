@@ -5,7 +5,7 @@ local color = require("common/color")
 
 ---@type on_render_menu
 function FS.entry_helper.on_render_menu()
-    FS.menu.main_tree:render("FS Rotations", function()
+    FS.menu.main_tree:render("FS Rotations v" .. FS.version:toString(), function()
         FS.menu.enable_script_check:render("Enable Script")
         if not FS.settings.is_enabled() then return end
 
