@@ -60,6 +60,32 @@ FS.menu = {
         -- Visualization options
         show_charts = core.menu.checkbox(true, tag .. "profiler_show_charts"),
         selected_metric = nil -- This will store the currently selected metric for detailed view
+    },
+    
+    -- Add memory management menu elements
+    memory = {
+        tree = core.menu.tree_node(),
+        enabled = core.menu.checkbox(true, tag .. "memory_enabled"),
+        show_pools = core.menu.checkbox(false, tag .. "show_pools"),
+        check_leaks = core.menu.checkbox(true, tag .. "check_leaks"),
+        clear_pools = core.menu.button(tag .. "clear_pools"),
+        force_gc = core.menu.button(tag .. "force_gc"),
+        
+        -- Filter and sorting options
+        sort_by = core.menu.combobox(0, tag .. "memory_sort_by"), -- default to name
+        
+        -- Configuration
+        config_tree = core.menu.tree_node(),
+        max_pool_size = core.menu.slider_int(50, 2000, 1000, tag .. "max_pool_size"),
+        cleanup_interval = core.menu.slider_int(10, 300, 60, tag .. "cleanup_interval"),
+        global_cleanup_interval = core.menu.slider_int(60, 600, 300, tag .. "global_cleanup_interval"),
+        pre_allocation = core.menu.slider_int(5, 50, 10, tag .. "pre_allocation"),
+        
+        -- Debug options
+        debug = core.menu.checkbox(false, tag .. "memory_debug"),
+        
+        -- Selected pool for detailed view
+        selected_pool = nil
     }
 }
 

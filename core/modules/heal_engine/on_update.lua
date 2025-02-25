@@ -40,6 +40,9 @@ function FS.modules.heal_engine.on_update()
     
     local current_time = core.game_time()
     
+    -- Update object pool system
+    FS.object_pool:update(current_time)
+    
     -- Profile combat state update
     FS.profiler:profile_function(function()
         FS.modules.heal_engine.state.update_combat_state(current_time)

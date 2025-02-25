@@ -496,6 +496,241 @@ function FS.entry_helper.on_render_menu()
                 end
             end
             
+            -- Memory management menu
+            if FS.menu.memory then
+                safe_render_element(FS.menu.memory.tree, "Memory Management", color.white())
+                
+                -- Only render memory management menu if the tree node is open
+                if FS.menu.memory.tree:is_open() then
+                    -- Basic settings section
+                    core.menu.text("Settings"):render()
+                    
+                    -- Enable/disable object pooling
+                    if safe_render_element(FS.menu.memory.enabled, "Enable Object Pooling",
+                        "Use object pools to reduce garbage collection") then
+                        FS.object_pool.config.enabled = FS.menu.memory.enabled:get_state()
+                    end
+                    
+                    -- Enable/disable leak detection
+                    if safe_render_element(FS.menu.memory.check_leaks, "Check for Memory Leaks",
+                        "Monitor for potential memory leaks in object pools") then
+                        FS.object_pool.config.check_leaks = FS.menu.memory.check_leaks:get_state()
+                    end
+                    
+                    -- Show pools option
+                    safe_render_element(FS.menu.memory.show_pools, "Show Object Pools", 
+                        "Display detailed information about object pools")
+                    
+                    -- Clear pools button
+                    if safe_render_element(FS.menu.memory.clear_pools, "Reset Pool Statistics") then
+                        FS.object_pool:reset_stats()
+                    end
+                    
+                    -- Force garbage collection button
+                    if safe_render_element(FS.menu.memory.force_gc, "Force Garbage Collection") then
+                        collectgarbage("collect")
+                        FS.object_pool:global_cleanup()
+                    end
+                    
+                    -- Configuration section
+                    safe_render_element(FS.menu.memory.config_tree, "Advanced Configuration")
+                    if FS.menu.memory.config_tree:is_open() then
+                        -- Max pool size
+                        if safe_render_element(FS.menu.memory.max_pool_size, "Default Max Pool Size",
+                            "Maximum number of objects to keep in each pool") then
+                            FS.object_pool.config.default_max_size = FS.menu.memory.max_pool_size:get()
+                        end
+                        
+                        -- Cleanup interval
+                        if safe_render_element(FS.menu.memory.cleanup_interval, "Cleanup Interval (s)",
+                            "How often to clean up individual pools") then
+                            FS.object_pool.config.default_cleanup_interval = FS.menu.memory.cleanup_interval:get()
+                        end
+                        
+                        -- Global cleanup interval
+                        if safe_render_element(FS.menu.memory.global_cleanup_interval, "Global Cleanup Interval (s)",
+                            "How often to clean up all pools") then
+                            FS.object_pool.config.global_cleanup_interval = FS.menu.memory.global_cleanup_interval:get()
+                        end
+                        
+                        -- Pre-allocation size
+                        if safe_render_element(FS.menu.memory.pre_allocation, "Default Pre-allocation",
+                            "Number of objects to pre-allocate when creating new pools") then
+                            -- This is used when creating new pools
+                        end
+                        
+                        -- Debug mode
+                        if safe_render_element(FS.menu.memory.debug, "Debug Mode",
+                            "Enable detailed debug logging for object pools") then
+                            FS.object_pool.config.debug = FS.menu.memory.debug:get_state()
+                        end
+                    end
+                    
+                    -- Display pool information if enabled
+                    if FS.menu.memory.show_pools:get_state() then
+                        -- Separator
+                        core.menu.separator():render()
+                        
+                        -- Set sort options
+                        FS.menu.memory.sort_by:set_options({"Name", "Memory Usage", "Size", "Efficiency"})
+                        
+                        -- Display sort options
+                        core.menu.text("Sort Pools By:"):render()
+                        safe_render_element(FS.menu.memory.sort_by, "")
+                        
+                        -- Get sort method
+                        local sort_methods = {"name", "memory", "size", "efficiency"}
+                        local sort_by = sort_methods[FS.menu.memory.sort_by:get() + 1] or "name"
+                        
+                        -- Get pool stats sorted by selected field
+                        local pool_stats = FS.object_pool:get_all_stats(sort_by)
+                        
+                        -- Separator before pool list
+                        core.menu.separator():render()
+                        
+                        -- Check for potential memory leaks
+                        local leaks = FS.object_pool:check_leaks()
+                        if #leaks > 0 then
+                            -- Memory leak warning
+                            core.menu.text("⚠️ Potential Memory Leaks Detected (" .. #leaks .. ")"):render(color.new(255, 60, 60, 255))
+                            
+                            for _, leak in ipairs(leaks) do
+                                local leak_text = string.format("%s: %d objects not released (created: %d, peak: %d)",
+                                    leak.pool, leak.acquired, leak.created, leak.peak)
+                                core.menu.text(leak_text):render(color.new(255, 120, 60, 255))
+                            end
+                            
+                            core.menu.separator():render()
+                        end
+                        
+                        -- Display memory usage overview
+                        local total_memory = FS.object_pool:get_total_memory()
+                        local total_mb = total_memory / 1024 / 1024
+                        
+                        -- Overall memory usage header
+                        core.menu.text(string.format("Total Pooled Objects Memory: %.2f MB", total_mb)):render(color.new(200, 200, 255, 255))
+                        
+                        -- Display table header
+                        local header_text = "Pool Name                     Type        Size    In Use   Memory (KB)   Health"
+                        core.menu.text(header_text):render()
+                        
+                        -- No pools message if empty
+                        if #pool_stats == 0 then
+                            core.menu.text("No object pools created yet"):render(color.new(180, 180, 180, 255))
+                        else
+                            -- Render each pool
+                            for i, stats in ipairs(pool_stats) do
+                                -- Format pool name
+                                local name = stats.name
+                                if #name > 25 then
+                                    name = name:sub(1, 22) .. "..."
+                                else
+                                    name = name .. string.rep(" ", 25 - #name)
+                                end
+                                
+                                -- Format type
+                                local type_str = stats.object_type or "object"
+                                if #type_str > 10 then
+                                    type_str = type_str:sub(1, 7) .. "..."
+                                else
+                                    type_str = type_str .. string.rep(" ", 10 - #type_str)
+                                end
+                                
+                                -- Format metrics
+                                local size_str = string.format("%-7d", stats.created)
+                                local in_use_str = string.format("%-9d", stats.acquired)
+                                local memory_str = string.format("%-12.1f", stats.estimated_memory / 1024) -- KB
+                                
+                                -- Health indicator and color
+                                local health_str
+                                local row_color
+                                
+                                if stats.health == "warning" then
+                                    health_str = "⚠️ Leak?"
+                                    row_color = color.new(255, 100, 100, 255)
+                                elseif stats.health == "poor" then
+                                    health_str = "Poor"
+                                    row_color = color.new(255, 180, 0, 255)
+                                elseif stats.health == "average" then
+                                    health_str = "Average"
+                                    row_color = color.new(255, 255, 180, 255)
+                                else -- good
+                                    health_str = "Good"
+                                    row_color = color.new(180, 255, 180, 255)
+                                end
+                                
+                                -- Combine into row
+                                local row_text = name .. type_str .. size_str .. in_use_str .. memory_str .. health_str
+                                
+                                -- Create selectable button for the row
+                                local pool_button = core.menu.button("pool_" .. i)
+                                pool_button:render_as_selectable(row_text, row_color, 
+                                    FS.menu.memory.selected_pool == stats.name)
+                                
+                                -- Handle pool selection for details
+                                if pool_button:was_clicked() then
+                                    if FS.menu.memory.selected_pool == stats.name then
+                                        FS.menu.memory.selected_pool = nil -- Deselect if already selected
+                                    else
+                                        FS.menu.memory.selected_pool = stats.name
+                                    end
+                                end
+                            end
+                            
+                            -- Show details for selected pool
+                            if FS.menu.memory.selected_pool then
+                                -- Find selected pool stats
+                                local selected_stats
+                                for _, stats in ipairs(pool_stats) do
+                                    if stats.name == FS.menu.memory.selected_pool then
+                                        selected_stats = stats
+                                        break
+                                    end
+                                end
+                                
+                                if selected_stats then
+                                    -- Separator
+                                    core.menu.separator():render()
+                                    
+                                    -- Display details header
+                                    core.menu.text("Pool Details: " .. selected_stats.name):render(color.new(255, 255, 100, 255))
+                                    
+                                    -- Basic stats
+                                    core.menu.text(string.format("  Object Type: %s", selected_stats.object_type)):render()
+                                    core.menu.text(string.format("  Total Created: %d", selected_stats.created)):render()
+                                    core.menu.text(string.format("  Currently In Use: %d", selected_stats.acquired)):render()
+                                    core.menu.text(string.format("  Idle In Pool: %d", selected_stats.pool_size)):render()
+                                    core.menu.text(string.format("  Total Recycled: %d", selected_stats.recycled)):render()
+                                    core.menu.text(string.format("  Peak Usage: %d", selected_stats.peak_usage)):render()
+                                    
+                                    -- Memory usage
+                                    local memory_kb = selected_stats.estimated_memory / 1024
+                                    local memory_mb = memory_kb / 1024
+                                    if memory_mb >= 1.0 then
+                                        core.menu.text(string.format("  Estimated Memory: %.2f MB", memory_mb)):render()
+                                    else
+                                        core.menu.text(string.format("  Estimated Memory: %.2f KB", memory_kb)):render()
+                                    end
+                                    
+                                    -- Efficiency metrics
+                                    local efficiency_color = color.white
+                                    if selected_stats.recycle_rate >= 0.9 then
+                                        efficiency_color = color.new(100, 255, 100, 255)
+                                    elseif selected_stats.recycle_rate >= 0.7 then
+                                        efficiency_color = color.new(255, 255, 100, 255)
+                                    else
+                                        efficiency_color = color.new(255, 150, 50, 255)
+                                    end
+                                    
+                                    core.menu.text(string.format("  Cache Hit Rate: %.1f%%", selected_stats.recycle_rate * 100)):render(efficiency_color)
+                                    core.menu.text(string.format("  Reuse Efficiency: %.1f%%", selected_stats.efficiency_score * 100)):render(efficiency_color)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+            
             -- Module menus
             for i, module in pairs(FS.loaded_modules) do
                 safe_render_menu(module, "on_render_menu", "module_" .. i)
