@@ -69,3 +69,25 @@
 - Changelog automatically updated with each version bump
 - Version displayed in UI menu
 - Version-based settings migration handled during initialization
+
+## Lua Diagnostics Best Practices
+- Type System:
+  - Define custom extension classes using `---@class extended_type : base_type` syntax
+  - Document all fields with `---@field name type description` annotations
+  - Type local variables with `---@type typename` for static analysis
+  - Properly document function parameters and return values
+- UI Extensions:
+  - Maintain parameter signature compatibility when extending components
+  - Use consistent extension patterns (save original → extend → return)
+  - Handle parameter overloading when original functions have optional parameters
+  - Specify empty tables ({}) when UI functions expect table parameters
+- Common Fixes:
+  - `undefined-field`: Implement missing methods or properties on objects
+  - `param-type-mismatch`: Check parameter types match function signatures
+  - `undefined-global`: Ensure functions/variables are properly scoped
+  - `undefined-doc-name`: Define all referenced types before using them
+- Error Handling:
+  - Always pass component names to error tracking functions
+  - Add validation for external module dependencies before usage
+  - Handle nil values with appropriate default responses
+  - Properly document deprecated code when replacing functionality
