@@ -1,14 +1,18 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
-## [1.10.3] - 2025-02-25
+## [1.10.4] - 2025-02-25
+### Changed## [1.10.3] - 2025-02-25
+- restructure heal engine with domain-oriented separation of concerns### Fixed
+- Implement comprehensive input validation for heal engine target selection functions
+
 ## [1.10.2] - 2025-02-25
 ### Performance
 - Implement position caching in heal engine for target selection
 
 ## [1.10.1] - 2025-02-25
 ### Fixed
-- implement comprehensive input validation for heal engine target selection functions- Update commit.sh script for macOS sed compatibility
+- Update commit.sh script for macOS sed compatibility
 
 ## [1.10.0] - 2025-02-25
 

@@ -1,5 +1,13 @@
 # Heal Engine Implementation Guidelines
 
+## Module Structure
+- Domain-oriented organization in subdirectories:
+  - `core/` - Core functionality and initialization
+  - `data/` - Data collection and caching
+  - `analysis/` - Damage analysis and predictions
+  - `logging/` - Logging functionality
+  - `target_selections/` - Target selection algorithms
+
 ## Algorithm Design
 - Implement target selection algorithms in `target_selections/`
 - Use position-based calculations for AoE healing
@@ -14,11 +22,19 @@
 - Handle edge cases (no targets, all targets full health)
 - Return appropriate defaults when no valid target found
 
-## Damage Prediction
-- Track damage patterns over time
+## Data Collection
+- Use circular buffers for health history `data/collector.lua`
+- Implement object pooling for performance `data/storage.lua`
+- Cache positions and distances `data/cache.lua`
+- Track health changes with configurable thresholds
+- Store only significant health changes
+
+## Damage Analysis
+- Track damage patterns over time `analysis/damage.lua`
 - Implement short-term prediction for incoming damage
-- Consider boss abilities and mechanics
-- Cache frequent calculations
+- Calculate DPS over multiple time windows (1s, 5s, 10s, 15s)
+- Cache DPS calculations to prevent redundant work
+- Identify and track significant damage events
 
 ## Performance Standards
 - Minimize calculations in hot paths
@@ -26,8 +42,8 @@
 - Implement early exit conditions
 - Use position and distance caching (implemented with 200ms lifetime)
 - Refresh position cache on every fast update cycle
-- Access cached positions via `get_cached_position(unit)`
-- Access cached distances via `get_cached_distance(pos1, pos2)`
+- Access cached positions via `cache.get_position(unit)`
+- Access cached distances via `cache.get_distance(pos1, pos2)`
 
 ## Input Validation
 - Implement comprehensive parameter validation for all functions
@@ -38,8 +54,29 @@
 - Add default values for optional boolean parameters
 - Validate collections for existence and non-emptiness
 
+## Logging
+- Centralize logging in `logging/health.lua`
+- Only log significant health and damage changes
+- Provide configurable thresholds for all log types
+- Implement combat state change logging
+- Log fight-wide statistics when leaving combat
+
 ## Interface Integration
 - Expose a consistent API for all healing specializations
 - Document all public functions with type annotations
 - Provide clear error messages for invalid inputs
 - Allow for specialization-specific overrides
+- Maintain backward compatibility with existing code
+
+## State Management
+- Track combat state centrally in `core/state.lua`
+- Handle enter/exit combat transitions
+- Track fight-wide statistics for post-combat analysis
+- Reset data structures appropriately on state changes
+
+## Best Practices
+- Follow single responsibility principle for modules
+- Use callbacks for cross-module communication
+- Keep update functions clean and delegate to specialized modules
+- Minimize global state and dependencies
+- Document module interfaces thoroughly

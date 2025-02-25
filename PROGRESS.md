@@ -1,5 +1,159 @@
 # FS Rotations Implementation Progress
 
+## Task: Implement Separation of Concerns in Heal Engine
+
+### Date: 2/25/2025
+
+### Current Status: Complete
+
+The heal engine module has been refactored to implement a domain-oriented structure with better separation of concerns. This improves maintainability, testability, and makes the codebase more modular.
+
+### What Was Done
+
+1. **Created a Domain-Oriented Structure**
+   - Organized code by domain rather than technical function
+   - Created subdirectories for different concerns:
+     - `core/` - Core functionality and module initialization
+     - `data/` - Data collection and caching
+     - `analysis/` - Damage analysis and calculations
+     - `logging/` - Logging functionality
+     - `target_selections/` - Existing target selection algorithms
+
+2. **Separated Data Collection**
+   - Created `data/collector.lua` for health data collection
+   - Moved circular buffer management to a dedicated module
+   - Separated object pooling into `data/storage.lua`
+   - Isolated position and distance caching in `data/cache.lua`
+
+3. **Isolated Analysis Logic**
+   - Moved damage calculation to `analysis/damage.lua`
+   - Separated DPS tracking from data collection
+   - Improved DPS calculation with better caching
+
+4. **Centralized Logging**
+   - Created `logging/health.lua` for all logging operations
+   - Separated logging concerns from data collection and analysis
+   - Improved log filtering and threshold handling
+
+5. **Improved State Management**
+   - Created `core/state.lua` for combat state handling
+   - Centralized enter/exit combat logic
+   - Improved fight statistics tracking
+
+6. **Simplified Main Update Loop**
+   - Streamlined `on_update.lua` to delegate to specialized modules
+   - Reduced code duplication and improved maintainability
+   - Made update logic more focused and readable
+
+### New File Structure
+
+```
+/core/modules/heal_engine/
+  ├── core/             
+  │   ├── index.lua     # Module definition and initialization
+  │   ├── state.lua     # Combat state tracking
+  ├── data/             
+  │   ├── collector.lua # Health data collection
+  │   ├── cache.lua     # Position/distance caching 
+  │   ├── storage.lua   # Object pool and buffer management
+  ├── analysis/         
+  │   ├── damage.lua    # Damage calculations
+  ├── logging/          
+  │   ├── health.lua    # Health and damage logging
+  ├── target_selections/ 
+  └── index.lua         # Main entry point
+```
+
+### Technical Details
+
+1. **Module Initialization**
+   ```lua
+   -- core/index.lua
+   function core.initialize()
+       -- Initialize module structure
+       FS.modules.heal_engine = {
+           -- Core interface properties
+           units = core.units,
+           tanks = core.tanks,
+           healers = core.healers,
+           -- ...
+       }
+       
+       -- Load module components
+       require("core/modules/heal_engine/data/storage")
+       require("core/modules/heal_engine/data/cache")
+       -- ...
+   end
+   ```
+
+2. **Data Collection Pattern**
+   ```lua
+   -- data/collector.lua
+   function collector.update_health_data(current_time, on_damage_callback)
+       -- Update health for each unit
+       for _, unit in pairs(FS.modules.heal_engine.units) do
+           -- Health tracking logic
+           -- ...
+           
+           -- Call damage callback when damage detected
+           if damage > 0 and on_damage_callback then
+               on_damage_callback(unit, damage, total_health, last_value.health, current_time)
+           end
+       end
+   end
+   ```
+
+3. **Streamlined Update Loop**
+   ```lua
+   -- on_update.lua
+   function FS.modules.heal_engine.on_fast_update()
+       if not FS.modules.heal_engine.state.is_in_combat then
+           return
+       end
+       
+       local current_time = core.game_time()
+       
+       -- Delegate to specialized modules
+       FS.modules.heal_engine.cache.maintain_caches(current_time)
+       FS.modules.heal_engine.collector.update_health_data(current_time, function(...)
+           FS.modules.heal_engine.health_logger.log_damage_event(...)
+       end)
+   end
+   ```
+
+### Backward Compatibility
+
+To maintain compatibility with existing code:
+
+1. The main public API remains unchanged
+2. Legacy functions now delegate to new modules internally
+3. Original function signatures are preserved
+4. Top-level `index.lua` exports the same interface
+5. All target selection functions work with the new structure
+
+### Impact
+
+This refactoring significantly improves the codebase:
+
+1. **Maintainability**: Each module has a single responsibility
+2. **Testability**: Components can be tested in isolation
+3. **Readability**: Code organization follows intuitive domains
+4. **Extensibility**: New features can be added without modifying existing code
+5. **Performance**: Specialized modules can be optimized independently
+6. **Debugging**: Clearer separation makes issues easier to isolate
+
+### Next Steps
+
+With all three major improvements from FINDINGS.md now implemented:
+1. ✅ Circular Buffer for Health History
+2. ✅ Comprehensive Input Validation
+3. ✅ Separation of Concerns in Heal Engine
+
+The next steps could include:
+- Implementing spatial partitioning for more efficient target selection
+- Adding prediction systems for proactive healing
+- Creating unit tests for the new modular components
+
 ## Task: Implement Comprehensive Input Validation
 
 ### Date: 2/25/2025
