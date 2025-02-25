@@ -3,7 +3,7 @@
 
 local version = {
     major = 1,
-    minor = 14,
+    minor = 15,
     patch = 0,
 
     -- Generate string version for display

@@ -25,7 +25,13 @@
   - Define settings in settings.lua, runtime state in variables.lua
   - Centralize IDs in ids/ directory
   - Handle visualization in drawing.lua
-- Settings: All thresholds should be percentage-based (0-100)
+- Settings: 
+  - All thresholds should be percentage-based (0-100)
+  - Use FS.settings_manager for centralized settings management
+  - Always provide validation mappings for all settings
+  - Register settings change listeners for reactive components
+  - Use typed settings with appropriate validation rules
+  - Implement real-time validation for menu elements
 - Performance: 
   - Cache frequently accessed values (positions, distances)
   - Use FS.object_pool for all frequently created objects 
