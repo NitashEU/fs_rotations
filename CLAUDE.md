@@ -82,12 +82,22 @@
 - Version displayed in UI menu
 - Version-based settings migration handled during initialization
 
+## CLAUDE.md Knowledge Management
+- **IMPORTANT RULE**: Always document knowledge, learnings, and best practices in CLAUDE.md
+- Update this file whenever discovering new patterns or solutions
+- Document common pitfalls and their solutions
+- Use this as the central knowledge repository for consistent development
+- Reference specific CLAUDE.md sections when discussing implementations with developers
+
 ## Lua Diagnostics Best Practices
 - Type System:
   - Define custom extension classes using `---@class extended_type : base_type` syntax
   - Document all fields with `---@field name type description` annotations
   - Type local variables with `---@type typename` for static analysis
   - Properly document function parameters and return values
+  - Be explicit with union types using `type1|type2` notation
+  - Always include `nil` in return types if a function can return nil (`string|nil`)
+  - Use `table<keyType, valueType>` for typed tables/dictionaries
 - UI Extensions:
   - Maintain parameter signature compatibility when extending components
   - Use consistent extension patterns (save original → extend → return)
@@ -98,8 +108,29 @@
   - `param-type-mismatch`: Check parameter types match function signatures
   - `undefined-global`: Ensure functions/variables are properly scoped
   - `undefined-doc-name`: Define all referenced types before using them
+  - `return-type-mismatch`: Ensure functions return values matching their type annotations
+  - `assign-type-mismatch`: Verify variable type declarations match assigned values
 - Error Handling:
   - Always pass component names to error tracking functions
   - Add validation for external module dependencies before usage
   - Handle nil values with appropriate default responses
   - Properly document deprecated code when replacing functionality
+  - Use numeric values for stack_level parameter in error_handler:record (not boolean)
+  - Pass 2 as stack_level for warnings in error_handler:record
+
+## Module Interface System Learnings
+- Interface validation should use validator patterns consistently
+- Validate fields individually before validating full interfaces
+- Always define clear required vs. optional fields distinction
+- Use component_name for error context in all validation functions
+- Only validate properties that directly affect functionality
+- Handle interface evolution with deprecated fields system
+- Include examples in interface documentation
+- Return both success state and detailed error messages from validation
+- Use automated documentation generation to ensure docs stay current
+- Common module interfaces patterns:
+  - Lifecycle hooks (init, update, render)
+  - Settings/configuration fields
+  - Core API methods
+  - Extension points
+- Avoid tight coupling between module interfaces
