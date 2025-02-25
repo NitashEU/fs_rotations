@@ -26,7 +26,12 @@
   - Centralize IDs in ids/ directory
   - Handle visualization in drawing.lua
 - Settings: All thresholds should be percentage-based (0-100)
-- Performance: Cache frequently accessed values (positions, distances), utilize object pooling, optimize update frequencies
+- Performance: 
+  - Cache frequently accessed values (positions, distances)
+  - Utilize object pooling for frequently created objects
+  - Optimize update frequencies for different operation types
+  - Use FS.profiler to identify and address bottlenecks 
+  - Take memory snapshots to identify potential memory leaks
 - Error Handling: 
   - Use FS.validator for ALL input parameter validation (never validate manually)
   - Always use FS.error_handler:safe_execute for critical operations with proper component names

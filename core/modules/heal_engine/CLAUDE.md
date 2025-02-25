@@ -50,6 +50,11 @@
 - Refresh position cache on every fast update cycle
 - Access cached positions via `cache.get_position(unit)`
 - Access cached distances via `cache.get_distance(pos1, pos2)`
+- Profile critical functions with FS.profiler:
+  - Use categorized profiling with "heal_engine.X" categories
+  - Set stricter thresholds for performance-critical functions
+  - Monitor memory usage with periodic snapshots
+  - Watch for performance regression in target selection algorithms
 
 ## Input Validation and Error Handling
 - Use FS.validator library for ALL parameter validation
