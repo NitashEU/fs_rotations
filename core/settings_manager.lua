@@ -443,6 +443,12 @@ function FS.settings_manager:setup_change_observers()
         if menu_elem then
             -- Setup a timer to periodically check this setting for changes
             FS.error_handler:safe_execute("settings_manager.setup_change_observers", function()
+                -- Validate timer_manager exists
+                if not FS.core or not FS.core.timer_manager then
+                    FS.error_handler:record("settings_manager.setup_change_observers", "Missing timer_manager module")
+                    return
+                end
+                
                 FS.core.timer_manager.add_interval_timer(
                     checker_id,
                     0.5, -- Check every 500ms

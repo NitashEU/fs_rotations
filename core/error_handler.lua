@@ -129,7 +129,7 @@ FS.error_handler = {
         -- Calculate exponential backoff: base_cooldown * 2^(error_count - max_errors)
         -- This gives longer cooldowns for more frequent errors
         local excess_errors = math.max(0, error_count - self.max_errors)
-        local cooldown = self.base_cooldown * math.pow(2, excess_errors)
+        local cooldown = self.base_cooldown * (2 ^ excess_errors)
         
         -- Cap at maximum cooldown
         return math.min(cooldown, self.max_cooldown)

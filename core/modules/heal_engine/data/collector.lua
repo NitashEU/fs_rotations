@@ -20,7 +20,8 @@ local collector = {
 --- Create a circular buffer for a unit's health history
 ---@param unit game_object The unit to create buffer for
 ---@param capacity number Optional custom capacity
-function collector.initialize_circular_buffer(unit, capacity)
+---@param component_name string Component name for error tracking
+function collector.initialize_circular_buffer(unit, capacity, component_name)
     -- Create a circular buffer for this unit if it doesn't exist
     if not collector.health_values[unit] then
         collector.health_values[unit] = {
@@ -38,7 +39,7 @@ end
 function collector.store_health_value(unit, health_value)
     local buffer = collector.health_values[unit]
     if not buffer then
-        collector.initialize_circular_buffer(unit)
+        collector.initialize_circular_buffer(unit, nil, "heal_engine.collector.store_health_value")
         buffer = collector.health_values[unit]
     end
     
@@ -68,7 +69,7 @@ function collector.update_health_data(current_time, on_damage_callback)
     for _, unit in pairs(FS.modules.heal_engine.units) do
         -- Ensure circular buffer is initialized
         if not collector.health_values[unit] then
-            collector.initialize_circular_buffer(unit)
+            collector.initialize_circular_buffer(unit, nil, "heal_engine.collector.update_health_data")
         end
         
         local buffer = collector.health_values[unit]

@@ -9,6 +9,63 @@ local vec2 = require("common/geometry/vector_2")
 
 local tag = "fs_rotations_core_"
 
+-- Add window extensions for tooltip handling
+---@param window window The window to extend
+---@return window Extended window with additional methods
+local function extend_window(window)
+    -- Add is_last_widget_hovered method
+    window.is_last_widget_hovered = function(self)
+        -- This is a simplification - ideally we would track the last widget bounds
+        -- and check if the mouse is hovering over it
+        return self:is_window_hovered() -- Fallback to window hover
+    end
+    
+    -- Add begin_tooltip method
+    window.begin_tooltip = function(self, callback)
+        if callback then
+            callback()
+        end
+    end
+    
+    return window
+end
+
+-- Extend combobox functionality
+---@param combobox combobox The combobox to extend
+---@return combobox Extended combobox with additional methods
+local function extend_combobox(combobox)
+    local items = {}
+    local selected_index = 1
+    
+    -- Add clear_items method
+    combobox.clear_items = function(self)
+        items = {}
+        return self
+    end
+    
+    -- Add add_item method
+    combobox.add_item = function(self, item)
+        table.insert(items, item)
+        return self
+    end
+    
+    -- Add get_selected_item method
+    combobox.get_selected_item = function(self)
+        local index = self:get()
+        return items[index + 1] or ""
+    end
+
+    -- Save original render function
+    local original_render = combobox.render
+    
+    -- Override render to use our items array
+    combobox.render = function(self, label, tooltip)
+        return original_render(self, label, items, tooltip)
+    end
+    
+    return combobox
+end
+
 FS.menu = {
     main_tree = core.menu.tree_node(),
     enable_script_check = core.menu.checkbox(false, tag .. "enable_script_check"),

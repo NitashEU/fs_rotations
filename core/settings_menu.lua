@@ -12,10 +12,10 @@ FS.settings_menu = {
     tree = core.menu.tree_node(),
     show_settings_window = core.menu.checkbox(false, tag .. "show_settings_window"),
     settings_button = core.menu.button(tag .. "settings_button"),
-    settings_window = core.menu.window(tag .. "settings_window"),
+    settings_window = extend_window(core.menu.window(tag .. "settings_window")),
     
     -- Filter and sorting
-    module_filter = core.menu.combobox(0, tag .. "module_filter"),
+    module_filter = extend_combobox(core.menu.combobox(0, tag .. "module_filter")),
     search_input = core.menu.text_input(tag .. "search"),
     
     -- Module tree nodes
@@ -100,7 +100,7 @@ local function render_settings_window()
         end
         
         -- Apply search filter
-        local search_text = menu.search_input:get()
+        local search_text = menu.search_input:get_text()
         if search_text ~= "" then
             local temp = {}
             for _, setting in ipairs(filtered_settings) do

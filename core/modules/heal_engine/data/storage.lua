@@ -5,6 +5,12 @@
 local POOL_INITIAL_SIZE = FS.config:get("heal_engine.pooling.initial_size", 100)
 local MAX_EXPECTED_UNITS = FS.config:get("heal_engine.pooling.expected_units", 40)
 
+---@class HealthValue
+---@field health number Total health including shields
+---@field max_health number Maximum health of the unit
+---@field health_percentage number Health percentage between 0-1
+---@field time number Timestamp when this value was recorded
+
 -- Module namespace
 local storage = {
     ---@type HealthValue[] Pool of reusable health value objects
