@@ -1,7 +1,11 @@
 ---@type enums
 local enums = require("common/enums")
 
+-- Entry helper provides utility functions for module loading and initialization
 FS.entry_helper = {
+    -- This table is deprecated in favor of the spec_module_registry.lua implementation
+    -- It's kept for backward compatibility during the transition
+    -- @deprecated Use spec_module_registry.lua instead
     class_spec_map = {
         [enums.class_spec_id.spec_enum.ARMS_WARRIOR] = "warrior/arms",
         [enums.class_spec_id.spec_enum.FURY_WARRIOR] = "warrior/fury",
@@ -29,6 +33,9 @@ FS.entry_helper = {
         [enums.class_spec_id.spec_enum.FROST_MAGE] = "frost",
         [enums.class_spec_id.spec_enum.AFFLICTION_WARLOCK] = "affliction",
     },
+    
+    -- This table is deprecated in favor of the spec_module_registry.lua implementation
+    -- @deprecated Use FS.is_spec_supported() instead
     allowed_specs = {
         [enums.class_spec_id.spec_enum.HOLY_PALADIN] = true,
     }

@@ -1,47 +1,48 @@
 ---@type enums
 local enums = require("common/enums")
+-- Load the spec module registry
+require("entry/spec_module_registry")
 
----Loads the module for the player's specialization with enhanced error handling
+---Loads the module for the player's specialization using the registry pattern
+---This improves error handling, provides better diagnostics, and validates dependencies
 ---@return boolean
 function FS.entry_helper.load_spec_module()
     -- Get specialization enum for current player
     local spec_enum = enums.class_spec_id.get_specialization_enum(FS.spec_config.class_id, FS.spec_config.spec_id)
     
-    -- Get module path 
-    local module_path = FS.entry_helper.class_spec_map[spec_enum]
-    if not module_path then
+    -- Check if we support this specialization
+    if not FS.is_spec_supported(spec_enum) then
         core.log_error("Unsupported specialization: " .. tostring(spec_enum) .. 
                        " (Class: " .. FS.spec_config.class_id .. ", Spec: " .. FS.spec_config.spec_id .. ")")
+        
+        -- If we have registry data but it's disabled, provide more info
+        local module_info = FS.get_spec_module_info(spec_enum)
+        if module_info and not module_info.enabled then
+            core.log_warning("The " .. module_info.name .. " module exists but is currently disabled.")
+        end
+        
         return false
     end
     
-    -- Full path to bootstrap file
-    local full_path = "classes/" .. module_path .. "/bootstrap"
-    
-    -- Try to load the module
-    local success, result = pcall(require, full_path)
+    -- Load the module using the registry
+    local success, result = FS.load_spec_module(spec_enum)
     
     if success then
         -- Successfully loaded
         FS.spec_config = result
         
-        -- Validate module interface
-        if type(FS.spec_config) ~= "table" then
-            core.log_error("Invalid spec module: not a table")
-            return false
-        end
+        -- Get module info for logging
+        local module_info = FS.get_spec_module_info(spec_enum)
+        core.log("Successfully loaded " .. module_info.name .. " module")
         
-        -- Log successful load
-        core.log("Successfully loaded spec module: " .. (FS.spec_config.name or module_path))
         return true
     else
-        -- Log the error
-        local error_msg = result or "Unknown error"
-        core.log_error("Failed to load spec module (" .. full_path .. "): " .. error_msg)
+        -- Log the error message returned from the registry
+        core.log_error(result)
         
-        -- Record in error handler if available
+        -- Record in error handler
         if FS.error_handler then
-            FS.error_handler:record("load_spec_module." .. module_path, error_msg)
+            FS.error_handler:record("load_spec_module", result)
         end
         
         return false
