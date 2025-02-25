@@ -8,9 +8,79 @@ local cone = require("common/geometry/cone")
 ---@param angle number Angle of the cone in degrees
 ---@param spell_id number ID of the healing spell to check castability
 ---@return game_object|nil target Returns player if conditions met, nil otherwise
-function FS.modules.heal_engine.get_frontal_cone_heal_target(hp_threshold, min_targets, radius, angle, spell_id
-)
-    if not hp_threshold or not min_targets or not radius or not angle or not spell_id then
+function FS.modules.heal_engine.get_frontal_cone_heal_target(hp_threshold, min_targets, radius, angle, spell_id)
+    local component = "heal_engine.get_frontal_cone_heal_target"
+    
+    -- Required parameter validation
+    if not hp_threshold then
+        FS.error_handler:record(component, "hp_threshold is required")
+        return nil
+    end
+    
+    if not min_targets then
+        FS.error_handler:record(component, "min_targets is required")
+        return nil
+    end
+    
+    if not radius then
+        FS.error_handler:record(component, "radius is required")
+        return nil
+    end
+    
+    if not angle then
+        FS.error_handler:record(component, "angle is required")
+        return nil
+    end
+    
+    if not spell_id then
+        FS.error_handler:record(component, "spell_id is required")
+        return nil
+    end
+    
+    -- Type validation
+    if type(hp_threshold) ~= "number" then
+        FS.error_handler:record(component, "hp_threshold must be a number")
+        return nil
+    end
+    
+    if type(min_targets) ~= "number" then
+        FS.error_handler:record(component, "min_targets must be a number")
+        return nil
+    end
+    
+    if type(radius) ~= "number" then
+        FS.error_handler:record(component, "radius must be a number")
+        return nil
+    end
+    
+    if type(angle) ~= "number" then
+        FS.error_handler:record(component, "angle must be a number")
+        return nil
+    end
+    
+    if type(spell_id) ~= "number" then
+        FS.error_handler:record(component, "spell_id must be a number")
+        return nil
+    end
+    
+    -- Value range validation
+    if hp_threshold < 0 or hp_threshold > 100 then
+        FS.error_handler:record(component, "hp_threshold must be between 0-100")
+        return nil
+    end
+    
+    if min_targets < 1 then
+        FS.error_handler:record(component, "min_targets must be at least 1")
+        return nil
+    end
+    
+    if radius <= 0 then
+        FS.error_handler:record(component, "radius must be greater than 0")
+        return nil
+    end
+    
+    if angle <= 0 or angle > 360 then
+        FS.error_handler:record(component, "angle must be between 0-360 degrees")
         return nil
     end
 

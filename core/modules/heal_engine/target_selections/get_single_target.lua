@@ -2,14 +2,52 @@
 ---@param hp_threshold number Maximum health percentage to consider a target for healing (0-100)
 ---@param spell_id number ID of the healing spell to check castability
 ---@param skip_facing boolean Whether to skip facing requirement check
----@param skips_range boolean Whether to skip range requirement check
+---@param skip_range boolean Whether to skip range requirement check
 ---@return game_object|nil target The target with maximum missing health that meets the criteria, or nil if no valid target found
-function FS.modules.heal_engine.get_single_target(hp_threshold, spell_id, skip_facing, skips_range)
+function FS.modules.heal_engine.get_single_target(hp_threshold, spell_id, skip_facing, skip_range)
+    local component = "heal_engine.get_single_target"
     local max_missing_health = 0
     local best_target = nil
 
-    -- Validate parameters
-    if not hp_threshold or not spell_id then
+    -- Required parameter validation
+    if not hp_threshold then
+        FS.error_handler:record(component, "hp_threshold is required")
+        return nil
+    end
+    
+    if not spell_id then
+        FS.error_handler:record(component, "spell_id is required")
+        return nil
+    end
+    
+    -- Type validation
+    if type(hp_threshold) ~= "number" then
+        FS.error_handler:record(component, "hp_threshold must be a number")
+        return nil
+    end
+    
+    if type(spell_id) ~= "number" then
+        FS.error_handler:record(component, "spell_id must be a number")
+        return nil
+    end
+    
+    -- Value range validation
+    if hp_threshold < 0 or hp_threshold > 100 then
+        FS.error_handler:record(component, "hp_threshold must be between 0-100")
+        return nil
+    end
+    
+    -- Boolean parameter validation with default values
+    skip_facing = skip_facing == nil and false or skip_facing
+    skip_range = skip_range == nil and false or skip_range
+    
+    if type(skip_facing) ~= "boolean" then
+        FS.error_handler:record(component, "skip_facing must be a boolean")
+        return nil
+    end
+    
+    if type(skip_range) ~= "boolean" then
+        FS.error_handler:record(component, "skip_range must be a boolean")
         return nil
     end
 
