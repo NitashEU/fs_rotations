@@ -1,8 +1,9 @@
 # Changelog
 
 All notable changes to FS Rotations will be documented in this file.
-
-## [1.10.0] - 2025-02-25
+## [1.10.1] - 2025-02-25
+### Fixed
+- Update commit.sh script for macOS sed compatibility## [1.10.0] - 2025-02-25
 
 ### Added
 - Robust error handling and exception boundaries system

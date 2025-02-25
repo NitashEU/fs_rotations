@@ -18,9 +18,9 @@ if ! echo "$commit_msg" | grep -qE "$prefix_pattern"; then
     exit 1
 fi
 
-# Check for uppercase in first line
-if echo "$commit_msg" | head -n 1 | grep -q "[A-Z]"; then
-    echo "Error: Commit message must be lowercase"
+# Check for uppercase in prefix (before the colon)
+if echo "$commit_msg" | grep -oE '^[^:]+:' | grep -q "[A-Z]"; then
+    echo "Error: Commit type prefix must be lowercase (e.g., feat:, fix:, etc.)"
     exit 1
 fi
 
@@ -64,14 +64,14 @@ if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
 
     # Update version.lua file
     if [[ $commit_type == "feat" ]]; then
-        sed -i "s/minor = $current_minor/minor = $new_minor/" "$version_file"
-        sed -i "s/patch = $current_patch/patch = 0/" "$version_file"
+        sed -i '' "s/minor = $current_minor/minor = $new_minor/" "$version_file"
+        sed -i '' "s/patch = $current_patch/patch = 0/" "$version_file"
     else
-        sed -i "s/patch = $current_patch/patch = $new_patch/" "$version_file"
+        sed -i '' "s/patch = $current_patch/patch = $new_patch/" "$version_file"
     fi
 
     # Update version in README.md
-    sed -i "s/Current Version: $current_version/Current Version: $new_version/" "$REPO_ROOT/README.md"
+    sed -i '' "s/Current Version: $current_version/Current Version: $new_version/" "$REPO_ROOT/README.md"
 
     # Update CHANGELOG.md
     changelog_file="$REPO_ROOT/CHANGELOG.md"
@@ -80,7 +80,9 @@ if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
     # Check if version section exists, if not create it
     if ! grep -q "## \[$new_version\]" "$changelog_file"; then
         # Insert new version section after the header line
-        sed -i "3a\\\n## [$new_version] - $today\n" "$changelog_file"
+        sed -i '' "3a\\
+## [$new_version] - $today
+" "$changelog_file"
     fi
     
     # Add entry under appropriate category
@@ -103,7 +105,8 @@ if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
     if ! grep -A20 "## \[$new_version\]" "$changelog_file" | grep -q "$section"; then
         # Find the line with version header and insert section after it
         line_number=$(grep -n "## \[$new_version\]" "$changelog_file" | cut -d: -f1)
-        sed -i "${line_number}a\\$section" "$changelog_file"
+        sed -i '' "${line_number}a\\
+$section" "$changelog_file"
     fi
     
     # Add commit message to section (clean it up by removing the prefix)
@@ -116,7 +119,8 @@ if [[ $commit_type =~ ^(feat|fix|perf|refactor)$ ]]; then
         version_line=$(grep -n "## \[$new_version\]" "$changelog_file" | cut -d: -f1)
         absolute_section_line=$((version_line + section_line - 1))
         # Insert entry after the section header
-        sed -i "${absolute_section_line}a\\- $clean_message" "$changelog_file"
+        sed -i '' "${absolute_section_line}a\\
+- $clean_message" "$changelog_file"
     fi
     
     # Stage the version files
