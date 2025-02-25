@@ -30,7 +30,10 @@
 
 ## Data Collection
 - Use circular buffers for health history `data/collector.lua`
-- Implement object pooling for performance `data/storage.lua`
+- Use FS.object_pool for health values, arrays, and other frequent objects
+- Implement proper pooling with appropriate reset functions
+- Configure pool sizes based on expected unit counts
+- Monitor pool health through the memory management UI
 - Cache positions and distances `data/cache.lua`
 - Track health changes with configurable thresholds
 - Store only significant health changes

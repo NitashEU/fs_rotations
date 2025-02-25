@@ -28,7 +28,10 @@
 - Settings: All thresholds should be percentage-based (0-100)
 - Performance: 
   - Cache frequently accessed values (positions, distances)
-  - Utilize object pooling for frequently created objects
+  - Use FS.object_pool for all frequently created objects 
+  - Implement proper reset functions for pooled objects
+  - Configure appropriate pre-allocation based on expected usage
+  - Monitor pool health and memory leaks through UI
   - Optimize update frequencies for different operation types
   - Use FS.profiler to identify and address bottlenecks 
   - Take memory snapshots to identify potential memory leaks

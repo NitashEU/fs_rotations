@@ -134,10 +134,30 @@ FS.validator = {
 ## Phase 2: Core System Improvements (2-3 weeks)
 
 ### 1. Memory Management Enhancements
-- [ ] Add memory tracking to object pools
-- [ ] Implement selective cache invalidation
-- [ ] Create memory usage visualization
-- [ ] Add thresholds for adaptive object pooling
+- [x] Add memory tracking to object pools
+  - Developed comprehensive `core/object_pool.lua` module
+  - Implemented memory usage estimation for different object types
+  - Added tracking for creation, acquisition, and recycling of objects
+  - Created object lifecycle tracking with hit/miss metrics
+  - Built memory leak detection functionality
+- [x] Implement selective cache invalidation
+  - Added configurable cache lifetime settings
+  - Implemented adaptive cleanup based on recycle rates
+  - Created smart cache eviction for efficiency
+  - Added pool-specific cleanup intervals
+  - Built global cleanup system for coordinated memory management
+- [x] Create memory usage visualization
+  - Implemented sortable pool list with health indicators
+  - Created detailed pool statistics views
+  - Added memory leak detection indicators
+  - Implemented memory efficiency metrics
+  - Designed color-coded health indicators for quick assessment
+- [x] Add thresholds for adaptive object pooling
+  - Created configurable max pool sizes
+  - Implemented minimum recycle rate thresholds
+  - Added smart pre-allocation settings
+  - Developed dynamic pool size adjustment 
+  - Built efficiency tracking for adaptive cleanup
 
 ### 2. Centralized Settings System
 - [ ] Design unified settings interface
