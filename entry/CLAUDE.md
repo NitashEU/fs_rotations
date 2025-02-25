@@ -27,11 +27,18 @@
 - Use strong type checking for all interfaces
 - Document all required fields
 
-## Error Handling
+## Error Handling and Validation
+- Use FS.validator for ALL input parameter validation
+- Document ALL functions with LuaDoc annotations (---@param and ---@return)
 - Validate spec availability before loading
 - Check for required modules and dependencies
-- Provide clear error messages for missing components
+- Provide clear error messages with specific component names
 - Implement fallback behavior when appropriate
+- Follow the standard validation pattern:
+  1. Required parameter validation first
+  2. Type and range validation next
+  3. Set defaults for optional parameters
+  4. Validate optional parameters
 
 ## Development Guidelines
 - Test new modules in isolation before integration

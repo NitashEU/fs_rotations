@@ -5,10 +5,19 @@ This document outlines a phased approach to implementing the improvements identi
 ## Phase 1: Foundation Improvements (1-2 weeks)
 
 ### 1. Standardized Validation Library
-- [ ] Create centralized validation module with common functions
-- [ ] Add comprehensive documentation for all validation functions
-- [ ] Integrate with error_handler
-- [ ] Apply to heal_engine components first
+- [x] Create centralized validation module with common functions
+  - Created core/validator.lua with comprehensive validation functions
+  - Implemented component auto-detection for better error reporting
+  - Added special validation functions for WoW-specific concepts (game objects, percent thresholds)
+- [x] Add comprehensive documentation for all validation functions
+  - Added detailed docs/fs-rotations/api/validation.md with examples and best practices
+  - Included thorough inline documentation for each function
+- [x] Integrate with error_handler
+  - All validation functions automatically report errors to error_handler
+  - Used consistent component naming convention for better error tracking
+- [x] Apply to heal_engine components first
+  - Refactored heal_engine.get_single_target to use the validation library
+  - Updated holy_shock.lua to demonstrate class implementation usage
 
 ```lua
 -- Example implementation sketch

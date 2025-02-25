@@ -14,6 +14,10 @@
 
 ## Code Style Guidelines
 - Indentation: Use spaces (2 or 4), be consistent with file
+- Documentation:
+  - EVERY function MUST have LuaDoc comments with `---@param` and `---@return` annotations
+  - ALL parameters and return values must be documented with types and descriptions
+  - Complex functions should include usage examples in comments
 - Types: Use strong annotations with `---@class` and `---@field` for interfaces
 - Naming: snake_case for files/functions/variables, meaningful descriptive names
 - Module Structure:
@@ -23,7 +27,11 @@
   - Handle visualization in drawing.lua
 - Settings: All thresholds should be percentage-based (0-100)
 - Performance: Cache frequently accessed values (positions, distances), utilize object pooling, optimize update frequencies
-- Error Handling: Validate input parameters with detailed error messages, check for nil values, validate parameter types and ranges
+- Error Handling: 
+  - Use FS.validator for ALL input parameter validation (never validate manually)
+  - Add component name to all validation calls for clear error tracking
+  - Handle all potential nil values and provide meaningful default values
+  - Include fallback behavior for error cases
 
 ## Code Organization
 - `/classes/` - Class-specific implementations organized by class/spec

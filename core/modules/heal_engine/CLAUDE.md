@@ -52,13 +52,17 @@
 - Access cached distances via `cache.get_distance(pos1, pos2)`
 
 ## Input Validation
-- Implement comprehensive parameter validation for all functions
-- Check required parameters with specific error messages
-- Validate parameter types and value ranges
-- Check object methods and properties before use
-- Use the error_handler system to report validation failures
-- Add default values for optional boolean parameters
-- Validate collections for existence and non-emptiness
+- Use FS.validator library for ALL parameter validation
+- Follow this validation order in all functions:
+  1. Required parameters first (`check_required`)
+  2. Type and range validation next (`check_number`, `check_percent`, etc.)
+  3. Set defaults for optional parameters using `FS.validator.default()`
+  4. Validate optional parameters after setting defaults
+- Always specify component name in validation calls
+- Document all parameters with LuaDoc annotations including type and value ranges
+- Add detailed parameter descriptions in documentation
+- Validate objects using `check_game_object` before accessing properties
+- For collections, validate both existence and non-emptiness
 
 ## Logging
 - Centralize logging in `logging/health.lua`

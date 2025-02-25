@@ -31,11 +31,18 @@
 - Set appropriate cache lifetimes based on data volatility (e.g., 200ms for positions)
 - Refresh caches at regular intervals or when data changes
 
-## Error Handling
-- Validate all input parameters
-- Provide descriptive error messages
-- Implement graceful fallbacks
-- Log errors through appropriate channels
+## Error Handling and Validation
+- Use FS.validator for ALL input parameter validation
+- Document ALL functions with LuaDoc annotations (---@param and ---@return)
+- Use clear component names for all error reporting
+- Follow the validation order pattern:
+  1. Required parameters first
+  2. Type and range validation
+  3. Default values for optional parameters
+  4. Validation of optional parameters
+- Provide meaningful fallback behavior for error cases
+- Log errors through the error_handler system
+- Include early exit conditions for invalid states
 
 ## Integration Standards
 - Avoid direct dependencies where possible

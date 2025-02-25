@@ -15,10 +15,15 @@
 
 ## Spell Implementation
 - Create individual spell files in `logic/spells/`
-- Validate range, resource cost, and cooldown before casting
-- Return success/failure status from all spell functions
+- Document ALL functions with LuaDoc (---@param and ---@return)
+- Begin each spell function with:
+  1. Component name declaration (`local component = "paladin_holy.spells.spell_name"`)
+  2. Early exit if not castable (using `is_spell_queueable`)
+  3. Validation of all settings using FS.validator
+- Use FS.validator for ALL parameter validation
+- Return boolean success/failure status from all spell functions
 - Cache frequently used values (spell IDs, cooldowns)
-- Document all parameters and return values
+- Add detailed inline comments for complex logic
 
 ## IDs Management
 - Keep all spell IDs in `ids/spells.lua`
