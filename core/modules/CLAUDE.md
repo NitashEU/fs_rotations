@@ -17,10 +17,13 @@
 
 ## Performance Guidelines
 - Optimize update frequencies based on operation type
-- Cache frequently accessed values
+- Cache frequently accessed values (positions, distances, etc.)
 - Use appropriate data structures for lookups
 - Avoid unnecessary computations in time-critical paths
+- Implement object pooling for frequently created/destroyed objects
 - Implement cleanup procedures to prevent memory leaks
+- Set appropriate cache lifetimes based on data volatility (e.g., 200ms for positions)
+- Refresh caches at regular intervals or when data changes
 
 ## Error Handling
 - Validate all input parameters

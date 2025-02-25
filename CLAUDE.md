@@ -16,7 +16,7 @@
   - Centralize IDs in ids/ directory
   - Handle visualization in drawing.lua
 - Settings: All thresholds should be percentage-based (0-100)
-- Performance: Cache frequently accessed values, optimize update frequencies
+- Performance: Cache frequently accessed values (positions, distances), utilize object pooling, optimize update frequencies
 - Error Handling: Validate input parameters, check for nil before operations
 
 ## Code Organization

@@ -24,7 +24,10 @@
 - Minimize calculations in hot paths
 - Use spatial optimization for cluster calculations
 - Implement early exit conditions
-- Cache position data where possible
+- Use position and distance caching (implemented with 200ms lifetime)
+- Refresh position cache on every fast update cycle
+- Access cached positions via `get_cached_position(unit)`
+- Access cached distances via `get_cached_distance(pos1, pos2)`
 
 ## Interface Integration
 - Expose a consistent API for all healing specializations
