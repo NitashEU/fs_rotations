@@ -12,61 +12,84 @@ local tag = "fs_rotations_core_"
 -- Initialize menu namespace
 FS.menu = FS.menu or {}
 
+---Define extended types for our menu elements
+---@class extended_window : window
+---@field is_last_widget_hovered fun(self:extended_window):boolean Check if the last widget is hovered
+---@field begin_tooltip fun(self:extended_window, callback:function) Begin a tooltip region
+
+---@class extended_combobox : combobox
+---@field clear_items fun(self:extended_combobox):extended_combobox Clear all items in the combobox
+---@field add_item fun(self:extended_combobox, item:string):extended_combobox Add an item to the combobox
+---@field get_selected_item fun(self:extended_combobox):string Get the currently selected item text
+
 -- Add window extensions for tooltip handling
 ---@param window window The window to extend
----@return window Extended window with additional methods
+---@return extended_window Extended window with additional methods
 function FS.menu.extend_window(window)
+    ---@type extended_window
+    local extended = window
+    
     -- Add is_last_widget_hovered method
-    window.is_last_widget_hovered = function(self)
+    extended.is_last_widget_hovered = function(self)
         -- This is a simplification - ideally we would track the last widget bounds
         -- and check if the mouse is hovering over it
         return self:is_window_hovered() -- Fallback to window hover
     end
     
     -- Add begin_tooltip method
-    window.begin_tooltip = function(self, callback)
+    extended.begin_tooltip = function(self, callback)
         if callback then
             callback()
         end
     end
     
-    return window
+    return extended
 end
 
 -- Extend combobox functionality
 ---@param combobox combobox The combobox to extend
----@return combobox Extended combobox with additional methods
+---@return extended_combobox Extended combobox with additional methods
 function FS.menu.extend_combobox(combobox)
+    ---@type extended_combobox
+    local extended = combobox
+    
     local items = {}
     local selected_index = 1
     
     -- Add clear_items method
-    combobox.clear_items = function(self)
+    extended.clear_items = function(self)
         items = {}
         return self
     end
     
     -- Add add_item method
-    combobox.add_item = function(self, item)
+    extended.add_item = function(self, item)
         table.insert(items, item)
         return self
     end
     
     -- Add get_selected_item method
-    combobox.get_selected_item = function(self)
+    extended.get_selected_item = function(self)
         local index = self:get()
         return items[index + 1] or ""
     end
 
     -- Save original render function
-    local original_render = combobox.render
+    local original_render = extended.render
     
-    -- Override render to use our items array
-    combobox.render = function(self, label, tooltip)
-        return original_render(self, label, items, tooltip)
+    -- Override render to use our items array - properly handle parameters
+    extended.render = function(self, label, tooltip_or_options, tooltip_param)
+        if type(tooltip_or_options) == "string" then
+            -- Called with (label, tooltip)
+            return original_render(self, label, items, tooltip_or_options)
+        else
+            -- Called with (label, options, tooltip)
+            -- In this case we ignore options since we manage items internally
+            return original_render(self, label, items, tooltip_param)
+        end
     end
     
-    return combobox
+    return extended
 end
 
 -- Extend base menu with core elements

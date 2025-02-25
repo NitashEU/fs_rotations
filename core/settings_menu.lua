@@ -8,14 +8,24 @@ local vec2 = require("common/geometry/vector_2")
 
 local tag = "fs_rotations_settings_"
 
+-- Create settings menu objects with type annotations
+---@type extended_window
+local settings_window = FS.menu.extend_window(core.menu.window(tag .. "settings_window"))
+
+---@type extended_combobox
+local module_filter = FS.menu.extend_combobox(core.menu.combobox(0, tag .. "module_filter"))
+
+-- Initialize settings menu structure
 FS.settings_menu = {
     tree = core.menu.tree_node(),
     show_settings_window = core.menu.checkbox(false, tag .. "show_settings_window"),
     settings_button = core.menu.button(tag .. "settings_button"),
-    settings_window = FS.menu.extend_window(core.menu.window(tag .. "settings_window")),
     
-    -- Filter and sorting
-    module_filter = FS.menu.extend_combobox(core.menu.combobox(0, tag .. "module_filter")),
+    -- Extended UI elements with custom methods
+    settings_window = settings_window,
+    module_filter = module_filter,
+    
+    -- Standard UI elements
     search_input = core.menu.text_input(tag .. "search"),
     
     -- Module tree nodes
@@ -62,7 +72,9 @@ local function render_settings_window()
         
         -- Filters
         menu.settings_window:begin_group(function()
-            menu.module_filter:render("Module", "Filter settings by module")
+            -- We need to pass an empty options table as the second parameter
+            -- The options will be populated by clear_items/add_item
+            menu.module_filter:render("Module", {}, "Filter settings by module")
             
             -- Add modules to filter
             menu.module_filter:clear_items()
