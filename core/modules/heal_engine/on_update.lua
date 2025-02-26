@@ -1,159 +1,67 @@
+--- Heal Engine Update Functions
+--- Handles periodic updates for health tracking and damage analysis
+
 function FS.modules.heal_engine.on_fast_update()
-    if not FS.modules.heal_engine.is_in_combat then
+    -- Start profiling this function
+    FS.profiler:start("on_fast_update", "heal_engine")
+
+    -- Skip if not in combat
+    if not FS.modules.heal_engine.state.is_in_combat then
+        FS.profiler:stop("on_fast_update", "heal_engine", true)
         return
     end
 
     local current_time = core.game_time()
 
-    -- Update health values for all units
-    for _, unit in pairs(FS.modules.heal_engine.units) do
-        local stored_values = FS.modules.heal_engine.health_values[unit] or {}
-        local last_value = #stored_values > 0 and stored_values[#stored_values] or nil
-        local current_health = unit:get_health()
-        local current_shield = unit:get_total_shield() or 0
-        local total_health = current_health + current_shield
+    -- Profile cache maintenance
+    FS.profiler:profile_function(function()
+        FS.modules.heal_engine.cache.maintain_caches(current_time)
+    end, "maintain_caches", "heal_engine.cache")
 
-        -- Initialize fight-wide tracking if needed
-        if not FS.modules.heal_engine.fight_start_time then
-            FS.modules.heal_engine.fight_start_time = current_time
-            FS.modules.heal_engine.fight_start_health[unit] = total_health
-            FS.modules.heal_engine.fight_total_damage[unit] = 0
-        end
+    -- Profile position cache refresh
+    FS.profiler:profile_function(function()
+        FS.modules.heal_engine.cache.refresh_position_cache(current_time)
+    end, "refresh_position_cache", "heal_engine.cache")
 
-        -- Only store if health changed or enough time passed (250ms)
-        local should_store = not last_value
-        if last_value then
-            local health_changed = math.abs(last_value.health - total_health) > 0.01
-            local time_passed = current_time - last_value.time >= 250
-            should_store = health_changed or time_passed
+    -- Profile health data collection
+    FS.profiler:profile_function(function()
+        FS.modules.heal_engine.collector.update_health_data(current_time,
+            function(unit, damage, current_health, previous_health, time)
+                FS.modules.heal_engine.health_logger.log_damage_event(unit, damage, current_health, previous_health, time)
+            end)
+    end, "update_health_data", "heal_engine.collector")
 
-            -- Track fight-wide damage
-            if health_changed and last_value.health > total_health then
-                local damage = last_value.health - total_health
-                FS.modules.heal_engine.fight_total_damage[unit] = (FS.modules.heal_engine.fight_total_damage[unit] or 0) +
-                    damage
-
-                -- Log fight-wide DPS if enabled and significant damage occurred
-                if FS.modules.heal_engine.settings.logging.dps.should_show_fight() and
-                    FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                    damage > unit:get_max_health() * FS.modules.heal_engine.settings.logging.dps.get_threshold() then
-                    local fight_duration = (current_time - FS.modules.heal_engine.fight_start_time) / 1000
-                    local fight_dps = FS.modules.heal_engine.fight_total_damage[unit] / fight_duration
-                    core.log(string.format("Fight DPS: %.0f damage over %.1fs = %.0f DPS",
-                        FS.modules.heal_engine.fight_total_damage[unit], fight_duration, fight_dps))
-                end
-            end
-
-            -- Only log significant health changes if enabled
-            if FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                health_changed and
-                math.abs(last_value.health - total_health) > unit:get_max_health() * FS.modules.heal_engine.settings.logging.health.get_threshold() then
-                core.log(string.format("Health change for %s: %.0f -> %.0f (diff: %.0f)",
-                    unit:get_name(), last_value.health, total_health,
-                    total_health - last_value.health))
-            end
-        end
-
-        if should_store then
-            local new_value = {
-                health = total_health,
-                max_health = unit:get_max_health(),
-                health_percentage = current_health / unit:get_max_health(),
-                time = current_time
-            }
-
-            table.insert(stored_values, new_value)
-            FS.modules.heal_engine.current_health_values[unit] = new_value
-        end
-
-        -- Only clean up old values every 5 seconds to avoid excessive processing
-        if current_time % 5000 < 100 then
-            local valid_values = {}
-            local removed_count = 0
-            for _, value in ipairs(stored_values) do
-                if current_time - value.time < 15000 then
-                    table.insert(valid_values, value)
-                else
-                    removed_count = removed_count + 1
-                end
-            end
-
-            if FS.modules.heal_engine.settings.logging.health.should_show_cleanup() and
-                FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                removed_count > 0 then
-                core.log(string.format("Cleaned up %d old values for %s", removed_count, unit:get_name()))
-            end
-
-            stored_values = valid_values
-        end
-
-        FS.modules.heal_engine.health_values[unit] = stored_values
-    end
+    -- End profiling
+    FS.profiler:stop("on_fast_update", "heal_engine", true)
 end
 
--- Track last DPS update time
-FS.modules.heal_engine.last_dps_update = FS.modules.heal_engine.last_dps_update or 0
-
 function FS.modules.heal_engine.on_update()
+    -- Start profiling this function
+    FS.profiler:start("on_update", "heal_engine")
+
     local current_time = core.game_time()
-    local is_in_combat = FS.variables.me:is_in_combat()
 
-    if is_in_combat and not FS.modules.heal_engine.is_in_combat then
-        FS.modules.heal_engine.is_in_combat = true
-        FS.modules.heal_engine.start()
-        if FS.modules.heal_engine.settings.logging.is_debug_enabled() then
-            core.log("Entered combat - starting heal engine")
-        end
-    elseif not is_in_combat and FS.modules.heal_engine.is_in_combat then
-        -- Log final fight DPS before resetting
-        if FS.modules.heal_engine.fight_start_time and
-            FS.modules.heal_engine.settings.logging.dps.should_show_fight() and
-            FS.modules.heal_engine.settings.logging.is_debug_enabled() then
-            local fight_duration = (current_time - FS.modules.heal_engine.fight_start_time) / 1000
-            for _, unit in pairs(FS.modules.heal_engine.units) do
-                local total_damage = FS.modules.heal_engine.fight_total_damage[unit] or 0
-                if total_damage > 0 then
-                    local fight_dps = total_damage / fight_duration
-                    core.log(string.format("Final Fight Stats: %.0f total damage over %.1fs = %.0f average DPS",
-                        total_damage, fight_duration, fight_dps))
-                end
-            end
-        end
+    -- Update object pool system
+    FS.object_pool:update(current_time)
 
-        FS.modules.heal_engine.is_in_combat = false
-        FS.modules.heal_engine.reset()
-        if FS.modules.heal_engine.settings.logging.is_debug_enabled() then
-            core.log("Left combat - resetting heal engine")
-        end
-        -- Clear DPS history when leaving combat
-        FS.modules.heal_engine.last_dps_values = {}
-        FS.modules.heal_engine.last_dps_update = 0
-    end
+    -- Profile combat state update
+    FS.profiler:profile_function(function()
+        FS.modules.heal_engine.state.update_combat_state(current_time)
+    end, "update_combat_state", "heal_engine.state")
 
-    if FS.modules.heal_engine.is_in_combat then
-        -- Only update DPS every 500ms to reduce spam
-        if current_time - FS.modules.heal_engine.last_dps_update >= 500 then
-            FS.modules.heal_engine.last_dps_update = current_time
+    -- Only run DPS updates in combat
+    if FS.modules.heal_engine.state.is_in_combat then
+        -- Profile DPS analysis
+        FS.profiler:profile_function(function()
+            FS.modules.heal_engine.damage_analyzer.update_all_units_dps(current_time)
+        end, "update_all_units_dps", "heal_engine.damage_analyzer")
 
-            for _, unit in pairs(FS.modules.heal_engine.units) do
-                -- Calculate DPS for enabled windows
-                if FS.modules.heal_engine.settings.tracking.windows.is_1s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 1)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_5s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 5)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_10s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_10_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 10)
-                end
-                if FS.modules.heal_engine.settings.tracking.windows.is_15s_enabled() then
-                    FS.modules.heal_engine.damage_taken_per_second_last_15_seconds[unit] =
-                        FS.modules.heal_engine.get_damage_taken_per_second(unit, 15)
-                end
-            end
+        -- Take a memory snapshot occasionally (approximately every 30 seconds)
+        if math.random() < 0.01 then -- 1% chance per update
+            FS.profiler:capture_memory_snapshot()
         end
     end
+
+    -- End profiling
+    FS.profiler:stop("on_update", "heal_engine", true)
 end

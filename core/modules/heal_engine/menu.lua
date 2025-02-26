@@ -71,6 +71,91 @@ local function render_dps_windows()
     end)
 end
 
+-- Debug stats rendering
+local function render_debug_stats()
+    if not FS.modules.heal_engine.menu.logging.enable_debug:get() then
+        return
+    end
+    
+    local stats = FS.modules.heal_engine.pool_stats
+    local pool_sizes = {
+        health = #FS.modules.heal_engine.health_value_pool,
+        array = #FS.modules.heal_engine.array_pool
+    }
+    
+    -- Calculation of efficiency ratio (higher is better)
+    local efficiency = {
+        health = stats.health_value_recycled > 0 and 
+            stats.health_value_recycled / (stats.health_value_created + stats.health_value_recycled) * 100 or 0,
+        array = stats.array_recycled > 0 and 
+            stats.array_recycled / (stats.array_created + stats.array_recycled) * 100 or 0
+    }
+    
+    -- Render debug tree
+    FS.menu.tree_node():render("Performance Stats", function()
+        -- Section Title with highlighting
+        FS.api.ImGui.TextColored(color.yellow, "Object Pool Statistics")
+        FS.api.ImGui.Separator()
+        
+        -- Health Value Pool
+        FS.api.ImGui.Text("Health Value Objects:")
+        FS.api.ImGui.Indent(10)
+        FS.api.ImGui.Text(string.format("Created: %d", stats.health_value_created))
+        FS.api.ImGui.Text(string.format("Recycled: %d", stats.health_value_recycled))
+        FS.api.ImGui.Text(string.format("Current Pool Size: %d", pool_sizes.health))
+        
+        -- Color-coded efficiency indicator
+        local color_val = color.white
+        if efficiency.health >= 90 then
+            color_val = color.green
+        elseif efficiency.health >= 70 then
+            color_val = color.yellow
+        elseif efficiency.health > 0 then
+            color_val = color.red
+        end
+        FS.api.ImGui.TextColored(color_val, string.format("Reuse Efficiency: %.1f%%", efficiency.health))
+        FS.api.ImGui.Unindent(10)
+        
+        -- Array Pool
+        FS.api.ImGui.Text("Array Objects:")
+        FS.api.ImGui.Indent(10)
+        FS.api.ImGui.Text(string.format("Created: %d", stats.array_created))
+        FS.api.ImGui.Text(string.format("Recycled: %d", stats.array_recycled))
+        FS.api.ImGui.Text(string.format("Current Pool Size: %d", pool_sizes.array))
+        
+        -- Color-coded efficiency indicator
+        color_val = color.white
+        if efficiency.array >= 90 then
+            color_val = color.green
+        elseif efficiency.array >= 70 then
+            color_val = color.yellow
+        elseif efficiency.array > 0 then
+            color_val = color.red
+        end
+        FS.api.ImGui.TextColored(color_val, string.format("Reuse Efficiency: %.1f%%", efficiency.array))
+        FS.api.ImGui.Unindent(10)
+        
+        -- Distance Cache
+        FS.api.ImGui.Text("Distance Cache:")
+        FS.api.ImGui.Indent(10)
+        FS.api.ImGui.Text(string.format("Size: %d entries", 
+            FS.api.table_util.count(FS.modules.heal_engine.distance_cache or {})))
+        local cache_age = (core.game_time() - FS.modules.heal_engine.distance_cache_last_cleared) / 1000
+        FS.api.ImGui.Text(string.format("Age: %.1f seconds", cache_age))
+        FS.api.ImGui.Unindent(10)
+        
+        -- Reset button
+        if FS.api.ImGui.Button("Reset Statistics") then
+            FS.modules.heal_engine.pool_stats = {
+                health_value_created = 0,
+                health_value_recycled = 0,
+                array_created = 0,
+                array_recycled = 0
+            }
+        end
+    end)
+end
+
 ---@type on_render_menu
 function FS.modules.heal_engine.menu.on_render_menu()
     FS.modules.heal_engine.menu.main_tree:render(name, function()
@@ -86,5 +171,8 @@ function FS.modules.heal_engine.menu.on_render_menu()
         FS.modules.heal_engine.menu.tracking.tree:render("DPS Tracking", function()
             render_dps_windows()
         end)
+        
+        -- Debug statistics (only visible when debug logging is enabled)
+        render_debug_stats()
     end)
 end

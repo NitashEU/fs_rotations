@@ -9,6 +9,91 @@ local vec2 = require("common/geometry/vector_2")
 
 local tag = "fs_rotations_core_"
 
+-- Initialize menu namespace
+FS.menu = FS.menu or {}
+
+---Define extended types for our menu elements
+---@class extended_window : window
+---@field is_last_widget_hovered fun(self:extended_window):boolean Check if the last widget is hovered
+---@field begin_tooltip fun(self:extended_window, callback:function) Begin a tooltip region
+
+---@class extended_combobox : combobox
+---@field clear_items fun(self:extended_combobox):extended_combobox Clear all items in the combobox
+---@field add_item fun(self:extended_combobox, item:string):extended_combobox Add an item to the combobox
+---@field get_selected_item fun(self:extended_combobox):string Get the currently selected item text
+
+-- Add window extensions for tooltip handling
+---@param window window The window to extend
+---@return extended_window Extended window with additional methods
+function FS.menu.extend_window(window)
+    ---@type extended_window
+    local extended = window
+
+    -- Add is_last_widget_hovered method
+    extended.is_last_widget_hovered = function(self)
+        -- This is a simplification - ideally we would track the last widget bounds
+        -- and check if the mouse is hovering over it
+        return self:is_window_hovered() -- Fallback to window hover
+    end
+
+    -- Add begin_tooltip method
+    extended.begin_tooltip = function(self, callback)
+        if callback then
+            callback()
+        end
+    end
+
+    return extended
+end
+
+-- Extend combobox functionality
+---@param combobox combobox The combobox to extend
+---@return extended_combobox Extended combobox with additional methods
+function FS.menu.extend_combobox(combobox)
+    ---@type extended_combobox
+    local extended = combobox
+
+    local items = {}
+    local selected_index = 1
+
+    -- Add clear_items method
+    extended.clear_items = function(self)
+        items = {}
+        return self
+    end
+
+    -- Add add_item method
+    extended.add_item = function(self, item)
+        table.insert(items, item)
+        return self
+    end
+
+    -- Add get_selected_item method
+    extended.get_selected_item = function(self)
+        local index = self:get()
+        return items[index + 1] or ""
+    end
+
+    -- Save original render function
+    local original_render = extended.render
+
+    -- Override render to use our items array - properly handle parameters
+    extended.render = function(self, label, tooltip_or_options, tooltip_param)
+        if type(tooltip_or_options) == "string" then
+            -- Called with (label, tooltip)
+            return original_render(self, label, items, tooltip_or_options)
+        else
+            -- Called with (label, options, tooltip)
+            -- In this case we ignore options since we manage items internally
+            return original_render(self, label, items, tooltip_param)
+        end
+    end
+
+    return extended
+end
+
+-- Extend base menu with core elements
+FS.menu = FS.menu or {}
 FS.menu = {
     main_tree = core.menu.tree_node(),
     enable_script_check = core.menu.checkbox(false, tag .. "enable_script_check"),
@@ -22,6 +107,70 @@ FS.menu = {
         base_jitter = core.menu.slider_float(0.05, 0.30, 0.15, tag .. "base_jitter"),
         latency_jitter = core.menu.slider_float(0.01, 0.20, 0.05, tag .. "latency_jitter"),
         max_jitter = core.menu.slider_float(0.10, 0.50, 0.25, tag .. "max_jitter"),
+    },
+
+    -- Add enhanced error handler menu elements
+    error_handler = {
+        tree = core.menu.tree_node(),
+        show_errors = core.menu.checkbox(false, tag .. "show_errors"),
+        show_stack_traces = core.menu.checkbox(false, tag .. "show_stack_traces"),
+        clear_errors = core.menu.button(tag .. "clear_errors"),
+        error_details = core.menu.tree_node(),
+        max_errors_slider = core.menu.slider_int(1, 20, 5, tag .. "max_errors"),
+        base_cooldown_slider = core.menu.slider_int(5, 60, 10, tag .. "base_cooldown"),
+        max_cooldown_slider = core.menu.slider_int(60, 600, 300, tag .. "max_cooldown"),
+        capture_state_checkbox = core.menu.checkbox(true, tag .. "capture_state"),
+        selected_error = nil -- This will store the currently selected error for detailed view
+    },
+
+    -- Add performance metrics menu elements
+    profiler = {
+        tree = core.menu.tree_node(),
+        enabled = core.menu.checkbox(true, tag .. "profiler_enabled"),
+        show_metrics = core.menu.checkbox(false, tag .. "show_metrics"),
+        clear_metrics = core.menu.button(tag .. "clear_metrics"),
+        capture_memory = core.menu.button(tag .. "capture_memory"),
+
+        -- Filter and sorting options
+        category_filter = core.menu.combobox(0, tag .. "profiler_category"),
+        sort_by = core.menu.combobox(2, tag .. "profiler_sort_by"), -- default to avg_time
+
+        -- Configuration
+        config_tree = core.menu.tree_node(),
+        max_metrics = core.menu.slider_int(10, 200, 100, tag .. "profiler_max_metrics"),
+        history_size = core.menu.slider_int(10, 120, 60, tag .. "profiler_history_size"),
+        warning_threshold = core.menu.slider_int(10, 100, 50, tag .. "profiler_warning_threshold"),
+        alert_threshold = core.menu.slider_int(50, 500, 100, tag .. "profiler_alert_threshold"),
+
+        -- Visualization options
+        show_charts = core.menu.checkbox(true, tag .. "profiler_show_charts"),
+        selected_metric = nil -- This will store the currently selected metric for detailed view
+    },
+
+    -- Add memory management menu elements
+    memory = {
+        tree = core.menu.tree_node(),
+        enabled = core.menu.checkbox(true, tag .. "memory_enabled"),
+        show_pools = core.menu.checkbox(false, tag .. "show_pools"),
+        check_leaks = core.menu.checkbox(true, tag .. "check_leaks"),
+        clear_pools = core.menu.button(tag .. "clear_pools"),
+        force_gc = core.menu.button(tag .. "force_gc"),
+
+        -- Filter and sorting options
+        sort_by = core.menu.combobox(0, tag .. "memory_sort_by"), -- default to name
+
+        -- Configuration
+        config_tree = core.menu.tree_node(),
+        max_pool_size = core.menu.slider_int(50, 2000, 1000, tag .. "max_pool_size"),
+        cleanup_interval = core.menu.slider_int(10, 300, 60, tag .. "cleanup_interval"),
+        global_cleanup_interval = core.menu.slider_int(60, 600, 300, tag .. "global_cleanup_interval"),
+        pre_allocation = core.menu.slider_int(5, 50, 10, tag .. "pre_allocation"),
+
+        -- Debug options
+        debug = core.menu.checkbox(false, tag .. "memory_debug"),
+
+        -- Selected pool for detailed view
+        selected_pool = nil
     }
 }
 

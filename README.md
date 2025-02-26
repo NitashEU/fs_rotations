@@ -4,7 +4,8 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 ## Overview
 
- FS Rotations is a powerful plugin system that provides intelligent combat rotation automation with features including:
+FS Rotations is a powerful plugin system that provides intelligent combat rotation automation with features including:
+
 - Advanced healing prediction and target selection
 - Combat state analysis and optimization
 - Sophisticated spell queuing and prioritization
@@ -13,7 +14,7 @@ A sophisticated rotation automation plugin for Project Sylvanas, focusing on adv
 
 ## Project Structure
 
-- **_api/** - Core API abstraction and utilities
+- **\_api/** - Core API abstraction and utilities
 - **classes/** - Class-specific implementations
 - **core/** - Core systems and shared functionality
 - **entry/** - System initialization and bootstrapping
@@ -94,9 +95,13 @@ The plugin provides extensive customization through its menu system:
 - Efficient memory management and caching
 - Comprehensive error handling
 
+## HOW TO COMMIT
+
+./commit.sh "refactor: extract dps calculation helpers into separate functions" core/modules/heal_engine/get_damage_taken_per_second.lua core/modules/heal_engine/on_update.lua
+
 ## Version
 
-Current Version: 1.8.0
+Current Version: 1.17.0
 
 ## Authors
 
