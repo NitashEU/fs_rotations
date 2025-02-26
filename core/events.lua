@@ -1,6 +1,11 @@
 -- Event System for FS Rotations
 -- Implements a publish/subscribe pattern for decoupled component communication
 -- Provides event registration, subscription, and debugging capabilities
+--
+-- DEPRECATION NOTICE:
+-- This event-based communication system is DEPRECATED for class rotations.
+-- All modules should use direct function calls instead of events for class rotations.
+-- This provides more explicit and maintainable communication between components.
 
 ---@class EventListener
 ---@field id string Unique identifier for this listener
@@ -39,6 +44,7 @@ FS.events = {
   ---@param callback function Function to call when event is triggered
   ---@param options? {id?: string, once?: boolean, priority?: number} Optional configuration
   ---@return string listener_id Unique ID for this listener (use to unregister)
+  -- DEPRECATED: For class rotations, use direct function calls instead of event listeners
   on = function(self, event_name, callback, options)
     -- Parameter validation
     if not FS.validator.check_string(event_name, "event_name", "events.on") then
@@ -118,6 +124,7 @@ FS.events = {
   ---@param event_name string Name of the event to trigger
   ---@param data any Data to pass to listeners
   ---@param source? string Source component that triggered the event
+  -- DEPRECATED: For class rotations, use direct function calls instead of event emission
   emit = function(self, event_name, data, source)
     -- Check for valid event name
     if type(event_name) ~= "string" then
@@ -175,6 +182,7 @@ FS.events = {
   ---@param event_name string Name of the event to trigger
   ---@param data any Data to pass to listeners
   ---@param source? string Source component that triggered the event
+  -- DEPRECATED: For class rotations, use direct function calls instead of hierarchical events
   emit_hierarchical = function(self, event_name, data, source)
     -- Emit to specific handler
     self:emit(event_name, data, source)
@@ -287,4 +295,6 @@ FS.events = {
 }
 
 -- Return the module for proper loading
+-- NOTE: This event system is being phased out for class rotations in favor of direct function calls.
+-- If your module uses FS.events for class rotations, please refactor to use direct communication.
 return FS.events

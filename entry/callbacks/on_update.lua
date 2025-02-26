@@ -34,10 +34,12 @@ function FS.entry_helper.on_update()
         end)
     end
     
-    -- Emit system.fast_update event
+    -- Emit system.fast_update event - removed
+    --[[
     if FS.events then
         FS.events:emit("system.fast_update", {timestamp = core.game_time() / 1000}, "entry.on_update")
     end
+    --]]
     
     -- Execute fast updates with error protection
     for i, module in pairs(FS.loaded_modules) do
@@ -87,13 +89,15 @@ function FS.entry_helper.on_update()
     -- Update humanizer
     safe_execute(FS.humanizer, "update", "humanizer")
     
-    -- Emit system.update event
+    -- Emit system.update event - removed
+    --[[
     if FS.events then
         FS.events:emit("system.update", {
             player = player,
             timestamp = core.game_time() / 1000
         }, "entry.on_update")
     end
+    --]]
     
     -- Execute normal updates with error protection
     for i, module in pairs(FS.loaded_modules) do
@@ -105,10 +109,12 @@ function FS.entry_helper.on_update()
         safe_execute(FS.spec_config, "on_update", "spec_" .. (FS.spec_config.name or "unknown"))
     end
     
-    -- Emit system.update.end event to signal completion of update cycle
+    -- Emit system.update.end event to signal completion of update cycle - removed
+    --[[
     if FS.events then
         FS.events:emit("system.update.end", {
             timestamp = core.game_time() / 1000
         }, "entry.on_update")
     end
+    --]]
 end

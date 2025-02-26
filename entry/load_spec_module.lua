@@ -35,16 +35,7 @@ function FS.entry_helper.load_spec_module()
         local module_info = FS.get_spec_module_info(spec_enum)
         core.log("Successfully loaded " .. module_info.name .. " module")
         
-        -- Emit spec.loaded event if events system is available
-        if FS.events then
-            FS.events:emit("spec.loaded", {
-                name = module_info.name,
-                path = module_info.path,
-                class_id = result.class_id,
-                spec_id = result.spec_id,
-                timestamp = core.game_time() / 1000
-            }, "load_spec_module")
-        end
+        -- Note: Event emission removed; direct function calls should be used for initialization if needed
         
         return true
     else
