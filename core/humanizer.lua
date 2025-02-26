@@ -17,7 +17,7 @@ local function apply_jitter(delay, latency)
     local latency_jitter = FS.config:get("core.humanizer.jitter.latency", 0.2)
     local max_jitter = FS.config:get("core.humanizer.jitter.max", 0.3)
     local latency_cap = FS.config:get("core.humanizer.latency_cap", 200)
-    
+
     -- Normalize latency impact
     local latency_factor = math.min(latency / latency_cap, 1)
 
@@ -43,7 +43,7 @@ function FS.humanizer.update()
     local latency_factor = FS.config:get("core.humanizer.latency_factor", 1.5)
     local min_delay_base = FS.config:get("core.humanizer.min_delay", 50)
     local max_delay_base = FS.config:get("core.humanizer.max_delay", 150)
-    
+
     -- Calculate actual delays based on latency
     local latency = core.get_ping() * latency_factor
     local min_delay = min_delay_base + latency

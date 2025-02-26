@@ -14,33 +14,33 @@ function FS.modules.heal_engine.get_healer_damage_target(spell_id, skip_facing, 
         FS.error_handler:record(component, "spell_id is required")
         return nil
     end
-    
+
     -- Type validation
     if type(spell_id) ~= "number" then
         FS.error_handler:record(component, "spell_id must be a number")
         return nil
     end
-    
+
     -- Boolean parameter validation with default values
     skip_facing = skip_facing == nil and false or skip_facing
     skip_range = skip_range == nil and false or skip_range
     skip_me = skip_me == nil and false or skip_me
-    
+
     if type(skip_facing) ~= "boolean" then
         FS.error_handler:record(component, "skip_facing must be a boolean")
         return nil
     end
-    
+
     if type(skip_range) ~= "boolean" then
         FS.error_handler:record(component, "skip_range must be a boolean")
         return nil
     end
-    
+
     if type(skip_me) ~= "boolean" then
         FS.error_handler:record(component, "skip_me must be a boolean")
         return nil
     end
-    
+
     -- Validate healers array exists and isn't empty
     if not FS.modules.heal_engine.healers or #FS.modules.heal_engine.healers == 0 then
         FS.error_handler:record(component, "No healers available for targeting")

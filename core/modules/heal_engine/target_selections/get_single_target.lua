@@ -13,28 +13,28 @@ function FS.modules.heal_engine.get_single_target(hp_threshold, spell_id, skip_f
     if not FS.validator.check_required(hp_threshold, "hp_threshold", component) then
         return nil
     end
-    
+
     if not FS.validator.check_required(spell_id, "spell_id", component) then
         return nil
     end
-    
+
     -- Type and range validation
     if not FS.validator.check_percent(hp_threshold, "hp_threshold", component) then
         return nil
     end
-    
+
     if not FS.validator.check_number(spell_id, "spell_id", nil, nil, component) then
         return nil
     end
-    
+
     -- Boolean parameter validation with default values
     skip_facing = FS.validator.default(skip_facing, false)
     skip_range = FS.validator.default(skip_range, false)
-    
+
     if not FS.validator.check_boolean(skip_facing, "skip_facing", false, component) then
         return nil
     end
-    
+
     if not FS.validator.check_boolean(skip_range, "skip_range", false, component) then
         return nil
     end

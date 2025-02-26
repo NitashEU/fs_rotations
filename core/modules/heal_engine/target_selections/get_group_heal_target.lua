@@ -11,65 +11,65 @@
 function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets, range, spell_id, override_target,
                                                       position_unit, skip_facing, skip_range)
     local component = "heal_engine.get_group_heal_target"
-    
+
     -- Required parameter validation
     if not hp_threshold then
         FS.error_handler:record(component, "hp_threshold is required")
         return nil
     end
-    
+
     if not min_targets then
         FS.error_handler:record(component, "min_targets is required")
         return nil
     end
-    
+
     if not range then
         FS.error_handler:record(component, "range is required")
         return nil
     end
-    
+
     if not spell_id then
         FS.error_handler:record(component, "spell_id is required")
         return nil
     end
-    
+
     -- Type validation
     if type(hp_threshold) ~= "number" then
         FS.error_handler:record(component, "hp_threshold must be a number")
         return nil
     end
-    
+
     if type(min_targets) ~= "number" then
         FS.error_handler:record(component, "min_targets must be a number")
         return nil
     end
-    
+
     if type(range) ~= "number" then
         FS.error_handler:record(component, "range must be a number")
         return nil
     end
-    
+
     if type(spell_id) ~= "number" then
         FS.error_handler:record(component, "spell_id must be a number")
         return nil
     end
-    
+
     -- Value range validation
     if hp_threshold < 0 or hp_threshold > 100 then
         FS.error_handler:record(component, "hp_threshold must be between 0-100")
         return nil
     end
-    
+
     if min_targets < 1 then
         FS.error_handler:record(component, "min_targets must be at least 1")
         return nil
     end
-    
+
     if range <= 0 then
         FS.error_handler:record(component, "range must be greater than 0")
         return nil
     end
-    
+
     -- Optional parameter validation
     if override_target ~= nil then
         -- Verify override_target is a valid game object
@@ -78,7 +78,7 @@ function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets,
             return nil
         end
     end
-    
+
     if position_unit ~= nil then
         -- Verify position_unit is a valid game object
         if not position_unit.get_position then
@@ -86,16 +86,16 @@ function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets,
             return nil
         end
     end
-    
+
     -- Boolean parameter validation with default values
     skip_facing = skip_facing == nil and false or skip_facing
     skip_range = skip_range == nil and false or skip_range
-    
+
     if type(skip_facing) ~= "boolean" then
         FS.error_handler:record(component, "skip_facing must be a boolean")
         return nil
     end
-    
+
     if type(skip_range) ~= "boolean" then
         FS.error_handler:record(component, "skip_range must be a boolean")
         return nil

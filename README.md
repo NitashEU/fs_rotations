@@ -67,7 +67,6 @@ For developers interested in contributing or creating new class modules:
 3. Refer to module-specific documentation in respective `knowledge.md` files
 
 ### Project Organization
-
 - Core systems and shared utilities are located in `core/`
 - Class-specific implementations are organized in `classes/`
 - Specialization entry points are managed in `entry/`
@@ -78,13 +77,11 @@ For developers interested in contributing or creating new class modules:
 The plugin provides extensive customization through its menu system:
 
 ### Core Settings
-
 - Script enable/disable
 - Humanizer configuration (delays)
 - Performance options
 
 ### Holy Paladin Settings
-
 - Holy Shock HP threshold
 - Avenging Crusader settings
 - Target selection preferences

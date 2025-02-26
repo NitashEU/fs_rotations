@@ -33,11 +33,5 @@ function FS.paladin_holy.logic.rotations.healing()
     if FS.paladin_holy.logic.spells.consecration() then
         return true
     end
-    if FS.paladin_holy.logic.spells.flash_of_light() then
-        return true
-    end
-    if FS.paladin_holy.logic.spells.holy_light() then
-        return true
-    end
     return false
 end

@@ -137,14 +137,14 @@ local function render_settings_window()
 
                 -- Flash of Light settings
                 FS.menu.render_settings_section(menu.settings_window, "Flash of Light", {
-                    { slider = menu.fol_hp_threshold_slider,             label = "Health Threshold",      tooltip = "Cast when target health falls below this percentage" },
-                    { slider = menu.fol_infusion_hp_threshold_slider,    label = "Infusion Threshold",    tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
+                    { slider = menu.fol_hp_threshold_slider,          label = "Health Threshold",   tooltip = "Cast when target health falls below this percentage" },
+                    { slider = menu.fol_infusion_hp_threshold_slider, label = "Infusion Threshold", tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
                 })
 
                 -- Holy Light settings
                 FS.menu.render_settings_section(menu.settings_window, "Holy Light", {
-                    { slider = menu.hl_hp_threshold_slider,             label = "Health Threshold",      tooltip = "Cast when target health falls below this percentage" },
-                    { slider = menu.hl_infusion_hp_threshold_slider,    label = "Infusion Threshold",    tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
+                    { slider = menu.hl_hp_threshold_slider,          label = "Health Threshold",   tooltip = "Cast when target health falls below this percentage" },
+                    { slider = menu.hl_infusion_hp_threshold_slider, label = "Infusion Threshold", tooltip = "Cast when target health falls below this percentage with Infusion of Light" }
                 })
             end,
             -- Right Column

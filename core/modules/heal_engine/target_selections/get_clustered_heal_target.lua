@@ -14,89 +14,89 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
                                                           prioritize_distance, skip_facing, skip_range, weights,
                                                           position_unit)
     local component = "heal_engine.get_clustered_heal_target"
-    
+
     -- Required parameter validation
     if not hp_threshold then
         FS.error_handler:record(component, "hp_threshold is required")
         return nil
     end
-    
+
     if not min_targets then
         FS.error_handler:record(component, "min_targets is required")
         return nil
     end
-    
+
     if not max_targets then
         FS.error_handler:record(component, "max_targets is required")
         return nil
     end
-    
+
     if not range then
         FS.error_handler:record(component, "range is required")
         return nil
     end
-    
+
     if not spell_id then
         FS.error_handler:record(component, "spell_id is required")
         return nil
     end
-    
+
     -- Type validation
     if type(hp_threshold) ~= "number" then
         FS.error_handler:record(component, "hp_threshold must be a number")
         return nil
     end
-    
+
     if type(min_targets) ~= "number" then
         FS.error_handler:record(component, "min_targets must be a number")
         return nil
     end
-    
+
     if type(max_targets) ~= "number" then
         FS.error_handler:record(component, "max_targets must be a number")
         return nil
     end
-    
+
     if type(range) ~= "number" then
         FS.error_handler:record(component, "range must be a number")
         return nil
     end
-    
+
     if type(spell_id) ~= "number" then
         FS.error_handler:record(component, "spell_id must be a number")
         return nil
     end
-    
+
     -- Value range validation
     if hp_threshold < 0 or hp_threshold > 100 then
         FS.error_handler:record(component, "hp_threshold must be between 0-100")
         return nil
     end
-    
+
     if min_targets < 1 then
         FS.error_handler:record(component, "min_targets must be at least 1")
         return nil
     end
-    
+
     if max_targets < min_targets then
         FS.error_handler:record(component, "max_targets must be greater than or equal to min_targets")
         return nil
     end
-    
+
     if range <= 0 then
         FS.error_handler:record(component, "range must be greater than 0")
         return nil
     end
-    
+
     -- Optional parameter validation
     if weights ~= nil and type(weights) ~= "table" then
         FS.error_handler:record(component, "weights must be a table with health, damage, cluster, and distance fields")
         return nil
     end
-    
+
     if weights then
         -- Validate weight fields if provided
-        local required_fields = {"health", "damage", "cluster", "distance"}
+        local required_fields = { "health", "damage", "cluster", "distance" }
         for _, field in ipairs(required_fields) do
             if weights[field] ~= nil and type(weights[field]) ~= "number" then
                 FS.error_handler:record(component, "weights." .. field .. " must be a number")
@@ -104,7 +104,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
             end
         end
     end
-    
+
     if position_unit ~= nil then
         -- Verify position_unit is a valid game object
         if not position_unit.get_position then
@@ -182,7 +182,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
                         center_pos,
                         FS.modules.heal_engine.get_cached_position(unit)
                     )
-                    
+
                     if distance <= range then
                         affected_count = affected_count + 1
                         total_health_deficit = total_health_deficit + (1 - health_data.health_percentage)
