@@ -1,15 +1,12 @@
 FS.modules.heal_engine.settings = {
     logging = {
-        ---@type fun(): boolean
-        is_debug_enabled = function() return FS.modules.heal_engine.menu.logging.enable_debug:get_state() end,
-        
         health = {
             ---@type fun(): number
             get_threshold = function() return FS.modules.heal_engine.menu.logging.health.threshold:get() end,
             ---@type fun(): boolean
             should_show_cleanup = function() return FS.modules.heal_engine.menu.logging.health.show_cleanup:get_state() end,
         },
-        
+
         dps = {
             ---@type fun(): number
             get_threshold = function() return FS.modules.heal_engine.menu.logging.dps.threshold:get() end,
@@ -19,7 +16,7 @@ FS.modules.heal_engine.settings = {
             should_show_windows = function() return FS.modules.heal_engine.menu.logging.dps.show_windows:get_state() end,
         }
     },
-    
+
     tracking = {
         windows = {
             ---@type fun(): boolean

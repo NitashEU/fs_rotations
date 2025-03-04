@@ -1,7 +1,5 @@
 ---@diagnostic disable: missing-fields
 
----@type enums
-local enums = require("common/enums")
 ---@type buff_manager
 local buff_manager = require("common/modules/buff_manager")
 

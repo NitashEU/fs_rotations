@@ -1,4 +1,3 @@
--- Add class/spec configuration
 ---@class SpecConfig
 ---@field class_id number
 ---@field spec_id number
