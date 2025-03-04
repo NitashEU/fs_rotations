@@ -21,15 +21,27 @@ FS.variables = {
 }
 
 ---@param spell_id number
+---@param unit? game_object
 ---@return boolean
-function FS.variables.buff_up(spell_id)
-    return buff_manager:get_buff_data(FS.variables.me, { spell_id }).is_active
+function FS.variables.buff_up(spell_id, unit)
+    unit = unit or FS.variables.me
+    return buff_manager:get_buff_data(unit, { spell_id }).is_active
 end
 
 ---@param spell_id number
+---@param unit? game_object
 ---@return number
-function FS.variables.buff_remains(spell_id)
-    return buff_manager:get_buff_data(FS.variables.me, { spell_id }).remaining
+function FS.variables.buff_remains(spell_id, unit)
+    unit = unit or FS.variables.me
+    return buff_manager:get_buff_data(unit, { spell_id }).remaining
+end
+
+---@param spell_id number
+---@param unit? game_object
+---@return number
+function FS.variables.buff_stacks(spell_id, unit)
+    unit = unit or FS.variables.me
+    return buff_manager:get_buff_data(unit, { spell_id }).stacks
 end
 
 ---@param spell_id number
