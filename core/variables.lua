@@ -25,13 +25,24 @@ FS.variables = {
 ---@return boolean
 function FS.variables.buff_up(spell_id, unit)
     unit = unit or FS.variables.me
+    if not unit or not unit:is_valid() or unit:is_dead() then return false end
     return buff_manager:get_buff_data(unit, { spell_id }).is_active
+end
+
+---@param spell_id number
+---@param unit? game_object
+---@return boolean
+function FS.variables.debuff_up(spell_id, unit)
+    unit = unit or FS.variables.me
+    if not unit or not unit:is_valid() or unit:is_dead() then return false end
+    return buff_manager:get_debuff_data(unit, { spell_id }).is_active
 end
 
 ---@param spell_id number
 ---@param unit? game_object
 ---@return number
 function FS.variables.buff_remains(spell_id, unit)
+    if not unit or not unit:is_valid() or unit:is_dead() then return 0 end
     unit = unit or FS.variables.me
     return buff_manager:get_buff_data(unit, { spell_id }).remaining
 end
@@ -40,6 +51,7 @@ end
 ---@param unit? game_object
 ---@return number
 function FS.variables.buff_stacks(spell_id, unit)
+    if not unit or not unit:is_valid() or unit:is_dead() then return 0 end
     unit = unit or FS.variables.me
     return buff_manager:get_buff_data(unit, { spell_id }).stacks
 end

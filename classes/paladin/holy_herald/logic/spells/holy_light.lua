@@ -1,20 +1,15 @@
 ---@return boolean
-function FS.paladin_holy.logic.spells.holy_light()
+function FS.paladin_holy_herald.logic.spells.holy_light()
+    if true then return false end
     -- Get settings and state
-    local hp_threshold = FS.paladin_holy.settings.hl_hp_threshold()
-    local has_infusion = FS.variables.buff_up(FS.paladin_holy.auras.infusion_of_light)
-    
-    -- Use higher threshold with Infusion of Light
-    if has_infusion then
-        hp_threshold = FS.paladin_holy.settings.hl_infusion_hp_threshold()
-    end
+    local hp_threshold = FS.paladin_holy_herald.settings.hl_hp_threshold()
 
     -- Get single target for sustained healing
     local target = FS.modules.heal_engine.get_single_target(
         hp_threshold,
-        FS.paladin_holy.spells.holy_light,
-        true,  -- skip_facing
-        false  -- skip_range
+        FS.paladin_holy_herald.spells.holy_light,
+        true, -- skip_facing
+        false -- skip_range
     )
 
     if not target then
@@ -22,6 +17,7 @@ function FS.paladin_holy.logic.spells.holy_light()
     end
 
     -- Queue spell cast
-    FS.api.spell_queue:queue_spell_target(FS.paladin_holy.spells.holy_light, target, 1)
+    FS.api.spell_queue:queue_spell_target(FS.paladin_holy_herald.spells.holy_light, target, 1, nil)
+    --FS.api.movement_handler:pause_movement(0.2, 0)
     return true
 end

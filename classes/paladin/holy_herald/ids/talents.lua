@@ -28,13 +28,5 @@ FS.paladin_holy_herald.talents = {
     tyrs_boundless_justice = core.spell_book.is_spell_learned(200652),
     unbreakable_spirit = core.spell_book.is_spell_learned(11415),
     breaking_dawn = core.spell_book.is_spell_learned(387879),
-    -- Herald of the Sun specific talents
-    herald_of_the_sun = core.spell_book.is_spell_learned(460099),
-    aurora = core.spell_book.is_spell_learned(439760),
-    empyrean_legacy = core.spell_book.is_spell_learned(387170),
-    divine_inspiration = core.spell_book.is_spell_learned(432964),
-    luminosity = core.spell_book.is_spell_learned(431451),
-    second_sunrise = core.spell_book.is_spell_learned(431376),
-    sun_sear = core.spell_book.is_spell_learned(431424),
-    eternal_flame = core.spell_book.is_spell_learned(156322)
+    eternal_flame = core.spell_book.is_spell_learned(156322),
 }

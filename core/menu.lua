@@ -86,11 +86,17 @@ end
 ---Render a settings section with header and sliders
 ---@param window window The window to render in
 ---@param title string Section title
----@param sliders table Array of {slider = slider_object, label = string, tooltip = string}
-function FS.menu.render_settings_section(window, title, sliders)
+---@param objects table Array of {slider = slider_object, label = string, tooltip = string}
+function FS.menu.render_settings_section(window, title, objects)
     FS.menu.render_header(window, title)
-    for _, slider in ipairs(sliders) do
-        slider.slider:render(slider.label, slider.tooltip)
+    for _, obj in ipairs(objects) do
+        if obj.slider then
+            obj.slider:render(obj.label, obj.tooltip)
+        elseif obj.checkbox then
+            obj.checkbox:render(obj.label, obj.tooltip)
+        elseif obj.keybind then
+            obj.keybind:render(obj.label, obj.tooltip)
+        end
     end
 end
 

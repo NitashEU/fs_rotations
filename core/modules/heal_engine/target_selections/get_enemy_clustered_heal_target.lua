@@ -33,7 +33,7 @@ function FS.modules.heal_engine.get_enemy_clustered_heal_target(hp_threshold, mi
 
     for _, unit in ipairs(FS.modules.heal_engine.units) do
         local health_data = FS.modules.heal_engine.current_health_values[unit]
-        if health_data
+        if target and target:is_valid() and not target:is_ghost() and not target:is_dead() and not FS.variables.debuff_up(1220769, target) and health_data
             and health_data.health_percentage <= hp_threshold
             and target:get_position():dist_to(unit:get_position()) <= range then
             table.insert(nearby_allies, {

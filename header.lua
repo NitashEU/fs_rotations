@@ -1,6 +1,6 @@
 local version = require("version")
 
-if true then
+if false then
     return {
         name = "FS Rotations",
         version = version:toString(),

@@ -10,20 +10,23 @@ $dirsToInclude = @(
 
 $rootFiles = @(
     "header.lua",
-    "main.lua"
+    "main.lua",
+    "version.lua"
 )
 
-# Create temporary directory
+# Create temporary directory structure
 $tempDir = "temp_pack"
+$fsRotationsDir = Join-Path $tempDir "fs_rotations"
+
 if (Test-Path $tempDir) {
     Remove-Item -Path $tempDir -Recurse -Force
 }
-New-Item -ItemType Directory -Path $tempDir | Out-Null
+New-Item -ItemType Directory -Path $fsRotationsDir | Out-Null
 
 # Copy root files
 foreach ($file in $rootFiles) {
     if (Test-Path $file) {
-        Copy-Item $file -Destination $tempDir
+        Copy-Item $file -Destination $fsRotationsDir
         Write-Host "Copied root file: $file"
     }
 }
@@ -32,11 +35,11 @@ foreach ($file in $rootFiles) {
 foreach ($dir in $dirsToInclude) {
     if (Test-Path $dir) {
         # Create directory in temp folder
-        New-Item -ItemType Directory -Path "$tempDir\$dir" -Force | Out-Null
+        New-Item -ItemType Directory -Path "$fsRotationsDir\$dir" -Force | Out-Null
         
         # Find and copy only .lua files
         Get-ChildItem -Path $dir -Filter "*.lua" -Recurse | ForEach-Object {
-            $targetPath = Join-Path $tempDir $_.FullName.Substring($PWD.Path.Length + 1)
+            $targetPath = Join-Path $fsRotationsDir $_.FullName.Substring($PWD.Path.Length + 1)
             $targetDir = Split-Path -Parent $targetPath
             
             if (-not (Test-Path $targetDir)) {
@@ -61,7 +64,4 @@ Compress-Archive -Path "$tempDir\*" -DestinationPath $zipName
 Remove-Item -Path $tempDir -Recurse -Force
 
 Write-Host "Package created successfully: $zipName"
-Write-Host "Included files:"
-Get-ChildItem -Path $tempDir -Recurse -File | ForEach-Object {
-    Write-Host $_.FullName.Substring($tempDir.Length + 1)
-}
+Write-Host "Files are packaged inside 'fs_rotations' directory within the zip"

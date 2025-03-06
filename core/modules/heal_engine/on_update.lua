@@ -7,67 +7,13 @@ function FS.modules.heal_engine.on_fast_update()
 
     -- Update health values for all units
     for _, unit in pairs(FS.modules.heal_engine.units) do
-        local stored_values = FS.modules.heal_engine.health_values[unit] or {}
-        local last_value = #stored_values > 0 and stored_values[#stored_values] or nil
-        local current_health = unit:get_health()
-        local current_shield = unit:get_total_shield() or 0
-        local total_health = current_health + current_shield
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+            local stored_values = FS.modules.heal_engine.health_values[unit] or {}
+            local last_value = #stored_values > 0 and stored_values[#stored_values] or nil
+            local current_health = unit:get_health()
+            local current_shield = unit:get_total_shield() or 0
+            local total_health = current_health + current_shield
 
-        -- Initialize fight-wide tracking if needed
-        if not FS.modules.heal_engine.fight_start_time then
-            FS.modules.heal_engine.fight_start_time = current_time
-            FS.modules.heal_engine.fight_start_health[unit] = total_health
-            FS.modules.heal_engine.fight_total_damage[unit] = 0
-        end
-
-        -- Only store if health changed or enough time passed (250ms)
-        local should_store = not last_value
-        if last_value then
-            local health_changed = math.abs(last_value.health - total_health) > 0.01
-            local time_passed = current_time - last_value.time >= 250
-            should_store = health_changed or time_passed
-
-            -- Track fight-wide damage
-            if health_changed and last_value.health > total_health then
-                local damage = last_value.health - total_health
-                FS.modules.heal_engine.fight_total_damage[unit] = (FS.modules.heal_engine.fight_total_damage[unit] or 0) +
-                    damage
-
-                -- Log fight-wide DPS if enabled and significant damage occurred
-                if FS.modules.heal_engine.settings.logging.dps.should_show_fight() and
-                    FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                    damage > unit:get_max_health() * FS.modules.heal_engine.settings.logging.dps.get_threshold() then
-                    local fight_duration = (current_time - FS.modules.heal_engine.fight_start_time) / 1000
-                    local fight_dps = FS.modules.heal_engine.fight_total_damage[unit] / fight_duration
-                    core.log(string.format("Fight DPS: %.0f damage over %.1fs = %.0f DPS",
-                        FS.modules.heal_engine.fight_total_damage[unit], fight_duration, fight_dps))
-                end
-            end
-
-            -- Only log significant health changes if enabled
-            if FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                health_changed and
-                math.abs(last_value.health - total_health) > unit:get_max_health() * FS.modules.heal_engine.settings.logging.health.get_threshold() then
-                core.log(string.format("Health change for %s: %.0f -> %.0f (diff: %.0f)",
-                    unit:get_name(), last_value.health, total_health,
-                    total_health - last_value.health))
-            end
-        end
-
-        if should_store then
-            local new_value = {
-                health = total_health,
-                max_health = unit:get_max_health(),
-                health_percentage = current_health / unit:get_max_health(),
-                time = current_time
-            }
-
-            table.insert(stored_values, new_value)
-            FS.modules.heal_engine.current_health_values[unit] = new_value
-        end
-
-        -- Only clean up old values every 5 seconds to avoid excessive processing
-        if current_time % 5000 < 100 then
             local valid_values = {}
             local removed_count = 0
             for _, value in ipairs(stored_values) do
@@ -78,16 +24,44 @@ function FS.modules.heal_engine.on_fast_update()
                 end
             end
 
-            if FS.modules.heal_engine.settings.logging.health.should_show_cleanup() and
-                FS.modules.heal_engine.settings.logging.is_debug_enabled() and
-                removed_count > 0 then
-                core.log(string.format("Cleaned up %d old values for %s", removed_count, unit:get_name()))
+            stored_values = valid_values
+
+            -- Initialize fight-wide tracking if needed
+            if not FS.modules.heal_engine.fight_start_time then
+                FS.modules.heal_engine.fight_start_time = current_time
+                FS.modules.heal_engine.fight_start_health[unit] = total_health
+                FS.modules.heal_engine.fight_total_damage[unit] = 0
             end
 
-            stored_values = valid_values
-        end
+            -- Only store if health changed or enough time passed (250ms)
+            local should_store = not last_value
+            if last_value then
+                local health_changed = math.abs(last_value.health - total_health) > 0.01
+                local time_passed = current_time - last_value.time >= 250
+                should_store = health_changed or time_passed
 
-        FS.modules.heal_engine.health_values[unit] = stored_values
+                -- Track fight-wide damage
+                if health_changed and last_value.health > total_health then
+                    local damage = last_value.health - total_health
+                    FS.modules.heal_engine.fight_total_damage[unit] = (FS.modules.heal_engine.fight_total_damage[unit] or 0) +
+                        damage
+                end
+            end
+
+            if should_store then
+                local new_value = {
+                    health = total_health,
+                    max_health = unit:get_max_health(),
+                    health_percentage = current_health / unit:get_max_health(),
+                    time = current_time
+                }
+
+                table.insert(stored_values, new_value)
+                FS.modules.heal_engine.current_health_values[unit] = new_value
+            end
+
+            FS.modules.heal_engine.health_values[unit] = stored_values
+        end
     end
 end
 
@@ -123,14 +97,10 @@ function FS.modules.heal_engine.on_update()
     if is_in_combat and not FS.modules.heal_engine.is_in_combat then
         FS.modules.heal_engine.is_in_combat = true
         FS.modules.heal_engine.start()
-        if FS.modules.heal_engine.settings.logging.is_debug_enabled() then
-            core.log("Entered combat - starting heal engine")
-        end
     elseif not is_in_combat and FS.modules.heal_engine.is_in_combat then
         -- Log final fight DPS before resetting
         if FS.modules.heal_engine.fight_start_time and
-            FS.modules.heal_engine.settings.logging.dps.should_show_fight() and
-            FS.modules.heal_engine.settings.logging.is_debug_enabled() then
+            FS.modules.heal_engine.settings.logging.dps.should_show_fight() then
             local fight_duration = (current_time - FS.modules.heal_engine.fight_start_time) / 1000
             for _, unit in pairs(FS.modules.heal_engine.units) do
                 local total_damage = FS.modules.heal_engine.fight_total_damage[unit] or 0
@@ -144,9 +114,6 @@ function FS.modules.heal_engine.on_update()
 
         FS.modules.heal_engine.is_in_combat = false
         FS.modules.heal_engine.reset()
-        if FS.modules.heal_engine.settings.logging.is_debug_enabled() then
-            core.log("Left combat - resetting heal engine")
-        end
         -- Clear DPS history when leaving combat
         FS.modules.heal_engine.last_dps_values = {}
         FS.modules.heal_engine.last_dps_update = 0

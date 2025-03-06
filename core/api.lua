@@ -18,6 +18,8 @@ local plugin_helper = require("common/utility/plugin_helper")
 local control_panel_helper = require("common/utility/control_panel_helper")
 ---@type key_helper
 local key_helper = require("common/utility/key_helper")
+---@type movement_handler
+local movement_handler = require("common/utility/movement_handler")
 
 FS.api = {
     buff_manager = buff_manager,
@@ -30,4 +32,6 @@ FS.api = {
     plugin_helper = plugin_helper,
     control_panel_helper = control_panel_helper,
     key_helper = key_helper,
+    movement_handler = movement_handler,
+    graphics = core.graphics,
 }

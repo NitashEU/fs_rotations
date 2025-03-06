@@ -14,5 +14,7 @@ FS.paladin_holy_herald.spells = {
     light_of_dawn = 85222,
     shield_of_the_righteous = 415091,
     word_of_glory = 85673,
-    eternal_flame = 156322 -- Added for Herald of the Sun
+    holy_light = 82326,     -- Added for Holy Light
+    flash_of_light = 19750, -- Added for Flash of Light
+    eternal_flame = 156322  -- Added for Herald of the Sun
 }

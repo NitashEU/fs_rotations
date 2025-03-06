@@ -15,12 +15,14 @@ function FS.modules.heal_engine.get_tank_damage_target(spell_id, skip_facing, sk
     -- Iterate through tanks
     for _, unit in ipairs(FS.modules.heal_engine.tanks) do
         -- Get damage taken in last 5 seconds
-        local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+            local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
 
-        -- Check if this unit has taken more damage and spell is castable on them
-        if damage > max_damage and FS.api.spell_helper:is_spell_castable(spell_id, FS.variables.me, unit, skip_facing, skips_range) then
-            max_damage = damage
-            best_target = unit
+            -- Check if this unit has taken more damage and spell is castable on them
+            if damage > max_damage and FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, unit, skip_facing, skips_range) then
+                max_damage = damage
+                best_target = unit
+            end
         end
     end
 

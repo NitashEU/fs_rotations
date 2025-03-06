@@ -1,6 +1,5 @@
-require("classes/paladin/holy_herald/drawing")
 require("classes/paladin/holy_herald/menu")
 require("classes/paladin/holy_herald/settings")
-require("classes/paladin/holy_herald/variables")
 require("classes/paladin/holy_herald/ids/index")
+require("classes/paladin/holy_herald/variables")
 require("classes/paladin/holy_herald/logic/index")

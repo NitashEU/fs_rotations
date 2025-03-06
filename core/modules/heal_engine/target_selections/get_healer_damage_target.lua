@@ -16,12 +16,12 @@ function FS.modules.heal_engine.get_healer_damage_target(spell_id, skip_facing, 
     -- Iterate through healers
     for _, unit in ipairs(FS.modules.heal_engine.healers) do
         -- Skip player character if skip_me is true
-        if not (skip_me and unit == FS.variables.me) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) and not (skip_me and unit == FS.variables.me) then
             -- Get damage taken in last 15 seconds
             local damage = FS.modules.heal_engine.damage_taken_per_second_last_15_seconds[unit] or 0
 
             -- Check if this unit has taken more damage and spell is castable on them
-            if damage > max_damage and FS.api.spell_helper:is_spell_castable(spell_id, FS.variables.me, unit, skip_facing, skips_range) then
+            if damage > max_damage and FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, unit, skip_facing, skips_range) then
                 max_damage = damage
                 best_target = unit
             end
