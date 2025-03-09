@@ -16,7 +16,7 @@ function FS.modules.heal_engine.get_healer_damage_target(spell_id, skip_facing, 
     -- Iterate through healers
     for _, unit in ipairs(FS.modules.heal_engine.healers) do
         -- Skip player character if skip_me is true
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) and not (skip_me and unit == FS.variables.me) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) and not (skip_me and unit == FS.variables.me) then
             -- Get damage taken in last 15 seconds
             local damage = FS.modules.heal_engine.damage_taken_per_second_last_15_seconds[unit] or 0
 

@@ -15,7 +15,7 @@ function FS.modules.heal_engine.get_single_target(hp_threshold, spell_id, skip_f
 
     -- Iterate through all units
     for _, unit in ipairs(FS.modules.heal_engine.units) do
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) then
             -- Get current health values for the unit
             local health_data = FS.modules.heal_engine.current_health_values[unit]
 

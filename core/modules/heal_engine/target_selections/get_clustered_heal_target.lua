@@ -39,7 +39,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     -- Find highest damage taken across all units for normalization
     local highest_damage = 0
     for _, unit in ipairs(FS.modules.heal_engine.units) do
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) then
             local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
             highest_damage = math.max(highest_damage, damage)
         end
@@ -49,7 +49,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
     ---@param unit game_object
     ---@return number
     local function calculate_damage_score(unit)
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) then
             local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
             -- Normalize damage score based on highest damage taken
             return highest_damage > 0 and (damage / highest_damage) or 0
@@ -70,7 +70,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
 
     -- Evaluate each potential target
     for _, target in ipairs(FS.modules.heal_engine.units) do
-        if target and target:is_valid() and not target:is_ghost() and not target:is_dead() and not FS.variables.debuff_up(1220769, target) and FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, target, skip_facing, skip_range) then
+        if target and target:is_valid() and not target:is_ghost() and not target:is_dead() and not FS.variables.debuff_up(1215760, target) and FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, target, skip_facing, skip_range) then
             -- Use position_unit if provided, otherwise use target for cluster center
             local cluster_center = position_unit or target
             local hd = FS.modules.heal_engine.current_health_values[target]
@@ -83,7 +83,7 @@ function FS.modules.heal_engine.get_clustered_heal_target(hp_threshold, min_targ
 
             for _, unit in ipairs(FS.modules.heal_engine.units) do
                 local health_data = FS.modules.heal_engine.current_health_values[unit]
-                if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, target) and health_data
+                if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, target) and health_data
                     and health_data.health_percentage <= hp_threshold
                     and cluster_center:get_position():dist_to(unit:get_position()) <= range then
                     affected_count = affected_count + 1

@@ -27,13 +27,13 @@ function FS.modules.heal_engine.get_group_heal_target(hp_threshold, min_targets,
                     and target:is_valid()
                     and not target:is_ghost()
                     and not target:is_dead()
-                    and not FS.variables.debuff_up(1220769, target)
+                    and not FS.variables.debuff_up(1215760, target)
                     and FS.api.spell_helper:is_spell_queueable(spell_id, FS.variables.me, target, skip_facing, skip_range))) then
             local pos_unit = position_unit or override_target or target
             local targets_under_threshold = 0
 
             for _, unit in ipairs(FS.modules.heal_engine.units) do
-                if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, target) then
+                if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, target) then
                     local health_data = FS.modules.heal_engine.current_health_values[unit]
                     if health_data
                         and health_data.health_percentage <= hp_threshold

@@ -25,7 +25,7 @@ function FS.modules.heal_engine.get_frontal_cone_heal_target(hp_threshold, min_t
 
     -- Check all units in cone
     for _, unit in ipairs(FS.modules.heal_engine.units) do
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) and cone_shape:is_inside(unit:get_position(), 0) or unit == FS.variables.me then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) and cone_shape:is_inside(unit:get_position(), 0) or unit == FS.variables.me then
             local health_data = FS.modules.heal_engine.current_health_values[unit]
             if health_data and health_data.health_percentage <= hp_threshold then
                 affected_count = affected_count + 1

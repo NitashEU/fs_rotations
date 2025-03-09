@@ -7,7 +7,7 @@ function FS.modules.heal_engine.on_fast_update()
 
     -- Update health values for all units
     for _, unit in pairs(FS.modules.heal_engine.units) do
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) then
             local stored_values = FS.modules.heal_engine.health_values[unit] or {}
             local last_value = #stored_values > 0 and stored_values[#stored_values] or nil
             local current_health = unit:get_health()

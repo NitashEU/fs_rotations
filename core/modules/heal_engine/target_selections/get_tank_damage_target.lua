@@ -15,7 +15,7 @@ function FS.modules.heal_engine.get_tank_damage_target(spell_id, skip_facing, sk
     -- Iterate through tanks
     for _, unit in ipairs(FS.modules.heal_engine.tanks) do
         -- Get damage taken in last 5 seconds
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, unit) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, unit) then
             local damage = FS.modules.heal_engine.damage_taken_per_second_last_5_seconds[unit] or 0
 
             -- Check if this unit has taken more damage and spell is castable on them

@@ -6,21 +6,21 @@ function FS.paladin_holy_herald.logic.spells.light_of_dawn()
     end
 
     -- Get settings
-    local hp_threshold = 0.95 --FS.paladin_holy_herald.settings.lod_hp_threshold()
-    local min_targets = 2     --FS.paladin_holy_herald.settings.lod_min_targets()
+    local hp_threshold = FS.paladin_holy_herald.settings.lod_hp_threshold()
+    local min_targets = FS.paladin_holy_herald.settings.lod_min_targets()
 
-    -- Get target using frontal cone heal target selection
-    --local target = FS.modules.heal_engine.get_frontal_cone_heal_target(
-    --    hp_threshold,
-    --    min_targets,
-    --    15, -- Cone angle in degrees
-    --    25, -- Range in yards
-    --    FS.paladin_holy_herald.spells.light_of_dawn
-    --)
+    --Get target using frontal cone heal target selection
+    local target = FS.modules.heal_engine.get_frontal_cone_heal_target(
+        hp_threshold,
+        min_targets,
+        15, -- Cone angle in degrees
+        40, -- Range in yards
+        FS.paladin_holy_herald.spells.light_of_dawn
+    )
 
-    --if not target then
-    --    return false
-    --end
+    if not target then
+        return false
+    end
 
     -- Queue spell cast
     FS.api.spell_queue:queue_spell_target(FS.paladin_holy_herald.spells.light_of_dawn, FS.variables.me, 1)

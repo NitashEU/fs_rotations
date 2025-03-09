@@ -19,7 +19,7 @@ function FS.paladin_holy_herald.logic.spells.beacon_of_virtue(ignore_threshold)
 
     -- Get settings
     local hp_threshold = ignore_threshold and 1 or FS.paladin_holy_herald.settings.bov_hp_threshold()
-    local min_targets = FS.paladin_holy_herald.settings.bov_min_targets()
+    local min_targets = ignore_threshold and 1 or FS.paladin_holy_herald.settings.bov_min_targets()
     local use_distance = FS.paladin_holy_herald.settings.bov_use_distance()
     local range = 30 -- Fixed at 30 yards
 

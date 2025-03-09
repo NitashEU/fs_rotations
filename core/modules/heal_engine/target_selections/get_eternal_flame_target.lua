@@ -43,11 +43,11 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
                     target_score = target_score * 0.7
                 elseif remains < 3 then
                     -- Bonus for refreshing nearly expired HoT on tank
-                    target_score = target_score * 1.05
+                    target_score = target_score * 0.8
                 end
             else
                 -- Significant bonus for applying new HoT to tank
-                target_score = target_score * 1.1
+                target_score = target_score * 0.9
             end
         end
     end
@@ -60,7 +60,7 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
         if not unit then return 0 end
 
         local hp = FS.api.unit_helper:get_health_percentage(unit)
-        --if hp > hp_threshold then return 0 end
+        if hp > hp_threshold then return 0 end
 
         local score = (1 - hp) * 100 -- Base score: lower health = higher score
 
@@ -90,7 +90,7 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
         if FS.api.unit_helper:is_healer(unit) then
             score = score * 1.05 -- Priority to healers
         elseif FS.api.unit_helper:is_tank(unit) then
-            score = score * 1.1  -- Highest priority to tanks
+            score = score * 0.8  -- Highest priority to tanks
         end
 
         return score
@@ -98,7 +98,7 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
 
     -- Score all potential targets
     for _, unit in ipairs(FS.modules.heal_engine.units) do
-        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1220769, target) then
+        if unit and unit:is_valid() and not unit:is_ghost() and not unit:is_dead() and not FS.variables.debuff_up(1215760, target) then
             local unit_score = score_target(unit)
             if unit_score > 0 then
                 table.insert(general_targets, { unit = unit, score = unit_score })
@@ -116,19 +116,19 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
     end
 
     -- Consider Empyrean Legacy proc: if active, ensure we use it
-    if has_empyrean and not target then
-        -- If we have Empyrean Legacy but no good target, pick anyone who could use healing
-        target = FS.modules.heal_engine.get_single_target(
-            hp_threshold, -- Almost anyone who's not at full health
-            spell_id,
-            skip_facing,
-            skip_range
-        )
-
-        if target then
-            target_score = 50 -- Modest score just to use the proc
-        end
-    end
+    --if has_empyrean and not target then
+    --    -- If we have Empyrean Legacy but no good target, pick anyone who could use healing
+    --    target = FS.modules.heal_engine.get_single_target(
+    --        hp_threshold, -- Almost anyone who's not at full health
+    --        spell_id,
+    --        skip_facing,
+    --        skip_range
+    --    )
+    --
+    --    if target then
+    --        target_score = 50 -- Modest score just to use the proc
+    --    end
+    --end
 
     if target then
         core.log(tostring(target_score))
