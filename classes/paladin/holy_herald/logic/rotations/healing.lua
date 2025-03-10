@@ -60,6 +60,10 @@ function FS.paladin_holy_herald.logic.rotations.healing()
         return true
     end
 
+    if FS.paladin_holy_herald.logic.spells.divine_toll() then
+        return true
+    end
+
     if FS.paladin_holy_herald.logic.spells.judgment() then
         return true
     end

@@ -19,7 +19,13 @@ function FS.paladin_holy_herald.logic.spells.light_of_dawn()
     )
 
     if not target then
-        return false
+        --return false
+    end
+
+    if target then
+        core.log("Light of Dawn on " .. target:get_name())
+    else
+        core.log("No target found for Light of Dawn")
     end
 
     -- Queue spell cast

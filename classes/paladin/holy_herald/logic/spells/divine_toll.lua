@@ -19,7 +19,7 @@ function FS.paladin_holy_herald.logic.spells.divine_toll()
 
     -- Check cooldown of Avenging Wrath
     local aw_cd = core.spell_book.get_spell_cooldown(FS.paladin_holy_herald.spells.avenging_wrath)
-    if aw_cd and aw_cd <= 45 then
+    if aw_cd and aw_cd <= 5 then
         return false -- Save Holy Prism for imminent Avenging Wrath
     end
 
