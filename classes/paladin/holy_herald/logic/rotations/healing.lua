@@ -17,10 +17,6 @@
 -------------------------------------------------------------------------------------------------------------------
 ---@return boolean True if a spell was cast, false if no action was taken
 function FS.paladin_holy_herald.logic.rotations.healing()
-    if FS.paladin_holy_herald.logic.spells.spend_holy_power() then
-        return true
-    end
-
     if FS.paladin_holy_herald.settings.aw_auto_use() and FS.paladin_holy_herald.logic.spells.avenging_wrath() then
         return true
     end
@@ -29,7 +25,19 @@ function FS.paladin_holy_herald.logic.rotations.healing()
         return true
     end
 
+    if FS.paladin_holy_herald.logic.spells.spend_holy_power() then
+        return true
+    end
+
     if FS.paladin_holy_herald.logic.spells.holy_shock() then
+        return true
+    end
+
+    if FS.paladin_holy_herald.logic.spells.holy_prism() then
+        return true
+    end
+
+    if FS.paladin_holy_herald.logic.spells.divine_toll() then
         return true
     end
 
@@ -37,10 +45,6 @@ function FS.paladin_holy_herald.logic.rotations.healing()
         if FS.paladin_holy_herald.logic.spells.holy_light() then
             return true
         end
-    end
-
-    if FS.paladin_holy_herald.logic.spells.holy_prism() then
-        return true
     end
 
     if FS.paladin_holy_herald.variables.infusion_of_light_up() then
@@ -57,10 +61,6 @@ function FS.paladin_holy_herald.logic.rotations.healing()
     end
 
     if FS.paladin_holy_herald.logic.spells.spend_holy_power() then
-        return true
-    end
-
-    if FS.paladin_holy_herald.logic.spells.divine_toll() then
         return true
     end
 
@@ -81,9 +81,9 @@ function FS.paladin_holy_herald.logic.rotations.healing()
     end
 
     -- Consecration - low priority filler ability
-    if FS.paladin_holy_herald.logic.spells.consecration() then
-        return true
-    end
+    --if FS.paladin_holy_herald.logic.spells.consecration() then
+    --    return true
+    --end
 
     return false
 end

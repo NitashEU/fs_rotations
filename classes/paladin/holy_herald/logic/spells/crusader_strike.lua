@@ -3,6 +3,12 @@ function FS.paladin_holy_herald.logic.spells.crusader_strike()
     if not FS.variables.me:is_in_combat() then
         return false
     end
+    if FS.paladin_holy_herald.variables.holy_power() >= 4 then
+        return false
+    end
+    if FS.paladin_holy_herald.variables.holy_shock_charges() > 0 then
+        --return false
+    end
     local target = FS.variables.enemy_target()
     if not target then
         return false

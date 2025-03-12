@@ -16,7 +16,7 @@ function FS.paladin_holy_herald.logic.spells.avenging_wrath()
         FS.variables.me,                                   -- Source unit
         FS.variables.me,                                   -- Target unit
         true,                                              -- Check facing
-        true                                               -- Check line of sight
+        false                                              -- Check line of sight
     )
 
     if not group_target then

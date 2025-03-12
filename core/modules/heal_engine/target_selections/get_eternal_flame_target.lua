@@ -62,7 +62,8 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
         local hp = FS.api.unit_helper:get_health_percentage(unit)
         if hp > hp_threshold then return 0 end
 
-        local score = (1 - hp) * 100 -- Base score: lower health = higher score
+        local health_deficit = unit:get_max_health() - unit:get_health()
+        local score = health_deficit * 100 -- Base score: higher health deficit = higher score
 
         -- Check if unit already has HoT
         if eternal_flame_up(unit) then
@@ -76,7 +77,23 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
             elseif remains > 2 then
                 score = score * 0.95 -- Moderate reduction for short remaining HoT
             end
+        elseif FS.variables.buff_up(FS.paladin_holy_herald.auras.dawnlight, unit) then
+            score = score * 0.95 -- Reduce score if Dawnlight is up (but not Eternal Flame
         else
+            if FS.paladin_holy_herald.variables.holy_power_spenders_since_prism == 0 and FS.paladin_holy_herald.variables.last_holy_prism_time ~= 0 then
+                local allies_in_range = FS.api.unit_helper:get_ally_list_around(unit:get_position(), 10, true, true,
+                    false)
+                -- Increase score if there are more allies in range
+                if #allies_in_range > 1 then
+                    score = score *
+                        (1 + (#allies_in_range - 1) * 0.05) -- Increase score based on number of allies in range
+                    -- Apply a cap to the score increase
+                    if score > 1.5 then
+                        score = 1.5
+                    end
+                end
+            end
+
             -- Bonus for applying new HoT
             score = score * 1.05
 

@@ -209,6 +209,15 @@ function FS.paladin_holy_herald.logic.spells.spend_holy_power(requireBA)
     --    end
     --end
 
+    local function track_hp_spender()
+        -- Increment Holy Power spender count if we're in post-Holy Prism state
+        if FS.paladin_holy_herald.variables.post_holy_prism_state() then
+            FS.paladin_holy_herald.variables.increment_holy_power_spender_count()
+        end
+
+        -- Other tracking systems could be added here if needed
+    end
+
     local ef_count = 0
     local ef_targets_need_refresh = 0
 
@@ -227,8 +236,10 @@ function FS.paladin_holy_herald.logic.spells.spend_holy_power(requireBA)
 
     if FS.paladin_holy_herald.logic.spells.eternal_flame() then
         -- PRIORITY 5: Regular single-target Eternal Flame as fallback
+        track_hp_spender()
         return true
     elseif FS.paladin_holy_herald.logic.spells.light_of_dawn() then
+        track_hp_spender()
         return true
     end
 
@@ -248,7 +259,7 @@ function FS.paladin_holy_herald.logic.spells.spend_holy_power(requireBA)
 
             FS.api.spell_queue:queue_spell_target(FS.paladin_holy_herald.spells.shield_of_the_righteous, FS.variables.me,
                 1)
-            --track_hp_spender()
+            track_hp_spender()
             return true
         end
     end
