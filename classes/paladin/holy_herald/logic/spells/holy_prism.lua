@@ -14,12 +14,12 @@ function FS.paladin_holy_herald.logic.spells.holy_prism()
     if FS.paladin_holy_herald.settings.hp_save_for_aw() then
         -- Check if Avenging Wrath is active - if active, we should use Holy Prism
         if FS.paladin_holy_herald.variables.avenging_wrath_up() then
-            local enemy = FS.variables.enemy_target()
-            -- Queue spell cast
-            if enemy and FS.api.spell_helper:is_spell_queueable(FS.paladin_holy_herald.spells.holy_prism, FS.variables.me, enemy, false, false) then
-                FS.api.spell_queue:queue_spell_target(FS.paladin_holy_herald.spells.holy_prism, enemy, 1)
-                return true -- Holy Prism queued successfully
-            end
+            --local enemy = FS.variables.enemy_target()
+            ---- Queue spell cast
+            --if enemy and FS.api.spell_helper:is_spell_queueable(FS.paladin_holy_herald.spells.holy_prism, FS.variables.me, enemy, false, false) then
+            --    FS.api.spell_queue:queue_spell_target(FS.paladin_holy_herald.spells.holy_prism, enemy, 1)
+            --    return true -- Holy Prism queued successfully
+            --end
         else
             -- Check if close to Awakening proc (dynamically use awakening_near_max)
             if

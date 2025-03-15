@@ -20,37 +20,37 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
     local target_score = 0
 
     -- First try tank healing if they're low
-    local tank_target = FS.modules.heal_engine.get_tank_damage_target(
-        spell_id,
-        skip_facing,
-        skip_range
-    )
-
-    if tank_target then
-        local tank_hp = FS.api.unit_helper:get_health_percentage(tank_target)
-
-        -- If tank is below threshold
-        if tank_hp <= tank_hp_threshold then
-            target = tank_target
-            target_score = (1 - tank_hp) * 100 -- Higher score for lower health
-
-            -- Check if tank already has HoT
-            if eternal_flame_up(tank_target) then
-                local remains = eternal_flame_remains(tank_target) / 1000
-
-                -- Reduce score if HoT already present, unless very low health or HoT is about to expire
-                if tank_hp > tank_hp_threshold * 0.7 and remains > 3 then
-                    target_score = target_score * 0.7
-                elseif remains < 3 then
-                    -- Bonus for refreshing nearly expired HoT on tank
-                    target_score = target_score * 0.8
-                end
-            else
-                -- Significant bonus for applying new HoT to tank
-                target_score = target_score * 0.9
-            end
-        end
-    end
+    --local tank_target = FS.modules.heal_engine.get_tank_damage_target(
+    --    spell_id,
+    --    skip_facing,
+    --    skip_range
+    --)
+    --
+    --if tank_target then
+    --    local tank_hp = FS.api.unit_helper:get_health_percentage(tank_target)
+    --
+    --    -- If tank is below threshold
+    --    if tank_hp <= tank_hp_threshold then
+    --        target = tank_target
+    --        target_score = (1 - tank_hp) * 100 -- Higher score for lower health
+    --
+    --        -- Check if tank already has HoT
+    --        if eternal_flame_up(tank_target) then
+    --          local remains = eternal_flame_remains(tank_target) / 1000
+    --
+    --          -- Reduce score if HoT already present, unless very low health or HoT is about to expire
+    --          if tank_hp > tank_hp_threshold * 0.7 and remains > 3 then
+    --              target_score = target_score * 0.7
+    --          elseif remains < 3 then
+    --              -- Bonus for refreshing nearly expired HoT on tank
+    --              target_score = target_score * 0.8
+    --          end
+    --        else
+    --            -- Significant bonus for applying new HoT to tank
+    --            target_score = target_score * 0.9
+    --        end
+    --    end
+    --end
 
     -- Check for other potential targets
     local general_targets = {}
@@ -63,7 +63,7 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
         if hp > hp_threshold then return 0 end
 
         local health_deficit = unit:get_max_health() - unit:get_health()
-        local score = health_deficit * 100 -- Base score: higher health deficit = higher score
+        local score = health_deficit -- Base score: higher health deficit = higher score
 
         -- Check if unit already has HoT
         if eternal_flame_up(unit) then
@@ -95,19 +95,12 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
             end
 
             -- Bonus for applying new HoT
-            score = score * 1.05
-
-            -- Additional bonus if we have few active HoTs
-            if current_ef_count < max_ef_targets - 1 then
-                score = score * 1.1
-            end
-        end
-
-        -- Consider player role for scoring
-        if FS.api.unit_helper:is_healer(unit) then
-            score = score * 1.05 -- Priority to healers
-        elseif FS.api.unit_helper:is_tank(unit) then
-            score = score * 0.8  -- Highest priority to tanks
+            --score = score * 1.05
+            --
+            ---- Additional bonus if we have few active HoTs
+            --if current_ef_count < max_ef_targets - 1 then
+            --    score = score * 1.1
+            --end
         end
 
         return score
@@ -148,7 +141,7 @@ function FS.modules.heal_engine.get_eternal_flame_target(hp_threshold, tank_hp_t
     --end
 
     if target then
-        core.log(tostring(target_score))
+        --core.log(tostring(target_score))
     end
 
     return target
